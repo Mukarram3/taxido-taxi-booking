@@ -1,0 +1,57 @@
+/*=============================
+  5.7  notification CSS start
+===============================*/
+.notification-list {
+    li {
+        width: 100%;
+        margin-bottom: 15px;
+        &:last-child {
+            margin-bottom: 0;
+        }
+        .notification-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 15px;
+            background-color: rgba(var(--white), 1);
+            border: 1px solid rgba(var(--line-color), 0.6);
+            border-radius: 10px;
+            box-shadow: 0px 4px 16px 0px rgba(var(--title-color), 0.06);
+            &.unread {
+                background-color: rgba(var(--box-bg), 1);
+                border: none;
+                box-shadow: none;
+                .notification-icon {
+                    .icon {
+                        background-color: rgba(var(--white), 1);
+                    }
+                }
+            }
+            h5 {
+                font-weight: 500;
+                color: rgba(var(--title-color), 1);
+            }
+
+            p {
+                margin-top: 5px;
+                line-height: 1.5;
+                font-weight: 300;
+                color: rgba(var(--content-color), 1);
+            }
+            .notification-icon {
+                .icon {
+                    padding: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 35px;
+                    height: 35px;
+                    background-color: rgba(var(--theme-color), 0.1);
+                    border-radius: 100%;
+                    --Iconsax-Color: rgba(var(--theme-color), 1);
+                    --Iconsax-Size: 20px;
+                }
+            }
+        }
+    }
+}

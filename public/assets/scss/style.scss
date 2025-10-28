@@ -1,0 +1,90 @@
+/*-----------------------------------------------------------------------------------
+
+    Template Name:Taxido App
+    Template URI: https: //themes.pixelstrap.net/pwa/taxido/
+    Description: This is PWA Html Template
+    Author: Pixelstrap
+    Author URL: https://themeforest.net/user/pixelstrap
+
+----------------------------------------------------------------------------------- */
+///* utils Files  *////
+/* 1.1 animation CSS  */
+/* 1.2 variable CSS  */
+
+////* Base Files  *////
+/* 2.1 Reset CSS  */
+/* 2.2 Typography CSS */
+
+////* Components Files  *////
+/* 3.1 Button CSS  */
+/* 3.2 Calender CSS  */
+/* 3.3 Chatting CSS  */
+/* 3.4 Form CSS  */
+/* 3.5 Modal CSS  */
+/* 3.6 Offcanvas CSS  */
+/* 3.7 Ratio CSS  */
+/* 3.8 Slider CSS  */
+/* 3.8 Tab CSS */
+/* 3.10 Title CSS */
+
+////* Layout Files  *////
+/* 4.1 Header css */
+/* 4.2 Nav CSS */
+
+////* Pages Files  *////
+/* 5.1 Authentication CSS */
+/* 5.2 Category CSS */
+/* 5.3 Elements Page CSS */
+/* 5.4 Empty Pages CSS */
+/* 5.5 Home CSS */
+/* 5.7 Location CSS*/
+/* 5.7 Notification CSS */
+/* 5.8 onboarding CSS */
+/* 5.9 Outstation CSS */
+/* 5.10 Page List CSS */
+/* 5.11 Profile CSS */
+/* 5.12 Ride CSS */
+
+////* Themes Files  *////
+/* 6.1 Dark CSS */
+
+/*utils scss files */
+@use "utils/variables"as *;
+@use "utils/variables"as *;
+
+/* base scss files */
+@use "base/reset"as *;
+@use "base/typography"as *;
+
+/* components scss files*/
+@use "components/button"as *;
+@use "components/calender"as *;
+@use "components/chatting"as *;
+@use "components/form"as *;
+@use "components/modal"as *;
+@use "components/offcanvas"as *;
+@use "components/ratio"as *;
+@use "components/slider"as *;
+@use "components/tab"as *;
+@use "components/title"as *;
+
+/* layout scss files */
+@use "layout/header"as *;
+@use "layout/nav"as *;
+
+/* pages */
+@use "pages/authentication"as *;
+@use "pages/category"as *;
+@use "pages/elements"as *;
+@use "pages/empty-page"as *;
+@use "pages/home"as *;
+@use "pages/location"as *;
+@use "pages/notification"as *;
+@use "pages/outstation"as *;
+@use "pages/onboarding"as *;
+@use "pages/page-list"as *;
+@use "pages/profile"as *;
+@use "pages/ride"as *;
+
+/* themes */
+@use "themes/dark"as *;

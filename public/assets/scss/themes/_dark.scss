@@ -1,0 +1,221 @@
+/*=====================
+   6.1 Dark CSS start
+==========================*/
+body {
+    &.dark {
+        .offcanvas {
+            &.addtohome-popup {
+                .btn-close {
+                    filter: invert(1);
+                }
+            }
+        }
+
+        .auth-content-bg {
+            .auth-title {
+                .line {
+                    filter: invert(1) grayscale(1);
+                }
+            }
+        }
+
+        .auth-content-bg {
+            .line-design {
+                li {
+                    &.active {
+                        color: rgba(var(--content-color), 1);
+                    }
+                }
+            }
+        }
+
+        .my-ride-list {
+            li {
+                .my-ride-box {
+                    .my-ride-details {
+                        .ride-location-listing {
+                            .location-box {
+                                .icon {
+                                    background-color: transparent;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .ride-content-bg {
+            .vehicle-info {
+                .share-icon {
+                    filter: invert(1) grayscale(1);
+                }
+            }
+            .location-part {
+                .icon {
+                    filter: invert(1) grayscale(1);
+                }
+            }
+        }
+        .ride-location-listing {
+            li {
+                .location-box {
+                    .icon {
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
+        .wallet-part {
+            .arrow-img {
+                filter: invert(1) grayscale(1);
+            }
+        }
+
+        .bill-details .total-detail .dots-design {
+            filter: invert(0.9);
+        }
+
+        .add-modal {
+            .modal-content {
+                .modal-header {
+                    .btn-close {
+                        filter: invert(1);
+                    }
+                }
+            }
+        }
+
+        .categories-place-list {
+            li {
+                .categories-place-box {
+                    .place-icon {
+                        .icon-btn {
+                            filter: invert(1) grayscale(1);
+                        }
+                    }
+                }
+            }
+        }
+
+        .main-header {
+            &.inner-page-header {
+                .header-panel {
+                    a {
+                        .icon-btn {
+                            &.add-icon {
+                                filter: invert(1) grayscale(1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .reasons-list {
+            li {
+                .reasons-box {
+                    img {
+                        filter: invert(1) grayscale(1);
+                    }
+                }
+            }
+        }
+
+        .location-bg {
+            background-color: rgba(var(--box-bg), 1);
+        }
+
+        .ride-offcanvas {
+            .offcanvas-header {
+                .btn-close {
+                    filter: invert(1);
+                }
+            }
+        }
+
+        .promo-code-list {
+            li {
+                .promo-code-box {
+                    .coupon-bg {
+                        filter: invert(1) brightness(0);
+                    }
+                }
+            }
+        }
+
+        .otp-form {
+            .form-input {
+                .form-control {
+                    &:focus {
+                        border: 1px solid rgba(var(--title-color), 1);
+                    }
+                }
+            }
+        }
+
+        .onboarding-section {
+            .user-onboarding-content-box {
+                .union-img-dark {
+                    display: block;
+                    position: absolute;
+                    top: -137px;
+                    left: 50%;
+                    width: 100%;
+                    height: 100%;
+                    transform: translateX(-50%);
+                    z-index: 0;
+                    @media (max-width: 500px) {
+                        top: -117px;
+                    }
+                    @media (max-width: 375px) {
+                        top: -110px;
+                    }
+                }
+
+                .union-img {
+                    display: none;
+                }
+            }
+        }
+        .element-modal {
+            .modal-header {
+                .btn-close {
+                    filter: invert(1);
+                }
+            }
+        }
+
+        .element-list {
+            li {
+                .theme-outline-btn {
+                    color: rgba(var(--title-color), 1);
+                    border: 1px solid rgba(var(--title-color), 1);
+                }
+            }
+        }
+
+        .main-categories-list {
+            li {
+                .main-categories-box {
+                    .main-categories-content {
+                        .arrow-icon {
+                            --Iconsax-Color: rgba(255, 255, 255, 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        .poster-part {
+            background-color: rgba(var(--box-bg), 1);
+        }
+        .vehicle-content {
+            .content-title {
+                .members {
+                    filter: invert(1);
+                }
+            }
+        }
+    }
+}

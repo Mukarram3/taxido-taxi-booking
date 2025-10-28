@@ -1,0 +1,238 @@
+/*=====================
+  3.5  modal CSS start
+==========================*/
+.delete-modal {
+    .modal-content {
+        position: relative;
+        background-color: rgba(var(--white), 1);
+
+        .btn-close {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            padding: 0;
+            margin-left: auto;
+            box-shadow: none;
+
+            [dir="rtl"] & {
+                right: unset;
+                left: 15px;
+                margin-left: unset;
+                margin-right: auto;
+            }
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+
+        .modal-body {
+            text-align: center;
+            background-color: rgba(var(--white), 1);
+            .icon {
+                width: 60px;
+                height: 60px;
+                margin: 0 auto;
+            }
+
+            h4 {
+                margin-top: 10px;
+                font-weight: 500;
+                color: rgba(var(--title-color), 1);
+            }
+
+            p {
+                margin-top: 5px;
+                font-weight: 400;
+                color: rgba(var(--content-color), 1);
+            }
+
+            .safety-list {
+                margin-block: 20px;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 15px;
+                @media (max-width: 600px) {
+                    gap: calc(10px + (15 - 10) * ((100vw - 320px) / (600 - 320)));
+                }
+                .safety-box {
+                    width: 100%;
+                    height: 100%;
+                    padding: 15px;
+                    background-color: rgba(var(--box-bg), 1);
+                    border-radius: 4px;
+
+                    @media (max-width: 600px) {
+                        padding: calc(10px + (15 - 10) * ((100vw - 320px) / (600 - 320)));
+                    }
+                    .safety-icon {
+                        width: 26px;
+                    }
+                    h6 {
+                        margin-top: 12px;
+                        color: rgba(var(--title-color), 1);
+                        font-weight: 400;
+                    }
+                }
+            }
+        }
+        .modal-footer {
+            display: flex;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            gap: 10px;
+            background-color: rgba(var(--white), 1);
+            border-top: 1px solid rgba(var(--line-color), 1);
+            border-radius: unset;
+        }
+    }
+}
+
+.add-modal {
+    .modal-content {
+        background-color: rgba(var(--white), 1);
+
+        .modal-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: none;
+            h3 {
+                font-weight: 500;
+                color: rgba(var(--title-color), 1);
+            }
+            .btn-close {
+                margin: 0;
+                padding: 0;
+                margin-left: 0;
+                box-shadow: none;
+
+                [dir="rtl"] & {
+                    margin-right: 0;
+                }
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+        }
+        .modal-body {
+            padding: 20px;
+            .media-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                row-gap: 40px;
+                @media (max-width: 600px) {
+                    row-gap: calc(20px + (40 - 20) * ((100vw - 320px) / (600 - 320)));
+                }
+
+                li {
+                    margin-bottom: 0;
+                    .media-box {
+                        .media-image {
+                            width: 50px;
+                            height: 50px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background-color: rgba(var(--box-bg), 1);
+                            border-radius: 100%;
+
+                            .icon {
+                                --Iconsax-Color: rgba(var(--title-color), 1);
+                            }
+                        }
+
+                        h5 {
+                            text-align: center;
+                            margin-top: 6%;
+                            font-weight: 400;
+                            color: rgba(var(--title-color), 1);
+                        }
+                    }
+                }
+            }
+
+            .option-listing {
+                li {
+                    .form-check {
+                        display: flex;
+                        align-items: center;
+                        margin-top: 30px;
+                        margin-bottom: 0;
+                        padding-left: 0;
+                        padding-bottom: 20px;
+                        border-bottom: 1px solid rgba(var(--line-color), 1);
+                        [dir="rtl"] & {
+                            padding-left: unset;
+                            padding-right: 0;
+                        }
+                        .form-check-label {
+                            width: 100%;
+                            font-weight: 400;
+                            font-size: 16px;
+                            color: rgba(var(--title-color), 1);
+                            margin-right: auto;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            [dir="rtl"] & {
+                                margin-right: unset;
+                                margin-left: auto;
+                            }
+                            .flag {
+                                border-radius: 4px;
+                            }
+                            .icon {
+                                --Iconsax-Color: rgba(var(--title-color), 1);
+                                --Iconsax-Size: 20px;
+                            }
+                            @media (max-width: 600px) {
+                                font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (600 - 320)));
+                            }
+                        }
+                        .form-check-input {
+                            width: 20px;
+                            height: 20px;
+                            margin: 0px;
+                            background-color: rgba(var(--white), 1);
+                            border: 1px solid rgba(var(--content-color), 0.5) !important;
+                            border-radius: 100%;
+                            box-shadow: 0px 2px 15px 0px rgba(78, 160, 247, 0.08);
+                            transition: all 0.5s ease;
+                            &:checked {
+                                position: relative;
+                                background-color: rgba(var(--white), 1);
+                                border: 1px solid rgba(var(--theme-color), 1) !important;
+                                float: unset;
+                                &::after {
+                                    content: "";
+                                    position: absolute;
+                                    left: 50%;
+                                    top: 50%;
+                                    transform: translate(-50%, -50%);
+                                    width: 10px;
+                                    height: 10px;
+                                    background-color: rgba(var(--theme-color), 1);
+                                    border-radius: 100%;
+                                }
+                                &:focus {
+                                    box-shadow: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+    }
+}

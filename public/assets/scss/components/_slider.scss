@@ -1,0 +1,50 @@
+/*===================== 
+  3.8  slider CSS start 
+==========================*/
+.review-listing {
+    li {
+        margin-bottom: 15px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .review-box {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(var(--white), 1);
+            .profile-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                .profile-pic {
+                    width: 30px;
+                    height: 30px;
+                    object-fit: cover;
+                    border-radius: 100%;
+                }
+                .profile-content {
+                    width: calc(100% - 30px - 10px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    .star {
+                        width: 10px;
+                        height: 10px;
+                    }
+                }
+            }
+
+            p {
+                margin-top: 15px;
+                font-weight: 400;
+                line-height: 1.5;
+                color: rgba(var(--content-color), 1);
+                @media (max-width: 600px) {
+                    margin-top: calc(10px + (15 - 10) * ((100vw - 320px) / (600 - 320)));
+                }
+            }
+        }
+    }
+}

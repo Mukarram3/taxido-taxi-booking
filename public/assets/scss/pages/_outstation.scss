@@ -1,0 +1,192 @@
+/*========================
+   5.9 outstation CSS start
+==========================*/
+.notes-part {
+    margin: 15px 20px;
+    padding: 10px;
+    background-color: rgba(var(--error-color), 0.1);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    .icon {
+        --Iconsax-Color: rgba(var(--error-color), 1);
+        --Iconsax-Size: 14px;
+    }
+    h6 {
+        font-weight: 400;
+        color: rgba(var(--error-color), 1);
+    }
+    &.rental-note {
+        text-align: center;
+        background-color: rgba(var(--success-color), 0.1);
+        h6 {
+            line-height: 1.3;
+            color: rgba(var(--success-color), 1);
+        }
+    }
+}
+.timer-part {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: rgba(var(--title-color), 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    .timing {
+        font-size: 14px;
+        line-height: 1;
+        color: rgba(var(--white), 1);
+    }
+}
+
+.poster-part {
+    padding: 15px;
+    background-color: rgba(var(--title-color), 1);
+    text-align: center;
+    border-radius: 10px;
+    p {
+        font-weight: 400;
+        line-height: 1.5;
+        color: rgba(var(--white), 1);
+    }
+}
+
+.private-ride {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: rgba(var(--white), 1);
+    border-radius: 6px;
+    .ride-head {
+        padding-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(var(--line-color), 1);
+    }
+    .ride-content {
+        padding-block: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(var(--line-color), 1);
+    }
+    .pickup-location-listing {
+        width: 100%;
+
+        li {
+            width: 100%;
+            background-color: rgba(var(--box-bg), 1);
+
+            .location-box {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                .icon {
+                    position: relative;
+                    --Iconsax-Color: rgba(var(--title-color), 1);
+                    --Iconsax-Size: 18px;
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        bottom: 10px;
+                        left: 0;
+                        width: 25px;
+                        border: 1px dashed rgba(var(--line-color), 1);
+                        transform: rotate(90deg);
+                        [dir="rtl"] & {
+                            left: unset;
+                            right: 0;
+                        }
+                    }
+                }
+                .form-control {
+                    padding: 15px 0;
+                    background-color: rgba(var(--white), 1);
+                    border-top: none;
+                    border-left: none;
+                    border-right: none;
+                    border-bottom: 1px solid rgba(var(--line-color), 1);
+                    border-radius: 0;
+                    @media (max-width: 600px) {
+                        padding: calc(10px + (15 - 10) * ((100vw - 320px) / (768 - 320))) 0;
+                    }
+                    &::placeholder {
+                        font-size: 14px;
+                        color: rgba(121, 125, 131, 1);
+                    }
+
+                    &:focus {
+                        box-shadow: none;
+                        border: none;
+                    }
+                }
+                .add-stop {
+                    padding-left: 10px;
+                    border-left: 1px solid rgba(var(--line-color), 1);
+                    --Iconsax-Color: rgba(var(--title-color), 1);
+                    --Iconsax-Size: 24px;
+                }
+            }
+        }
+    }
+}
+
+.vehicle-content {
+    padding: 15px 20px;
+    background-color: rgba(var(--box-bg), 1);
+    .content-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(var(--line-color), 1);
+    }
+
+    .details-list {
+        li {
+            margin-top: 15px;
+            padding-inline-start: 20px;
+            h5 {
+                display: list-item;
+                list-style-type: disc;
+                font-weight: 400;
+                color: rgba(var(--title-color), 1);
+            }
+            h6 {
+                font-weight: 400;
+                margin-top: 5px;
+                color: rgba(var(--content-color), 1);
+            }
+        }
+    }
+}
+
+.condition-part {
+    padding: 20px;
+    .condition-list {
+        li {
+            margin-top: 15px;
+            padding-inline-start: 20px;
+            h5 {
+                display: list-item;
+                list-style-type: disc;
+                font-weight: 400;
+                color: rgba(var(--title-color), 1);
+            }
+            p {
+                font-weight: 400;
+                margin-top: 5px;
+                color: rgba(var(--content-color), 1);
+            }
+        }
+    }
+}
+
+.rental-car-img {
+    margin-top: 20px;
+    width: 100%;
+    border-radius: 10px;
+}

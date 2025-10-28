@@ -1,0 +1,465 @@
+/*=============================
+  5.1  Authentication CSS start
+===============================*/
+.auth-location-bg {
+    position: relative !important;
+    min-height: unset !important;
+    max-height: unset !important;
+}
+
+.auth-bg-image-box {
+    position: relative;
+    height: calc(100% - 60px);
+
+    @media (max-width: 600px) {
+        height: calc(100% - calc(56px + (60 - 56) * ((100vw - 320px) / (600 - 320))));
+    }
+
+    &.auth-bg-image-box-inner {
+        position: relative;
+        height: calc(100% - 350px) !important;
+    }
+    .auth-bg-image {
+        background-image: url(../images/auth/user.png);
+        width: 100%;
+        height: 220px;
+        background-position: bottom;
+        background-repeat: repeat-x;
+        position: relative;
+        z-index: -1;
+        background-size: 346px;
+
+        body.dark & {
+            filter: brightness(0.7);
+        }
+
+        @media (max-width: 600px) {
+            height: calc(175px + (220 - 175) * ((100vw - 320px) / (600 - 320)));
+        }
+
+        // position: absolute;
+        // top: 20px;
+        // z-index: -1;
+    }
+}
+
+.auth-content-bg {
+    padding-bottom: 20px;
+    background-color: rgba(var(--box-bg), 1);
+    border-radius: 0 0 20px 20px;
+
+    &.auth-content-bg-bottom {
+        width: 100%;
+        max-width: 600px;
+        min-height: 400px;
+        margin-top: -13px;
+        padding-top: 25px;
+        background-color: rgba(var(--white), 1);
+        border-radius: 20px 20px 0 0;
+        position: absolute;
+        bottom: 0;
+        max-height: calc(100vh - 60px - 207px);
+        height: 100%;
+
+        @media (max-width: 600px) {
+            max-height: calc(
+                100vh - calc(56px + (60 - 56) * ((100vw - 320px) / (600 - 320))) -
+                    calc(175px + (220 - 175) * ((100vw - 320px) / (600 - 320))) + 13px
+            );
+            // height: calc(175px + (220 - 175) * ((100vw - 320px) / (600 - 320)));
+        }
+    }
+
+    .auth-title {
+        position: relative;
+        padding-top: 20px;
+
+        @media (max-width: 600px) {
+            padding-top: calc(10px + (20 - 10) * ((100vw - 320px) / (600 - 320)));
+        }
+
+        .loader-line {
+            width: 40px;
+            height: 3px;
+            background-color: rgba(var(--box-bg), 1);
+            border-radius: 20px;
+            position: absolute;
+            top: -8px;
+            margin-top: 10px;
+            overflow: hidden;
+            z-index: 2;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: -50%;
+                height: 2px;
+                width: 30%;
+                background-color: rgba(var(--theme-color), 1);
+                animation: lineAnim 2s linear infinite;
+                border-radius: 20px;
+
+                [dir="rtl"] & {
+                    animation: reverse-lineAnim 2s linear infinite;
+                }
+            }
+        }
+
+        h2 {
+            font-weight: 500;
+            color: rgba(var(--title-color), 1);
+        }
+
+        h6 {
+            margin-top: 5px;
+            font-weight: 400;
+            color: rgba(var(--content-color), 1);
+        }
+    }
+
+    .auth-btn {
+        margin-top: 60px;
+
+        @media (max-width: 600px) {
+            margin-top: calc(30px + (60 - 30) * ((100vw - 320px) / (600 - 320)));
+        }
+    }
+
+    .division {
+        position: relative;
+        text-align: center;
+        margin: 20px 0;
+        z-index: 0;
+
+        span {
+            position: relative;
+            font-size: 13px;
+            background-color: rgba(var(--white), 1);
+            color: rgba(var(--content-color), 1);
+            padding: 0 10px;
+        }
+
+        &::after {
+            content: " ";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translate(50%, 50%);
+            width: 50%;
+            background: linear-gradient(
+                270deg,
+                rgba(155, 166, 184, 0) -2.05%,
+                rgba(155, 166, 184, 1) 50.93%,
+                rgba(155, 166, 184, 0) 101.74%
+            );
+            z-index: -1;
+            height: 2px;
+        }
+    }
+
+    .otp-name {
+        margin: 30px 0 8px 0;
+
+        @media (max-width: 600px) {
+            margin: calc(20px + (30 - 20) * ((100vw - 320px) / (600 - 320))) 0 8px 0;
+        }
+    }
+
+    .line-design {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+
+        li {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(var(--theme-color), 0.1);
+            border-radius: 6px;
+
+            &.active {
+                background-color: rgba(var(--theme-color), 1);
+            }
+        }
+    }
+}
+
+.auth-image {
+    margin-block: 30px;
+    text-align: center;
+    height: 220px;
+    object-fit: cover;
+}
+
+.remember {
+    font-size: 14px;
+}
+
+.forgot {
+    font-size: 13px;
+    margin-top: 10px;
+    float: right;
+    color: rgba(var(--theme-color), 1);
+
+    [dir="rtl"] & {
+        float: left;
+    }
+}
+
+.categories-types {
+    padding-bottom: 25px;
+
+    .categories-listing {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        overflow: auto;
+
+        .form-check3 {
+            position: relative;
+            width: 100%;
+            padding: 0;
+            margin-bottom: 0;
+
+            .form-check-input {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                float: unset;
+                height: 100%;
+                margin: 0;
+                cursor: pointer;
+                opacity: 0;
+
+                [dir="rtl"] & {
+                    left: unset;
+                    right: 0;
+                }
+
+                &:checked {
+                    transition: all 0.5s ease;
+
+                    ~ .form-check-label {
+                        font-weight: 400;
+                        background-color: rgba(var(--theme-color), 1);
+                        border-color: rgba(var(--theme-color), 1);
+                        transition: all 0.5s ease;
+
+                        .name {
+                            color: rgba(255, 255, 255, 1) !important;
+                        }
+
+                        .check-box {
+                            background-color: rgba(255, 255, 255, 0.2);
+                            transition: all 0.5s ease;
+
+                            &::after {
+                                background-color: rgba(255, 255, 255, 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            .form-check-label {
+                width: 100%;
+                padding: calc(10px + (15 - 10) * ((100vw - 320px) / (6000 - 320)));
+                margin: 0;
+                font-weight: 400;
+                font-size: calc(13px + (14 - 13) * ((100vw - 320px) / (6000 - 320)));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: calc(5px + (10 - 5) * ((100vw - 320px) / (6000 - 320)));
+                background-color: rgba(var(--white), 1);
+                border: 1px solid rgba(var(--content-color), 0.15);
+                border-radius: 6px;
+
+                .check-box {
+                    width: 20px;
+                    height: 20px;
+                    border: 1px solid rgba(var(--content-color), 0.15);
+                    border-radius: 100%;
+                    position: relative;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%) rotate(45deg);
+                        width: 10px;
+                        height: 10px;
+                        background-color: rgba(var(--white), 1);
+                        border-radius: 100%;
+                    }
+                }
+
+                .name {
+                    font-weight: 400;
+                    font-size: 14px;
+                    white-space: nowrap;
+                    color: rgba(var(--title-color), 1);
+                }
+            }
+        }
+    }
+}
+
+.location-bg {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 20px 20px 0px 0px;
+
+    .location-title-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        // padding: 20px;
+        h5 {
+            color: rgba(var(--title-color), 1);
+        }
+
+        .change-location {
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+        p {
+            padding-left: 30px;
+            font-weight: 400;
+            color: rgba(var(--content-color), 1);
+
+            [dir="rtl"] & {
+                padding-left: unset;
+                padding-right: 30px;
+            }
+        }
+    }
+
+    .ride-content-bg {
+        .current-location-box {
+            background-color: rgba(var(--white), 1);
+            padding-inline: 0;
+            padding-bottom: 0;
+        }
+    }
+}
+
+.rules-section {
+    .form-check {
+        margin-bottom: 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        float: unset;
+        padding-left: 0;
+
+        [dir="rtl"] & {
+            padding-left: unset;
+            padding-right: 0;
+        }
+
+        .form-check-label {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(var(--content-color), 1);
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-top: 0;
+            margin-left: 0;
+            background-color: rgba(var(--white), 1);
+            border: 1px solid rgba(var(--line-color), 1) !important;
+            border-radius: 6px;
+            transition: all 0.5s ease;
+
+            [dir="rtl"] & {
+                margin-left: unset;
+                margin-right: 0;
+            }
+
+            &:focus {
+                border-color: transparent;
+                box-shadow: none;
+            }
+
+            &:checked {
+                position: relative;
+                background-color: rgba(var(--theme-color), 1);
+                border-color: rgba(var(--line-color), 1);
+                float: unset;
+                --bs-form-check-bg-image: unset;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 7px;
+                    left: 9px;
+                    border: 2px solid rgba(255, 255, 255, 1);
+                    -webkit-transform: translate(-50%, -50%) rotate(45deg);
+                    transform: translate(-50%, -50%) rotate(45deg);
+                    width: 6px;
+                    height: 10px;
+                    border-top: unset;
+                    border-left: unset;
+                }
+
+                ~ .form-check-label {
+                    font-weight: 500;
+                    color: rgba(var(--title-color), 1);
+                }
+            }
+        }
+    }
+}
+
+.vehicle-types-list {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow: auto;
+
+    li {
+        width: 100%;
+        border-radius: 10px;
+        background-color: rgba(var(--white), 1);
+
+        .vehicle-type-button {
+            height: 80px;
+            width: 100%;
+            padding: 15px;
+            margin-inline: auto;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(var(--title-color), 1) !important;
+            background-color: rgba(var(--white), 1);
+
+            @media (max-width: 600px) {
+                padding: calc(10px + (15 - 10) * ((100vw - 320px) / (600 - 320)));
+            }
+
+            .vehicle-img {
+                margin-bottom: 5px;
+            }
+        }
+
+        .btn-check:checked + .btn {
+            color: rgba(var(--theme-color), 1);
+            background-color: rgba(var(--theme-color), 0.1);
+            border: 1px solid rgba(var(--theme-color), 1);
+        }
+    }
+}

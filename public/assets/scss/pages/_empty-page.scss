@@ -1,0 +1,69 @@
+/*=============================
+    5.4 empty-page CSS start
+===============================*/
+.empty-images {
+    width: 100%;
+    height: calc(100vh - 96px - 85px);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    @media (max-width: 600px) {
+        height: calc(100vh - 96px - calc(70px + (85 - 70) * ((100vw - 320px) / (600 - 320))));
+    }
+    .empty-page-content {
+        margin-top: 40px;
+        text-align: center;
+        h3 {
+            font-weight: 600;
+            color: rgba(var(--title-color), 1);
+        }
+
+        p {
+            font-weight: 400;
+            margin-top: 8px;
+            color: rgba(var(--content-color), 1);
+        }
+    }
+}
+
+.fixed-btn {
+    position: fixed;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px 0;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%);
+    z-index: 2;
+    background-color: rgba(var(--white), 1);
+
+    .resend-btn {
+        border: 1px solid rgba(var(--title-color), 1);
+    }
+}
+
+.map-img {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    &.map-sm-img {
+        height: 130px;
+        object-fit: cover;
+        border-radius: 0 0 20px 20px;
+        margin-top: -15px;
+    }
+    &.route-map {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0 0 20px 20px;
+        margin-top: -15px;
+    }
+}

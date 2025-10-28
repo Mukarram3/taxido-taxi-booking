@@ -1,0 +1,94 @@
+/*=====================
+  3.1  Button CSS start
+==========================*/
+.btn {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    padding: 15px;
+    @media (max-width: 600px) {
+        padding: calc(12px + (15 - 12) * ((100vw - 320px) / (600 - 320)));
+    }
+    &-inline {
+        padding: 15px;
+        @media (max-width: 600px) {
+            padding-inline: calc(12px + (15 - 12) * ((100vw - 320px) / (600 - 320)));
+        }
+    }
+
+    &-lg {
+        padding: 12px 44px;
+    }
+
+    &:focus {
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    &:first-child {
+        &:active {
+            border-color: transparent;
+            color: unset;
+            background-color: unset;
+        }
+    }
+}
+
+.theme-btn {
+    background-color: rgba(var(--theme-color), 1);
+    color: rgba(255, 255, 255, 1);
+    @media (max-width: 600px) {
+        font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (600 - 320)));
+    }
+
+    &:active {
+        color: rgba(255, 255, 255, 1) !important;
+        background-color: rgba(var(--theme-color), 1) !important;
+        border: 1px solid rgba(var(--theme-color), 1) !important;
+    }
+
+    &:hover {
+        color: rgba(255, 255, 255, 1);
+        background-color: rgba(var(--theme-color), 1);
+    }
+}
+
+.gray-btn {
+    color: rgba(var(--title-color), 1);
+    background-color: rgba(var(--box-bg), 1);
+    @media (max-width: 600px) {
+        font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (600 - 320)));
+    }
+
+    &:active {
+        color: rgba(var(--title-color), 1);
+        background-color: rgba(var(--box-bg), 1) !important;
+    }
+
+    &:hover {
+        color: rgba(var(--title-color), 1);
+        background-color: rgba(var(--box-bg), 1) !important;
+    }
+}
+
+.btn-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 18px;
+    color: rgba(var(--content-color), 1);
+
+    &:hover {
+        color: rgba(var(--content-color), 1);
+    }
+}
+
+.grid-btn {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 15px;
+}
