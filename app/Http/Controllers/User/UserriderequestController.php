@@ -166,7 +166,7 @@ class UserriderequestController extends Controller
             // Extra fields
             'categories'                  => 'required|json',
             'subcategories'               => 'required|json',
-            'vehicle_type_needed'                    => 'nullable|json',
+            'vehicle_type_needed'                    => 'nullable',
             'badges'                      => 'nullable|json',
             'insurance'                   => 'nullable|string|max:100',
 
@@ -267,6 +267,10 @@ class UserriderequestController extends Controller
             }
 
             $userriderequest->save();
+            return response()->json([
+                'status'  => true,
+                'message' => 'success',
+            ]);
 
         }
         catch (\Exception $exception){
