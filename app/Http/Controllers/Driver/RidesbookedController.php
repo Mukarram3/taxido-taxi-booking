@@ -237,6 +237,8 @@ class RidesbookedController extends Controller
 
             try {
                 Notification::send($user, new RideBooked($message));
+                Mail::to($ride_booked->user->email)->send(new \App\Mail\RideCancelledRequestNotification($ride_booked));
+                Mail::to($ride_booked->receiver_email)->send(new \App\Mail\RideCancelledRequestNotification($ride_booked));
             }
             catch (\Exception $e) {
                 Log::info($e->getMessage());
@@ -267,7 +269,7 @@ class RidesbookedController extends Controller
             }
         }
 
-        return redirect()->route('driver.my_rides')->with('success', 'Ride Cancelled successfully!');
+        return redirect()->route('user.my_rides')->with('success', 'Ride Cancelled successfully!');
     }
 
     public function otp_successfully(Request $request)

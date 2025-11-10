@@ -12,6 +12,8 @@ use App\Models\Userriderequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -94,7 +96,7 @@ class RideController extends Controller
             ->get();
 
         $personal_offers = Userriderequest::with('user','packagetype','packagesubtype')
-            ->where('expiry', '>', Carbon::now())
+            ->where('expiry_date', '>', Carbon::now())
             ->where('status', 'waiting')
             ->where('targetted_driver_id', Auth::guard('driver')->user()->id)
             ->where('is_targetted','1')
@@ -107,7 +109,58 @@ class RideController extends Controller
             ->with('driver')
             ->get();
 
-        return view('driver-app.my-rides', compact('active_rides','personal_offers','pending_rides', 'completed_rides', 'cancelled_rides','pending_offers','pending_reserved_kilo_rides','active_reserved_kilo_rides','completed_reserved_kilo_rides','cancelled_reserved_kilo_rides'));
+        foreach ($active_rides as $offer) {
+            $offer->pickup_city = $this->getCityFromAddress($offer->pickup_location);
+            $offer->destination_city = $this->getCityFromAddress($offer->destination_location);
+        }
+
+        foreach ($pending_rides as $pending_ride) {
+            $pending_ride->pickup_city = $this->getCityFromAddress($pending_ride->pickup_location);
+            $pending_ride->destination_city = $this->getCityFromAddress($pending_ride->destination_location);
+        }
+
+        foreach ($completed_rides as $completed_ride) {
+            $completed_ride->pickup_city = $this->getCityFromAddress($completed_ride->pickup_location);
+            $completed_ride->destination_city = $this->getCityFromAddress($completed_ride->destination_location);
+        }
+
+        foreach ($cancelled_rides as $cancelled_ride) {
+            $cancelled_ride->pickup_city = $this->getCityFromAddress($cancelled_ride->pickup_location);
+            $cancelled_ride->destination_city = $this->getCityFromAddress($cancelled_ride->destination_location);
+        }
+
+        return view('driver-app.proposals-management', compact('active_rides','personal_offers','pending_rides', 'completed_rides', 'cancelled_rides','pending_offers','pending_reserved_kilo_rides','active_reserved_kilo_rides','completed_reserved_kilo_rides','cancelled_reserved_kilo_rides'));
+    }
+
+    protected function getCityFromAddress($address)
+    {
+        // Cache the result to avoid hitting Google API repeatedly
+        return Cache::rememberForever('city_' . md5($address), function () use ($address) {
+            $apiKey = config('services.google_maps.api_key');
+            $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
+                'address' => $address,
+                'key' => $apiKey,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (!empty($data['results'][0]['address_components'])) {
+                    foreach ($data['results'][0]['address_components'] as $component) {
+                        if (
+                            in_array('locality', $component['types']) ||
+                            in_array('administrative_area_level_2', $component['types'])
+                        ) {
+                            return $component['long_name']; // e.g., "Multan"
+                        }
+                    }
+                }
+            }
+
+            // fallback if API fails
+            $parts = explode(',', $address);
+            return trim($parts[count($parts) - 2] ?? $address);
+        });
     }
 
     public function active_rides()

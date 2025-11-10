@@ -1,16 +1,114 @@
-<h2>Your Ride is Started Towards Destination</h2>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚚 Course commencée - JeConfie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            padding: 30px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .content {
+            padding: 40px 30px 30px 30px;
+            color: #555;
+        }
+        .ride-details {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        .ride-details h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        .ride-details ul {
+            padding-left: 20px;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #34495e;
+            padding: 25px 30px;
+            text-align: center;
+            color: #ecf0f1;
+            font-size: 13px;
+        }
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
 
-<p>Dear {{ $ride->user->name }},</p>
+<div class="container">
 
-<p>Your ride from <strong>{{ $ride->pickup_location }}</strong> to <strong>{{ $ride->destination_location }}</strong> has been started. Your delivery in progress .</p>
+    <!-- En-tête -->
+    <div class="header">
+        <h1>JeConfie</h1>
+        <p>Transport collaboratif et éco-responsable</p>
+    </div>
 
-<ul>
-    <li>Departure Date: {{ $ride->departure_date }}</li>
-    <li>Arrival Date: {{ $ride->arrival_date }}</li>
-    <li>Fare: ${{ $ride->fare }}</li>
-    <li>Package Type: {{ $ride->type_of_package }}</li>
-    <li>Quantity: {{ $ride->quantity_of_package }}</li>
-    <li>Payment Method: {{ $ride->payment_method }}</li>
-</ul>
+    <!-- Contenu -->
+    <div class="content">
+        <h2 style="color: #2c3e50; font-size: 22px; margin-bottom: 20px;">🚚 Votre course a commencé vers la destination</h2>
 
-<p>Thank you for using our service.</p>
+        <p>Bonjour <strong>{{ $ride->user->firstName . ' ' . $ride->user->lastName }}</strong>,</p>
+
+        <p>Votre colis expédié de <strong>{{ $ride->pickup_location }}</strong> à <strong>{{ $ride->destination_location }}</strong> a été récupéré par le transporteur et est actuellement en route vers sa destination.</p>
+
+        <!-- Détails de la course -->
+        <div class="ride-details">
+            <h3>📝 Détails de la course</h3>
+            <ul>
+                <li><strong>Date de départ :</strong> {{ $ride->departure_date }}</li>
+                <li><strong>Date d’arrivée :</strong> {{ $ride->arrival_date }}</li>
+                <li><strong>Tarif :</strong> {{ $ride->fare }} €</li>
+                <li><strong>Type de colis :</strong> {{ $ride->type_of_package }}</li>
+                <li><strong>Quantité :</strong> {{ $ride->quantity_of_package }}</li>
+                <li><strong>Méthode de paiement :</strong> {{ $ride->payment_method }}</li>
+            </ul>
+        </div>
+
+        <p>Merci d’utiliser notre service. Vous pouvez suivre la progression de votre livraison directement depuis votre application.</p>
+
+        <p style="margin-top: 30px; color: #2c3e50;">
+            Cordialement,<br>
+            <strong>L’équipe JeConfie</strong>
+        </p>
+    </div>
+
+    <!-- Pied de page -->
+    <div class="footer">
+        <p><strong>JeConfie.com</strong> – Transport collaboratif et éco-responsable</p>
+        <div>
+            <a href="{{ url('/') }}">Site web</a> |
+            <a href="{{ url('/contact-jeconfie') }}">Contact</a> |
+            <a href="{{ url('/faq') }}">FAQ</a>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px;">© 2025 JeConfie.com – Tous droits réservés.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

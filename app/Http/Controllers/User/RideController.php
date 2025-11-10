@@ -13,6 +13,7 @@ use App\Notifications\RideBooked;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -27,13 +28,13 @@ class RideController extends Controller
             ->where('status', 'active')
             ->where('message','Accepted, waiting for support')
             ->where('expiry', '>', Carbon::now())
-            ->with('driver', 'user','vehicle_type')
+            ->with('driver', 'user','userriderequest')
             ->get();
 
         $pending_offers = Userriderequest::where('user_id', Auth::guard('user')->id())
             ->where('status', 'waiting')
             ->where('expiry_date', '>', Carbon::now())
-            ->with('user')
+            ->with('user','driver')
             ->get();
 
         $expired_offers = Userriderequest::where('user_id', Auth::guard('user')->id())
@@ -41,9 +42,10 @@ class RideController extends Controller
             ->where('expiry_date', '<', Carbon::now())
             ->with('user')
             ->get();
+
         $completed_rides = Ridesbooked::where('user_id', Auth::guard('user')->id())
             ->where('status', 'completed')
-            ->with('driver', 'user')
+            ->with('driver', 'user','userriderequest')
             ->get();
         $reserved_kilo_completed_rides = ReservedKiloRidebooked::where('user_id', Auth::guard('user')->id())
             ->where('status', 'completed')
@@ -51,7 +53,7 @@ class RideController extends Controller
             ->get();
         $cancelled_rides = Ridesbooked::where('user_id', Auth::guard('user')->id())
             ->where('status', 'cancelled')
-            ->with('driver', 'user')
+            ->with('driver', 'user','userriderequest')
             ->get();
 
         $reserved_kilo_cancelled_rides = ReservedKiloRidebooked::where('user_id', Auth::guard('user')->id())
@@ -77,7 +79,7 @@ class RideController extends Controller
                     ->orwhere('message', "Package return in progress")
                     ->orwhere('message', 'Carrier Cancelled Ride');
             })
-            ->with('driver', 'user','vehicle_type')
+            ->with('driver', 'user','userriderequest')
             ->get();
 
         $pending_reserverd_kilo_rides = ReservedKiloRidebooked::where('user_id', Auth::guard('user')->id())
@@ -109,7 +111,68 @@ class RideController extends Controller
             ->with('driver','driverriderequest','userfarerequest')
             ->get();
 
+        foreach ($active_rides as $offer) {
+            $offer->pickup_city = $this->getCityFromAddress($offer->pickup_location);
+            $offer->destination_city = $this->getCityFromAddress($offer->destination_location);
+        }
+
+        foreach ($pending_rides as $pending_ride) {
+            $pending_ride->pickup_city = $this->getCityFromAddress($pending_ride->pickup_location);
+            $pending_ride->destination_city = $this->getCityFromAddress($pending_ride->destination_location);
+        }
+
+        foreach ($pending_offers as $pending_offer) {
+            $pending_offer->pickup_city = $this->getCityFromAddress($pending_offer->pickup_location);
+            $pending_offer->destination_city = $this->getCityFromAddress($pending_offer->destination_location);
+        }
+
+        foreach ($expired_offers as $expired_offer) {
+            $expired_offer->pickup_city = $this->getCityFromAddress($expired_offer->pickup_location);
+            $expired_offer->destination_city = $this->getCityFromAddress($expired_offer->destination_location);
+        }
+
+        foreach ($completed_rides as $completed_ride) {
+            $completed_ride->pickup_city = $this->getCityFromAddress($completed_ride->pickup_location);
+            $completed_ride->destination_city = $this->getCityFromAddress($completed_ride->destination_location);
+        }
+
+        foreach ($cancelled_rides as $cancelled_ride) {
+            $cancelled_ride->pickup_city = $this->getCityFromAddress($cancelled_ride->pickup_location);
+            $cancelled_ride->destination_city = $this->getCityFromAddress($cancelled_ride->destination_location);
+        }
+
         return view('user-app.proposals-management', compact('pending_rides', 'completed_rides', 'cancelled_rides', 'active_rides','expired_offers','pending_offers','pending_reserverd_kilo_rides','active_reserved_kilo_rides','reserved_kilo_completed_rides','reserved_kilo_cancelled_rides'));
+    }
+
+    protected function getCityFromAddress($address)
+    {
+        // Cache the result to avoid hitting Google API repeatedly
+        return Cache::rememberForever('city_' . md5($address), function () use ($address) {
+            $apiKey = config('services.google_maps.api_key');
+            $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
+                'address' => $address,
+                'key' => $apiKey,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (!empty($data['results'][0]['address_components'])) {
+                    foreach ($data['results'][0]['address_components'] as $component) {
+                        if (
+                            in_array('locality', $component['types']) ||
+                            in_array('administrative_area_level_2', $component['types'])
+                        ) {
+                            return $component['long_name']; // e.g., "Multan"
+                        }
+                    }
+                }
+            }
+
+            // fallback if API fails
+            $parts = explode(',', $address);
+            return trim($parts[count($parts) - 2] ?? $address);
+        });
     }
 
     public function track_ride($id)
@@ -254,6 +317,8 @@ class RideController extends Controller
             try {
                 Notification::send($driver, new RideBooked($message));
                 Mail::to($user->email)->send(new \App\Mail\RideCompletedNotification($ride_detail));
+                Mail::to($ride_detail->receiver_email)->send(new \App\Mail\RideCompletedNotification($ride_detail));
+                Mail::to($driver->email)->send(new \App\Mail\RideCompletedNotification($ride_detail));
             }
             catch (\Exception $e) {
                 Log::info($e->getMessage());

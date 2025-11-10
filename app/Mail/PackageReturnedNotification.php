@@ -25,6 +25,6 @@ class PackageReturnedNotification extends Mailable
     public function build()
     {
         return $this->subject('Your Package Has Been Returned')
-            ->view('emails.user-package-return-request');
+            ->view('emails.user-package-returned');
     }
 }

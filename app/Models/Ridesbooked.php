@@ -67,7 +67,7 @@ class Ridesbooked extends Model
         return$this->belongsTo(Mean_of_transport::class,'means_of_transport','id');
     }
 
-    public function vehicle_type(){
+    public function userriderequest(){
         return $this->belongsTo(Userriderequest::class,'userriderequest_id','id');
     }
 }

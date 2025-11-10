@@ -1,49 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="taxido">
-    <meta name="keywords" content="taxido">
-    <meta name="author" content="taxido">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <link rel="icon" href="{{asset('assets/images/logo/favicon.png')}}" type="image/x-icon">
+    <title>Propositions reçues - Co-transport #CT2024-0847 - Je confie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @yield('title')
 
     <link rel="apple-touch-icon" href="{{asset('assets/images/logo/favicon.png')}}">
-    <meta name="title-color" content="#1F1F1F">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="taxido">
-    <meta name="msapplication-TileImage" content="{{asset('assets/images/logo/favicon.png')}}">
-
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <!--Google font-->
-    <link rel="stylesheet" type="text/css" href="{{asset('assets/css/GTWalsheimPro.css')}}">
-
-    <!-- iconsax css -->
-    <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/iconsax.css')}}">
-
-    <!-- bootstrap css -->
-    <link rel="stylesheet" id="rtl-link" type="text/css" href="{{asset('assets/css/vendors/bootstrap.css')}}">
-
-    <!-- Theme css -->
-    <link rel="stylesheet" id="change-link" type="text/css" href="{{asset('assets/css/style.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     @yield('style')
 
+    {{--@laravelPWA--}}
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <script>
-        {{--if ('serviceWorker' in navigator) {--}}
-        {{--    navigator.serviceWorker.register("{{ asset('public/sw.js') }}");--}}
-        {{--}--}}
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', { scope: '/' })
@@ -54,54 +27,53 @@
 </head>
 
 <body>
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">JC</div>
+            <span class="logo-text" data-lang="fr" class="active">Je confie</span>
+            <span class="logo-text" data-lang="en">I entrust</span>
+        </a>
 
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="{{ url('user/my-rides') }}" class="nav-link">
+                <span data-lang="fr" class="active">Mes annonces</span>
+                <span data-lang="en">My offers</span>
+            </a>
+            <a href="/messages" class="nav-link">
+                <span data-lang="fr" class="active">Messages</span>
+                <span data-lang="en">Messages</span>
+            </a>
+            <a href="{{ url('user/dashboard') }}" class="nav-link">
+                <span data-lang="fr" class="active">Tableau de bord</span>
+                <span data-lang="en">Dashboard</span>
+            </a>
+            <a href="/profile" class="nav-link">
+                <span data-lang="fr" class="active">Profil</span>
+                <span data-lang="en">Profile</span>
+            </a>
+
+            <div class="language-switcher">
+                <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
+                <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
 
 @yield('content')
 
-<!-- iconsax js -->
-<script src="{{asset('assets/js/iconsax.js')}}"></script>
-
-<!-- sticky-header js -->
-<script src="{{asset('assets/js/sticky-header.js')}}"></script>
-
-<!-- bootstrap js -->
-<script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
-
-<!-- template-setting js -->
-<script src="{{asset('assets/js/template-setting.js')}}"></script>
-
-<!-- script js -->
-<script src="{{asset('assets/js/script.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     window._token = $('meta[name="csrf-token"]').attr('content')
 </script>
 @yield('script')
-
-<script>
-
-    navigator.geolocation.watchPosition(position => {
-
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        var url = '{{ url('driver/driver-location-update') }}';
-
-        $.post(url, {
-            lat, lng,
-            _token: '{{ csrf_token() }}'
-        });
-
-    }, error => {
-        console.error("Geolocation error:", error);
-    }, {
-        enableHighAccuracy: true,
-        maximumAge: 5000,
-        timeout: 10000
-    });
-
-</script>
 
 <script>
     @if(Session::has('success'))
@@ -121,5 +93,4 @@
     @endif
 </script>
 </body>
-
 </html>
