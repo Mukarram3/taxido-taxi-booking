@@ -1,8 +1,6 @@
-@extends('user-app.layout')
-@section('title','Propositions reçues - Je confie')
-
+@extends('driver-app.layout')
+@section('title','Propositions reçues - Co-transport #CT2024-0847 - Je confie')
 @section('style')
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -911,33 +909,35 @@
         }
     </style>
     @endsection
+
 @section('content')
 
-    @php
-        $icons = [
-                                                    'pedestrian' => '🚶',
-                                                    'Car' => '🚗',
-                                                    'Taxi / VTC' => '🚕',
-                                                    'bus' => '🚌',
-                                                    'coach' => '🚐',
-                                                    'Van' => '🚐',
-                                                    'bicycle' => '🚲',
-                                                    'motorcycle' => '🛵',
-                                                    'Truck' => '🚜',
-                                                    '4×4' => '🚙',
-                                                    'plane' => '✈️',
-                                                    'Helicopter' => '🚁',
-                                                    'Ferry/cruise ship' => '🚢',
-                                                    'Cargo/cargo ship' => '⛴️',
-                                                    'Speedboat' => '🚤',
-                                                    'Kayak/canoe' => '🛶',
-                                                    'train' => '🚆',
-                                                    'TGV' => '🚄',
-                                                    'Tram' => '🚈',
-                                                    'Metro' => '🚇',
-                                                ];
-    @endphp
+@php
+    $icons = [
+                                                'pedestrian' => '🚶',
+                                                'Car' => '🚗',
+                                                'Taxi / VTC' => '🚕',
+                                                'bus' => '🚌',
+                                                'coach' => '🚐',
+                                                'Van' => '🚐',
+                                                'bicycle' => '🚲',
+                                                'motorcycle' => '🛵',
+                                                'Truck' => '🚜',
+                                                '4×4' => '🚙',
+                                                'plane' => '✈️',
+                                                'Helicopter' => '🚁',
+                                                'Ferry/cruise ship' => '🚢',
+                                                'Cargo/cargo ship' => '⛴️',
+                                                'Speedboat' => '🚤',
+                                                'Kayak/canoe' => '🛶',
+                                                'train' => '🚆',
+                                                'TGV' => '🚄',
+                                                'Tram' => '🚈',
+                                                'Metro' => '🚇',
+                                            ];
+@endphp
 
+@section('content')
 <!-- Main Container -->
 <div class="main-container">
     <!-- Offer Header -->
@@ -1092,7 +1092,7 @@
             <div class="filter-tab active" onclick="filterProposals('all',event)">
                 <span data-lang="fr" class="active">Toutes</span>
                 <span data-lang="en">All</span>
-                <span class="filter-count">{{ count($active_rides) + count($pending_rides) + count($pending_offers) + count($expired_offers) + count($completed_rides) + count($cancelled_rides) }}</span>
+                <span class="filter-count">{{ count($active_rides) + count($pending_rides) + count($completed_rides) + count($cancelled_rides) }}</span>
             </div>
             <div class="filter-tab" onclick="filterProposals('in-progress', event)">
                 <span data-lang="fr" class="active">Nouvelles</span>
@@ -1103,16 +1103,6 @@
                 <span data-lang="fr" class="active">Acceptées</span>
                 <span data-lang="en">Accepted</span>
                 <span class="filter-count">{{ count($pending_rides) }}</span>
-            </div>
-            <div class="filter-tab" onclick="filterProposals('on_hold', event)">
-                <span data-lang="fr" class="active">Pending Offers</span>
-                <span data-lang="en">On Hold</span>
-                <span class="filter-count">{{ count($pending_offers) }}</span>
-            </div>
-            <div class="filter-tab" onclick="filterProposals('expired', event)">
-                <span data-lang="fr" class="active">En négociation</span>
-                <span data-lang="en">Expired</span>
-                <span class="filter-count">{{ count($expired_offers) }}</span>
             </div>
             <div class="filter-tab" onclick="filterProposals('finished', event)">
                 <span data-lang="fr" class="active">Refusées</span>
@@ -1177,11 +1167,11 @@
                 </div>
                 <div class="proposal-header">
                     <div class="transporter-info">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($offer->driver->firstName . ' ' . $offer->driver->lastName) }}&background=random&color=fff"
-                             alt="{{ $offer->driver->firstName }}"
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($offer->user->firstName . ' ' . $offer->user->lastName) }}&background=random&color=fff"
+                             alt="{{ $offer->user->firstName }}"
                              class="transporter-avatar rounded-full w-10 h-10">
                         <div class="transporter-details">
-                            <div class="transporter-name">{{ $offer->driver->firstName }}.</div>
+                            <div class="transporter-name">{{ $offer->user->firstName }}.</div>
                             <div class="transporter-rating">
                                 <span class="rating-stars">⭐⭐⭐⭐</span>
                                 <span>4.6 (89 <span data-lang="fr" class="active">avis</span><span data-lang="en">reviews</span>)</span>
@@ -1253,45 +1243,42 @@
                 </div>
 
                 <div class="proposal-actions">
-                    <a href="{{ url('user/track-ride/'. $offer->id) }}"
-                       class="btn btn-primary">
-                        📍 <span data-lang="fr" class="active">Track Carrier</span>
-                        <span data-lang="en">Track Carrier</span>
-                    </a>
-                    @if(($offer->status == 'active' || $offer->message == 'delivery in progress')
-                                        && !in_array($offer->message, ['On the way to pickup','Parcel returned','Delivery in progress, parcel return requested','transport completed awaiting validation','Package return in progress']))
-                        <a href="{{ url('driver/return-parcel/'. $offer->id) }}"
-                           class="btn btn-primary">📦 Request Return Package</a>
-                    @elseif($offer->message == 'Parcel returned')
-                        @php
-                            $signedUrl = URL::temporarySignedRoute(
-                                'user.package.returned',
-                                now()->addMinutes(60),
-                                ['ride' => $offer->id, 'token' => sha1($offer->receiver_email)]
-                            );
-                        @endphp
-                        <a href="{{ $signedUrl }}" class="btn btn-primary">✅ Confirm Package
-                            Return</a>
-                    @elseif($offer->message === 'transport completed awaiting validation')
-                        @php
-                            $signedUrl = URL::temporarySignedRoute(
-                                'user.ride.complete',
-                                now()->addMinutes(60),
-                                ['ride' => $offer->id, 'token' => sha1($offer->receiver_email)]
-                            );
-                        @endphp
-                        <a href="{{ $signedUrl }}" class="btn btn-primary">✅ Confirm Ride
-                            Completion</a>
-                    @else
-                        <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
-                            @csrf
-                            <input type="hidden" name="id" class="offer_id" value="{{ $offer->id }}">
-                            <input type="hidden" name="is_user_cancelled" value="true">
-                            <button type="submit" class="btn btn-danger-outline">
-                                ❌ <span data-lang="fr" class="active">Cancel the Offer</span>
-                                <span data-lang="en">Cancel the Transport</span>
-                            </button>
-                        </form>
+                    @if(trim($offer->message) === 'On the way to pickup')
+                        <a href="{{ url('driver/track-ride/'. $offer->id) }}"
+                           class="btn btn-primary">GPS navigation for Parcel
+                            Pickup</a>
+                        <a href="{{url('driver/start-delivery/'.$offer->id)}}"
+                           class="btn btn-primary">Start the Delivery of the Package</a>
+                    @endif
+                    @if(trim($offer->message) === 'delivery in progress')
+                        <a href="{{ url('driver/track-ride/'. $offer->id) }}"
+                           class="btn btn-primary">GPS navigation for Parcel
+                            Delivery</a>
+                        <a href="{{url('driver/ride-complete-request/'.$offer->id)}}"
+                           class="btn btn-primary">Complete delivery</a>
+                    @endif
+
+                    @if($offer->status == 'carrier_cancelled_ride' || $offer->status == 'active')
+                        {{--                                        @if($active_ride->message != 'Parcel returned')--}}
+                        @if($offer->message == 'Delivery in progress, parcel return requested' || $offer->message == 'Carrier Cancelled Ride' || $offer->message == 'User Cancelled Ride')
+                            <a href="{{url('driver/start-parcel-return/'.$offer->id)}}"
+                               class="btn btn-primary">Start Parcel Return</a>
+                        @elseif($offer->message == "Package return in progress")
+                            <a href="{{ url('driver/track-ride/'. $offer->id) }}"
+                               class="btn btn-primary">GPS navigation for Parcel
+                                Return</a>
+                            <a href="{{url('driver/package-returned-request/'.$offer->id)}}"
+                               class="btn btn-primary">Parcel Returned</a>
+                        @elseif($offer->message == 'Parcel returned')
+                        @elseif(trim($offer->message) !== 'transport completed awaiting validation')
+                                <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="id" class="offer_id" value="{{ $offer->id }}">
+                                    <input type="hidden" name="is_user_cancelled" value="false">
+                            <button type="submit"
+                               class="btn btn-primary cancel_rideBtn">Cancel the Transport</button>
+                                </form>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -1344,11 +1331,11 @@
                 </div>
                 <div class="proposal-header">
                     <div class="transporter-info">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($ride->driver->firstName . ' ' . $ride->driver->lastName) }}&background=random&color=fff"
-                             alt="{{ $ride->driver->firstName }}"
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($ride->user->firstName . ' ' . $ride->user->lastName) }}&background=random&color=fff"
+                             alt="{{ $ride->user->firstName }}"
                              class="transporter-avatar rounded-full w-10 h-10">
                         <div class="transporter-details">
-                            <div class="transporter-name">{{ $ride->driver->firstName }}.</div>
+                            <div class="transporter-name">{{ $ride->user->firstName }}.</div>
                             <div class="transporter-rating">
                                 <span class="rating-stars">⭐⭐⭐⭐</span>
                                 <span>4.6 (89 <span data-lang="fr" class="active">avis</span><span data-lang="en">reviews</span>)</span>
@@ -1406,7 +1393,7 @@
                     <span class="{{ $badgeClass }}">{{ $badgeText }}</span>
                 </div>
 
-                 {{ $ride->pickup_city }} -> {{ $ride->destination_city }}
+                {{ $ride->pickup_city }} -> {{ $ride->destination_city }}
 
                 <div class="custom-section">
                     <div>
@@ -1422,14 +1409,12 @@
                 <div class="proposal-actions">
                     <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
                         @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <input type="hidden" name="is_user_cancelled" value="true">
-                        <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$ride->id) }}"
-                           class="btn btn-primary">
-                            💬 <span data-lang="fr" class="active">Continuer la négociation</span>
-                            <span data-lang="en">Continue negotiation</span>
-                        </a>
                         <input type="hidden" name="id" class="offer_id" value="{{ $ride->id }}">
+                        <input type="hidden" name="is_user_cancelled" value="false">
+                        <a href="{{ url('driver/start-ride/'.$ride->id) }}"
+                           class="btn btn-primary">
+                            ✅ Start the Collection of the Package
+                        </a>
                         <button type="submit" class="btn btn-danger-outline">
                             ❌ <span data-lang="fr" class="active">Cancel the Offer</span>
                             <span data-lang="en">Cancel the Transport</span>
@@ -1439,209 +1424,17 @@
             </div>
         @endforeach
 
-        <!-- Proposal 3 - On Hold -->
-        @foreach($pending_offers as $offer)
-            <div class="proposal-card" data-status="on_hold">
-                <div class="proposal-status-ribbon negotiating">
-                    <span data-lang="fr" class="active">Pending Offers</span>
-                    <span data-lang="en">Pending Offers</span>
-                </div>
-                <div class="proposal-header">
-                    <div class="transporter-info">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($offer->user->firstName . ' ' . $offer->user->lastName) }}&background=random&color=fff"
-                             alt="{{ $offer->user->firstName }}"
-                             class="transporter-avatar rounded-full w-10 h-10">
-                        <div class="transporter-details">
-                            <div class="transporter-name">{{ $offer->user->firstName }}.</div>
-                            <div class="transporter-rating">
-                                <span class="rating-stars">⭐⭐⭐⭐</span>
-                                <span>4.6 (89 <span data-lang="fr" class="active">avis</span><span data-lang="en">reviews</span>)</span>
-                            </div>
-                            <div class="transporter-badges">
-                                <span class="badge verified">✓ <span data-lang="fr" class="active">Vérifié</span><span
-                                        data-lang="en">Verified</span></span>
-                                <span class="badge">🚗 <span data-lang="fr" class="active">Particulier</span><span
-                                        data-lang="en">Individual</span></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="proposal-price">
-                        <div class="price-label">
-                            <span data-lang="fr" class="active">DERNIÈRE OFFRE</span>
-                            <span data-lang="en">LAST OFFER</span>
-                        </div>
-                        <div class="price-amount">{{ $offer->fare }}€</div>
-                        <div class="price-original">
-                            <span data-lang="fr" class="active">Initial: {{ $offer->fare }}€</span>
-                            <span data-lang="en">Initial: €{{ $offer->fare }}</span>
-                        </div>
-                    </div>
-                </div>
-                @php
-                    $transportName = ucfirst(strtolower($ride->userriderequest->vehicle_type_needed ?? ''));
-                    $icon = $icons[$transportName] ?? '❓'; // default fallback
-                @endphp
-                <div class="proposal-details">
-                    <div class="detail-item">
-                        <span class="detail-icon">{{ $icon }}</span>
-                        <span class="detail-text">{{ $transportName }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-icon">📅</span>
-                        <span class="detail-text">
-                            <span data-lang="fr" class="active">Flexible sur horaire</span>
-                            <span data-lang="en">Flexible schedule</span>
-                        </span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-icon">📦</span>
-                        <span class="detail-text">
-                            <span data-lang="fr" class="active">Transport régulier</span>
-                            <span data-lang="en">Regular transport</span>
-                        </span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-icon">💬</span>
-                        <span class="detail-text">
-                            <span data-lang="fr" class="active">3 messages échangés</span>
-                            <span data-lang="en">3 messages exchanged</span>
-                        </span>
-                    </div>
-                </div>
-
-                {{ $offer->pickup_city }} -> {{ $offer->destination_city }}
-
-                <div class="custom-section">
-                    <div>
-                        {{ $icon }} <span class="custom-label">Transport:</span> {{ $offer->transport_title }}
-                    </div>
-                    <div>🔹 <span class="custom-label">Reference Number:</span> {{ $offer->reference_id }}</div>
-                    <div>🔹 <span class="custom-label">Distance:</span> {{ $offer->distance }} km</div>
-                    <div>⏰ <span
-                            class="custom-label">Follow-up:</span> {{ $offer->date_and_time_of_followup }}
-                    </div>
-                </div>
-
-                <div class="proposal-actions">
-                    <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}"
-                       class="btn btn-primary">
-                        💬 <span data-lang="fr" class="active">Continuer la négociation</span>
-                        <span data-lang="en">Continue negotiation</span>
-                    </a>
-                    <button class="btn btn-danger-outline">
-                        ❌ <span data-lang="fr" class="active">Cancel the Offer</span>
-                        <span data-lang="en">Cancel the Offer</span>
-                    </button>
-                </div>
-            </div>
-        @endforeach
-
-        <!-- Proposal 4 - Expired -->
-        @foreach($expired_offers as $offer)
-            <div class="proposal-card" data-status="expired">
-                <div class="proposal-header">
-                    <div class="transporter-info">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($offer->user->firstName . ' ' . $offer->user->lastName) }}&background=random&color=fff"
-                             alt="{{ $offer->user->firstName }}"
-                             class="transporter-avatar rounded-full w-10 h-10">
-                        <div class="transporter-details">
-                            <div class="transporter-name">
-                                {{ $offer->user->firstName . ' '. $offer->user->lastName}}
-
-                            </div>
-                            <div class="transporter-rating">
-                                <span class="rating-stars">⭐⭐⭐⭐⭐</span>
-                                <span>5.0 (42 <span data-lang="fr" class="active">avis</span><span data-lang="en">reviews</span>)</span>
-                            </div>
-                            <div class="transporter-badges">
-                                <span class="badge verified">✓ <span data-lang="fr" class="active">Vérifié</span><span
-                                        data-lang="en">Verified</span></span>
-                                <span class="badge">🌟 <span data-lang="fr" class="active">Premium</span><span
-                                        data-lang="en">Premium</span></span>
-                                <span class="badge">🌱 <span data-lang="fr" class="active">Éco</span><span
-                                        data-lang="en">Eco</span></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="proposal-price">
-                        <div class="price-label">
-                            <span data-lang="fr" class="active">PROPOSITION</span>
-                            <span data-lang="en">OFFER</span>
-                        </div>
-                        <div class="price-amount">€{{ $offer->fare }}</div>
-                    </div>
-                </div>
-                @php
-                    $transportName = ucfirst(strtolower($offer->vehicle_type_needed ?? ''));
-                    $icon = $icons[$transportName] ?? '❓'; // default fallback
-                @endphp
-                <div class="proposal-details">
-                    <div class="detail-item">
-                        <span class="detail-icon">{{ $icon }}</span>
-                        <span class="detail-text">{{ $transportName }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-icon">🌱</span>
-                        <span class="detail-text">
-                            <span data-lang="fr" class="active">Véhicule électrique</span>
-                            <span data-lang="en">Electric vehicle</span>
-                        </span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-icon">📦</span>
-                        <span class="detail-text">
-                            <span data-lang="fr" class="active">Emballage fourni</span>
-                            <span data-lang="en">Packaging provided</span>
-                        </span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-icon">📸</span>
-                        <span class="detail-text">
-                            <span data-lang="fr" class="active">Photos avant/après</span>
-                            <span data-lang="en">Before/after photos</span>
-                        </span>
-                    </div>
-                </div>
-
-                {{ $offer->pickup_city }} -> {{ $offer->destination_city }}
-
-                <div class="custom-section">
-                    <div>
-                        {{ $icon }} <span class="custom-label">Transport:</span> {{ $offer->transport_title }}
-                    </div>
-                    <div>🔹 <span class="custom-label">Reference Number:</span> {{ $offer->reference_id }}</div>
-                    <div>🔹 <span class="custom-label">Distance:</span> {{ $offer->distance }} km</div>
-                    <div>⏰ <span
-                            class="custom-label">Follow-up:</span> {{ $offer->date_and_time_of_followup }}
-                    </div>
-                </div>
-
-                <div class="proposal-actions">
-                    <a class="btn btn-primary" href="{{ url('user/ride-details?ride_id='.$offer->id) }}">
-                        <img src="{{ asset('assets/images/view-detail-image.png') }}"
-                             title="View package details" width="30px" alt="loading">
-                    </a>
-
-                    <button class="btn btn-outline" onclick="contactTransporter(3)">
-                        💬 <span data-lang="fr" class="active">Contacter</span>
-                        <span data-lang="en">Contact</span>
-                    </button>
-                </div>
-            </div>
-        @endforeach
-        <!-- More proposals can be added here -->
-
         <!-- Proposal 4 - Finished -->
         @foreach($completed_rides as $completed_ride)
             <div class="proposal-card" data-status="finished">
                 <div class="proposal-header">
                     <div class="transporter-info">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($completed_ride->driver->firstName . ' ' . $completed_ride->driver->lastName) }}&background=random&color=fff"
-                             alt="{{ $completed_ride->driver->firstName }}"
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($completed_ride->user->firstName . ' ' . $completed_ride->user->lastName) }}&background=random&color=fff"
+                             alt="{{ $completed_ride->user->firstName }}"
                              class="transporter-avatar rounded-full w-10 h-10">
                         <div class="transporter-details">
                             <div
-                                class="transporter-name">{{ $completed_ride->driver->firstName . ' '. $completed_ride->driver->lastName}}
+                                class="transporter-name">{{ $completed_ride->user->firstName . ' '. $completed_ride->user->lastName}}
                                 .
                             </div>
                             <div class="transporter-rating">
@@ -1667,7 +1460,7 @@
                     </div>
                 </div>
                 @php
-                    $transportName = ucfirst(strtolower($completed_ride->userriderequest->vehicle_type_needed ?? ''));
+                    $transportName = $completed_ride->userriderequest->vehicle_type_needed ?? '';
                     $icon = $icons[$transportName] ?? '❓'; // default fallback
                 @endphp
                 <div class="proposal-details">
@@ -1728,15 +1521,19 @@
 
         <!-- Proposal 4 - Cancelled -->
         @foreach($cancelled_rides as $cancelled_ride)
+            @php
+                $transportName = ucfirst(strtolower($cancelled_ride->userriderequest->vehicle_type_needed ?? ''));
+                $icon = $icons[$transportName] ?? '❓'; // default fallback
+            @endphp
             <div class="proposal-card" data-status="cancelled">
                 <div class="proposal-header">
                     <div class="transporter-info">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($cancelled_ride->driver->firstName . ' ' . $cancelled_ride->driver->lastName) }}&background=random&color=fff"
-                             alt="{{ $cancelled_ride->driver->firstName }}"
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($cancelled_ride->user->firstName . ' ' . $cancelled_ride->user->lastName) }}&background=random&color=fff"
+                             alt="{{ $cancelled_ride->user->firstName }}"
                              class="transporter-avatar rounded-full w-10 h-10">
                         <div class="transporter-details">
                             <div
-                                class="transporter-name">{{ $cancelled_ride->driver->firstName . ' '. $cancelled_ride->driver->lastName}}
+                                class="transporter-name">{{ $cancelled_ride->user->firstName . ' '. $cancelled_ride->user->lastName}}
                                 .
                             </div>
                             <div class="transporter-rating">
@@ -1761,10 +1558,6 @@
                         <div class="price-amount">€{{ $cancelled_ride->fare }}</div>
                     </div>
                 </div>
-                @php
-                    $transportName = ucfirst(strtolower($cancelled_ride->userriderequest->vehicle_type_needed ?? ''));
-                    $icon = $icons[$transportName] ?? '❓'; // default fallback
-                @endphp
                 <div class="proposal-details">
                     <div class="detail-item">
                         <span class="detail-icon">{{ $icon }}</span>
@@ -1861,10 +1654,8 @@
         </div>
     </div>
 </div>
-
 @endsection
 @section('script')
-
 <script>
     // Language system
     let currentLang = localStorage.getItem('preferredLanguage') || 'fr';
@@ -2118,6 +1909,4 @@
         }
     });
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=places,geometry&callback=initMap" async defer></script>
 @endsection
-

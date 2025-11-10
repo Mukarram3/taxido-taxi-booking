@@ -46,11 +46,11 @@ class RidesbookedController extends Controller
         $ridesbooked->receiver_phone = $userriderequest->receiver_phone;
         $ridesbooked->pickup_location = $userriderequest->pickup_location;
         $ridesbooked->destination_location = $userriderequest->destination_location;
-        $ridesbooked->departure_date      = $userriderequest->departure_date; // assuming current time as departure
+        $ridesbooked->departure_date      = $userriderequest->pickup_date; // assuming current time as departure
         $ridesbooked->transport_title      = $userriderequest->transport_title; // assuming current time as departure
         $ridesbooked->pick_up_time      = $userriderequest->pick_up_time; // assuming current time as departure
         $ridesbooked->delivery_time      = $userriderequest->delivery_time; // assuming current time as departure
-        $ridesbooked->arrival_date        = $userriderequest->arrival_date;
+        $ridesbooked->arrival_date        = $userriderequest->delivery_date;
         $ridesbooked->distance            = $userriderequest->distance ?? 0;
         $ridesbooked->type_of_package   = $userriderequest->type_of_package;
         $ridesbooked->sub_type_of_package   = $userriderequest->sub_type_of_package;
@@ -97,14 +97,16 @@ class RidesbookedController extends Controller
         if ($user && $user->email) {
             try {
                 Notification::send($driver, new \App\Notifications\RideBooked($message));
-                Mail::to($user->email)->send(new \App\Mail\RideBookedNotification($ridesbooked));
+                Mail::to($driver->email)->send(new \App\Mail\RideBookedNotification($ridesbooked));
             }
             catch (\Exception $e) {
                 Log::info($e->getMessage());
             }
         }
 
-        return view('user-app.accept-ride-details',['ridesbooked' => $ridesbooked])->with(['success' => 'Ride booked successfully']);
+        return redirect()->back()->with(['ridesbooked' => $ridesbooked, 'success' => 'Ride booked successfully']);
+
+//        return view('user-app.accept-ride-details',['ridesbooked' => $ridesbooked])->with(['success' => 'Ride booked successfully']);
     }
 
     private function isJson($string)

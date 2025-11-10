@@ -1,4 +1,4 @@
-@extends('user-app.layout')
+@extends('user-app.layout-backup')
 
 
 @section('title')
@@ -182,17 +182,12 @@
                         <h5 class="fw-light title-color">{{ $ride_detail->pickup_location }}</h5>
                     </div>
                 </li>
-                @php
-                    $locations = json_decode($ride_detail->destination_location, true); // returns array
-                @endphp
-                @foreach($locations as $location)
                 <li>
                     <div class="location-box">
                         <img class="icon" src="{{asset('assets/images/svg/gps.svg')}}" alt="gps">
-                        <h5 class="fw-light title-color border-0">{{ $location }}</h5>
+                        <h5 class="fw-light title-color border-0">{{ $ride_detail->destination_location }}</h5>
                     </div>
                 </li>
-                @endforeach
             </ul>
 
             @if($ride_detail->status == 'cancelled')

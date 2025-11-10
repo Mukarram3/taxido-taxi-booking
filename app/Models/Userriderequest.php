@@ -88,4 +88,8 @@ class Userriderequest extends Model
     {
         return$this->belongsTo(ParcelSubCategory::class,'sub_type_of_package','id');
     }
+
+    public function driver(){
+        return $this->belongsTo(Driver::class,'driver_id','id');
+    }
 }

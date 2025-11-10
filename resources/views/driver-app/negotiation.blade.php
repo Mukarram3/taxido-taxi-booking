@@ -1393,6 +1393,15 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-header">
+            <div class="toast-icon" id="toastIcon">✓</div>
+            <div class="toast-title" id="toastTitle">Notification</div>
+        </div>
+        <div class="toast-message" id="toastMessage">Message</div>
+    </div>
+
     <!-- Chat Toggle Button -->
     <div class="chat-toggle" onclick="openChat()">
         💬
@@ -1401,10 +1410,61 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGCQvcXUsXwCdYArPXo72dLZ31WS3WQRw"></script>
+{{--    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGCQvcXUsXwCdYArPXo72dLZ31WS3WQRw"></script>--}}
     <script>
-        // Language system
+
+        $(document).ready(function() {
+            {{--            @if(session('status') && session('message'))--}}
+            showToast(
+                'success',
+                currentLang === 'fr' ? "aaaaaaaa" : "aaaaaaaa",
+                currentLang === 'en' ? "aaaaaaaaaa" : "aaaaaaaaa"
+            );
+            {{--            @endif--}}
+
+            @if(session('status') && session('message'))
+            showToast(
+                '{{ session('status') }}',
+                currentLang === 'fr' ? "{{ session('message') }}" : "{{ session('message') }}",
+                currentLang === 'en' ? "{{ session('message') }}" : "{{ session('message') }}"
+            );
+            @endif
+        });
+
+        // Language Management
         let currentLang = localStorage.getItem('preferredLanguage') || 'fr';
+
+        // Toast Notifications
+        function showToast(type, title, message) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+
+            // Set icon and style based on type
+            toastIcon.className = `toast-icon ${type}`;
+            if (type === 'success') {
+                toastIcon.textContent = '✓';
+            } else if (type === 'error') {
+                toastIcon.textContent = '✕';
+            } else if (type === 'warning') {
+                toastIcon.textContent = '⚠';
+            } else {
+                toastIcon.textContent = 'ℹ';
+            }
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+
+        // Language system
+        // let currentLang = localStorage.getItem('preferredLanguage') || 'fr';
 
         function switchLanguage(lang) {
             currentLang = lang;
@@ -1478,61 +1538,45 @@
         document.addEventListener('DOMContentLoaded', function() {
             switchLanguage(currentLang);
         });
+
     </script>
     <script>
-        if ("geolocation" in navigator) {
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-
-                    console.log(`Location updated: ${lat}, ${lng}`);
-
-                    $('#driver_location_latitude').val(lat);
-                    $('#driver_location_longitude').val(lng);
-                },
-                (error) => {
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            console.error("User denied the request for Geolocation.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            console.error("Location information is unavailable.");
-                            break;
-                        case error.TIMEOUT:
-                            console.error("The request to get user location timed out.");
-                            break;
-                        case error.UNKNOWN_ERROR:
-                            console.error("An unknown error occurred.");
-                            break;
-                    }
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 5000,
-                }
-            );
-        } else {
-            console.error("Geolocation is not supported by this browser.");
-        }
-    </script>
-    <script>
-        @if(Session::has('success'))
-        toastr.success("{{ Session::get('success') }}");
-        @endif
-
-        @if(Session::has('error'))
-        toastr.error("{{ Session::get('error') }}");
-        @endif
-
-        @if(Session::has('info'))
-        toastr.info("{{ Session::get('info') }}");
-        @endif
-
-        @if(Session::has('warning'))
-        toastr.warning("{{ Session::get('warning') }}");
-        @endif
+        // if ("geolocation" in navigator) {
+        //     navigator.geolocation.watchPosition(
+        //         (position) => {
+        //             const lat = position.coords.latitude;
+        //             const lng = position.coords.longitude;
+        //
+        //             console.log(`Location updated: ${lat}, ${lng}`);
+        //
+        //             $('#driver_location_latitude').val(lat);
+        //             $('#driver_location_longitude').val(lng);
+        //         },
+        //         (error) => {
+        //             switch (error.code) {
+        //                 case error.PERMISSION_DENIED:
+        //                     console.error("User denied the request for Geolocation.");
+        //                     break;
+        //                 case error.POSITION_UNAVAILABLE:
+        //                     console.error("Location information is unavailable.");
+        //                     break;
+        //                 case error.TIMEOUT:
+        //                     console.error("The request to get user location timed out.");
+        //                     break;
+        //                 case error.UNKNOWN_ERROR:
+        //                     console.error("An unknown error occurred.");
+        //                     break;
+        //             }
+        //         },
+        //         {
+        //             enableHighAccuracy: true,
+        //             timeout: 10000,
+        //             maximumAge: 5000,
+        //         }
+        //     );
+        // } else {
+        //     console.error("Geolocation is not supported by this browser.");
+        // }
     </script>
 </body>
 </html>
