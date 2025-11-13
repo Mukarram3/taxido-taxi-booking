@@ -38,12 +38,12 @@ class GoogleController extends Controller
 
                 Auth::guard('user')->login($finduser, true);
 
-                return redirect('/user/home');
+                return redirect('/');
 
             } else {
 
                 $newUser = User::create([
-                    'name' => $user->name,
+                    'firstName' => $user->name,
                     'email' => $user->email,
                     'google_id' => $user->id,
                     'password' => Hash::make('Mmukarram_786')
@@ -51,7 +51,7 @@ class GoogleController extends Controller
 
                 Auth::guard('user')->login($newUser, true);
 
-                return redirect('/user/home');
+                return redirect('/');
             }
 
         } catch (Exception $e) {

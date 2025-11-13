@@ -180,8 +180,9 @@
 
         .nav-actions {
             display: flex;
-            gap: 12px;
             align-items: center;
+            gap: 1rem;
+            position: relative;
         }
 
         /* Quick Actions Bar */
@@ -230,19 +231,16 @@
             color: white;
         }
 
+
+
         .btn {
-            padding: 12px 24px;
-            border-radius: var(--radius);
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
             cursor: pointer;
-            font-size: 15px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
+            font-weight: 600;
+            transition: background 0.3s, color 0.3s;
+            border: 2px solid transparent;
+            font-family: inherit;
         }
 
         .btn-sm {
@@ -252,23 +250,55 @@
 
         .btn-ghost {
             background: transparent;
-            color: var(--dark);
+            border-color: #ccc;
+            color: #333;
         }
 
         .btn-ghost:hover {
-            background: var(--light);
+            background: #f2f2f2;
         }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: var(--shadow);
+            background: #007bff;
+            color: #fff;
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            background: #0066d3;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            min-width: 180px;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dropdown-menu a {
+            padding: 0.75rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f5f5f5;
+        }
+
+        /* Show dropdown when active */
+        .dropdown.active .dropdown-menu {
+            display: flex;
         }
 
         .btn-eco {
@@ -1692,14 +1722,30 @@
                 <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
                 <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
             </div>
-            <a href="{{ url('user/login') }}" class="btn btn-ghost">
-                <span class="lang-content fr active">Connexion</span>
-                <span class="lang-content en">Login</span>
-            </a>
-            <a href="{{ url('user/signup') }}" class="btn btn-primary">
-                <span class="lang-content fr active">Inscription</span>
-                <span class="lang-content en">Sign up</span>
-            </a>
+
+            <!-- LOGIN DROPDOWN -->
+            <div class="dropdown">
+                <button class="btn btn-ghost" onclick="toggleDropdown('loginDropdown')">
+                    <span class="lang-content fr active">Connexion</span>
+                    <span class="lang-content en">Login</span>
+                </button>
+                <div id="loginDropdown" class="dropdown-menu">
+                    <a href="{{ url('user/login') }}">👤 User Login</a>
+                    <a href="{{ url('driver/login') }}">🚗 Driver Login</a>
+                </div>
+            </div>
+
+            <!-- SIGNUP DROPDOWN -->
+            <div class="dropdown">
+                <button class="btn btn-primary" onclick="toggleDropdown('signupDropdown')">
+                    <span class="lang-content fr active">Inscription</span>
+                    <span class="lang-content en">Sign up</span>
+                </button>
+                <div id="signupDropdown" class="dropdown-menu">
+                    <a href="{{ url('user/signup') }}">👤 User Signup</a>
+                    <a href="{{ url('driver/signup') }}">🚗 Driver Signup</a>
+                </div>
+            </div>
         </div>
 
         <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -1745,21 +1791,39 @@
 <!-- Quick Actions Bar -->
 <div class="quick-actions-bar">
     <div class="quick-actions-container">
+        @if(\Illuminate\Support\Facades\Auth::guard('driver')->user())
         <a href="{{ url('/transportation-request') }}" class="quick-action-btn primary">
             ✈️
             <span class="lang-content fr active">Je voyage</span>
             <span class="lang-content en">I'm traveling</span>
         </a>
+        @endif
+            @if(\Illuminate\Support\Facades\Auth::guard('user')->user())
         <a href="{{ url('/create-offer') }}" class="quick-action-btn">
             📦
             <span class="lang-content fr active">Expédier</span>
             <span class="lang-content en">Ship</span>
         </a>
+            @endif
+            @if(\Illuminate\Support\Facades\Auth::guard('driver')->user())
         <a href="{{ url('/search-listing') }}" class="quick-action-btn">
             🔍
             <span class="lang-content fr active">Voir toutes les annonces</span>
             <span class="lang-content en">View all listings</span>
         </a>
+            @endif
+            @if(\Illuminate\Support\Facades\Auth::guard('driver')->user())
+                <a href="{{ url('/driver/my-rides') }}" class="quick-action-btn">
+                    <span class="lang-content fr active">My Rides</span>
+                    <span class="lang-content en">My Rides</span>
+                </a>
+            @endif
+            @if(\Illuminate\Support\Facades\Auth::guard('user')->user())
+                <a href="{{ url('/user/my-rides') }}" class="quick-action-btn">
+                    <span class="lang-content fr active">My Rides</span>
+                    <span class="lang-content en">My Rides</span>
+                </a>
+            @endif
     </div>
 </div>
 
@@ -2735,6 +2799,26 @@
 
         // Populate offers
         populateOffers();
+    });
+
+    function toggleDropdown(id) {
+        // Close all open dropdowns first
+        document.querySelectorAll('.dropdown').forEach(d => {
+            if (d.querySelector('.dropdown-menu').id !== id) {
+                d.classList.remove('active');
+            }
+        });
+
+        // Toggle current dropdown
+        const dropdown = document.querySelector(`#${id}`).parentElement;
+        dropdown.classList.toggle('active');
+    }
+
+    // Close when clicking outside
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+        }
     });
 </script>
 </body>

@@ -47,7 +47,7 @@ class AuthController extends Controller
 
                 Auth::guard('user')->login($user);
 
-                return redirect()->to('user/home')->with('success', 'Registration successful!');
+                return redirect()->to('/')->with('success', 'Registration successful!');
             }
             catch (\Exception $e) {
                 Log::error('User Registration Error: ' . $e->getMessage());
@@ -89,7 +89,6 @@ class AuthController extends Controller
             'phoneVerified' => ['nullable'],
             'profile'           => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
-
 
         if ($validator->fails()) {
             return response()->json([
@@ -136,32 +135,6 @@ class AuthController extends Controller
             if (Auth::guard('user')->attempt($credentials)) {
                 return response()->json(['success' => 'Account created successfully!']);
             }
-
-            $verificationCode = rand(10000, 99999);
-                $message = "Your verification code is: $verificationCode";
-
-                $account_sid = env('TWILIO_SID_KEY');
-                $auth_token = env('TWILIO_AUTH_TOKEN');
-                $twilio_number =  env('TWILIO_NUMBER');
-
-//                $client = new Client($account_sid, $auth_token);
-//                $client->messages->create(
-//                    '+'.$request->phone,
-//                    array(
-//                        'from' => $twilio_number,
-//                        'body' => $message
-//                    )
-//                );
-                session(['verification_code' => $verificationCode]);
-
-                $expiresAt = Carbon::now()->addMinutes(5);
-                Otp::create([
-//                    'user_id' => $user->id, // or however you're identifying the user
-                    'otp' => $verificationCode,
-                    'expires_at' => $expiresAt,
-                ]);
-
-                return view('user-app.otp',['requestData'=>$request->all(),'phone'=>$validated["phone"]]);
         }
     }
 
@@ -179,7 +152,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Redirect to /profile after successful login
-            return redirect('/user/home');
+            return redirect('/');
         }
 
         // If authentication fails, redirect back with errors
@@ -194,7 +167,7 @@ class AuthController extends Controller
 
         if ($user) {
             Auth::guard('user')->login($user);
-            return redirect('/user/home');
+            return redirect('/');
         }
         else {
             return back()->withErrors([
