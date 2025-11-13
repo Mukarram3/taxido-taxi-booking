@@ -155,7 +155,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Redirect to /profile after successful login
-            return redirect('/driver/home');
+            return redirect('/');
         }
 
         // If authentication fails, redirect back with errors
@@ -244,7 +244,6 @@ class AuthController extends Controller
             $experience = $request->input('experience');
             if ($experience) {
                 $experienceList = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $experience)));
-                // e.g. ["Expert", "Frequent traveler"]
             } else {
                 $experienceList = [];
             }
@@ -257,7 +256,6 @@ class AuthController extends Controller
             $driver->travelFrequency = $validated['travelFrequency'] ?? null;
             $driver->destinations    = $validated['destinations'] ?? null;
 
-// Handle file upload
             if ($request->hasFile('profile')) {
                 $path = $request->file('profile')->store('documents/profile', 'public');
                 $driver->profile = $path;
@@ -270,29 +268,6 @@ class AuthController extends Controller
             if (Auth::guard('driver')->attempt($credentials)) {
                 return response()->json(['success' => 'Account created successfully!']);
             }
-
-//            $account_sid = env('TWILIO_SID_KEY');
-//            $auth_token = env('TWILIO_AUTH_TOKEN');
-//            $twilio_number =  env('TWILIO_NUMBER');
-//
-//            $client = new Client($account_sid, $auth_token);
-//            $client->messages->create(
-//                '+'.$request->phone,
-//                array(
-//                    'from' => $twilio_number,
-//                    'body' => $message
-//                )
-//            );
-            session(['verification_code' => $verificationCode]);
-
-            $expiresAt = Carbon::now()->addMinutes(5);
-            Otp::create([
-//                'user_id' => $user->id, // or however you're identifying the user
-                'otp' => $verificationCode,
-                'expires_at' => $expiresAt,
-            ]);
-
-            return view('driver-app.otp',['requestData' => $request->all()]);
         }
     }
 
@@ -378,6 +353,7 @@ class AuthController extends Controller
 
         // Save code for 10 minutes
         Cache::put('sms_verification_'.$phone, $code, now()->addMinutes(10));
+        Log::info($code);
 
         $message = 'Your verification code is: ' . $code;
 
@@ -388,7 +364,7 @@ class AuthController extends Controller
 
             $client = new Client($account_sid, $auth_token);
             $client->messages->create(
-                '+'.$request->phone,
+                $request->phone,
                 array(
                     'from' => $twilio_number,
                     'body' => $message

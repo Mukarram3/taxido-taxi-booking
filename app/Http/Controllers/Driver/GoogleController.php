@@ -39,12 +39,11 @@ class GoogleController extends Controller
 
                 Auth::guard('driver')->login($finduser, true);
 
-                return redirect('/driver/home');
+                return redirect('/');
 
             } else {
-
                 $newUser = Driver::create([
-                    'name' => $user->name,
+                    'firstName' => $user->name,
                     'email' => $user->email,
                     'google_id' => $user->id,
                     'password' => Hash::make('Mmukarram_786')
@@ -52,7 +51,7 @@ class GoogleController extends Controller
 
                 Auth::guard('driver')->login($newUser, true);
 
-                return redirect('/driver/home');
+                return redirect('/');
             }
 
         } catch (Exception $e) {

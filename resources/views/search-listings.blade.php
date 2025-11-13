@@ -1288,8 +1288,8 @@
                                 else $transportIcon = '🚢';
                             }
 
-                            $routeFrom = $offer->pickup_location ?? '-';
-                            $routeTo = $offer->destination_location ? $offer->destination_location ?? '-' : '-';
+                            $routeFrom = $offer->pickup_city ?? '-';
+                            $routeTo = $offer->destination_city ? $offer->destination_city ?? '-' : '-';
                             $packageTypes = json_decode($offer->type_of_package) ?? [];
                         @endphp
                     <div class="offer-card">

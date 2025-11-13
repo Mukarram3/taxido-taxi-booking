@@ -1066,13 +1066,13 @@
                                 <label class="form-label" for="first-name">
                                     First Name <span class="required">*</span>
                                 </label>
-                                <input type="text" id="first-name" name="first-name" class="form-input" placeholder="Your first name" required>
+                                <input type="text" id="first-name" name="firstName" class="form-input" placeholder="Your first name" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="last-name">
                                     Last Name <span class="required">*</span>
                                 </label>
-                                <input type="text" id="last-name" name="last-name" class="form-input" placeholder="Your last name" required>
+                                <input type="text" id="last-name" name="lastName" class="form-input" placeholder="Your last name" required>
                             </div>
                         </div>
 
@@ -1139,7 +1139,7 @@
                             <button type="button" class="btn btn-secondary btn-large btn-back" onclick="prevStep()">
                                 Back
                             </button>
-                            <button type="button" class="btn btn-primary btn-large btn-next" onclick="sendVerificationEmail()">
+                            <button type="button" id="send-verification-btn" class="btn btn-primary btn-large btn-next" onclick="sendVerificationEmail()">
                                 Send Verification Email
                             </button>
                         </div>
@@ -1216,7 +1216,7 @@
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="btn btn-primary btn-large" onclick="sendOTPCode()">
+                            <button type="button" id="send-sms-btn" class="btn btn-primary btn-large" onclick="sendOTPCode()">
                                 Send SMS Code
                             </button>
                         </div>
@@ -1400,7 +1400,7 @@
                             <button type="button" class="btn btn-secondary btn-large btn-back" onclick="prevStep()">
                                 Back
                             </button>
-                            <button type="button" class="btn btn-primary btn-large btn-next" onclick="completeSignup()">
+                            <button type="button" class="btn btn-primary btn-large btn-next" id="complete-signup-btn" onclick="completeSignup()">
                                 Create My Account
                             </button>
                         </div>
@@ -1448,25 +1448,37 @@
 
     function handlePhotoUpload(event) {
         const file = event.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                showAlert('error', 'File size must be less than 5MB.');
-                return;
-            }
+        if (!file) return;
 
-            if (!file.type.startsWith('image/')) {
-                showAlert('error', 'Please select an image file.');
-                return;
-            }
+        const MAX_SIZE_MB = 2; // Laravel limit = 2048 KB = 2 MB
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('photo-preview');
-                preview.innerHTML = `<img src="${e.target.result}" alt="Profile picture"><div class="photo-overlay">📷</div>`;
-                selectedPhoto = file;
-            };
-            reader.readAsDataURL(file);
+        // ✅ Validate size
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            showAlert('error', `File size must be less than ${MAX_SIZE_MB} MB.`);
+            event.target.value = ''; // clear file input
+            selectedPhoto = null;
+            return;
         }
+
+        // ✅ Validate type
+        if (!file.type.startsWith('image/')) {
+            showAlert('error', 'Please select a valid image file (JPG, PNG, JPEG).');
+            event.target.value = '';
+            selectedPhoto = null;
+            return;
+        }
+
+        // ✅ Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('photo-preview');
+            preview.innerHTML = `
+            <img src="${e.target.result}" alt="Profile picture" class="rounded-xl shadow-md">
+            <div class="photo-overlay">📷</div>
+        `;
+            selectedPhoto = file;
+        };
+        reader.readAsDataURL(file);
     }
 
     // Update profile preview with initials
@@ -1622,24 +1634,41 @@
     function sendVerificationEmail() {
         if (!validateStep(3)) return;
 
+        const btn = document.getElementById('send-verification-btn');
         const email = document.getElementById('email').value.trim();
-        document.getElementById('verification-email').textContent = email;
-        document.getElementById('email-verification').classList.remove('hidden');
+        const verificationEmail = document.getElementById('verification-email');
+        const emailVerificationSection = document.getElementById('email-verification');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const url = '{{ url('driver/send-verification-email') }}';
 
-        var url = '{{ url('driver/send-verification-email') }}';
+        // ✅ Basic validation
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            showAlert('error', 'Please enter a valid email address.');
+            return;
+        }
 
-        $.post(url, { email: email, _token: $('meta[name="csrf-token"]').attr('content') })
+        // ✅ Disable button & show loading state
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+
+        // ✅ AJAX POST request
+        $.post(url, { email, _token: csrfToken })
             .done(function(res) {
-                document.getElementById('verification-email').textContent = email;
-                document.getElementById('email-verification').classList.remove('hidden');
-                showAlert('success', res.message);
+                verificationEmail.textContent = email;
+                emailVerificationSection.classList.remove('hidden');
+                showAlert('success', res.message || 'Verification email sent successfully!');
                 startemailResendCountdown();
                 nextStep();
             })
             .fail(function(xhr) {
-                showAlert('error', xhr.responseJSON.message || 'Failed to send verification email');
+                const message = xhr.responseJSON?.message || 'Failed to send verification email.';
+                showAlert('error', message);
+            })
+            .always(function() {
+                // ✅ Re-enable button after request completes
+                btn.disabled = false;
+                btn.textContent = 'Send Verification Email';
             });
-        showAlert('success', 'Verification email sent!');
     }
 
     function getEmailOTP() {
@@ -1678,25 +1707,48 @@
     function sendOTPCode() {
         if (!validateStep(5)) return;
 
-        const countryCode = document.getElementById('country-code').value;
+        const btn = document.getElementById('send-sms-btn');
+        const countryCode = document.getElementById('country-code').value.trim();
         const phoneNumber = document.getElementById('phone-number').value.trim();
-        currentPhoneNumber = countryCode + ' ' + phoneNumber;
-        var url = '{{ url('driver/send-sms-code') }}';
-        // Call backend
-        $.post(url, {
-            phone: currentPhoneNumber,
-            _token: $('meta[name="csrf-token"]').attr('content')
-        })
+        const phoneDisplay = document.getElementById('phone-display');
+        const phoneVerificationForm = document.querySelector('.phone-verification-form');
+        const otpVerification = document.getElementById('otp-verification');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const url = '{{ url('driver/send-sms-code') }}';
+
+        // ✅ Basic validation
+        if (!phoneNumber) {
+            showAlert('error', 'Please enter your phone number.');
+            return;
+        }
+
+        // ✅ Clean and concatenate (no spaces)
+        const formattedPhone = `${countryCode}${phoneNumber.replace(/\s+/g, '')}`;
+        currentPhoneNumber = formattedPhone;
+
+        // ✅ Disable button & show loading state
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+
+        // ✅ AJAX POST request
+        $.post(url, { phone: formattedPhone, _token: csrfToken })
             .done(function(res) {
-                document.getElementById('phone-display').textContent = currentPhoneNumber;
-                document.querySelector('.phone-verification-form').classList.add('hidden');
-                document.getElementById('otp-verification').classList.remove('hidden');
-                showAlert('success', res.message);
+                // ✅ Update UI only after successful send
+                phoneDisplay.textContent = formattedPhone;
+                phoneVerificationForm.classList.add('hidden');
+                otpVerification.classList.remove('hidden');
+                showAlert('success', res.message || 'Verification code sent successfully!');
                 startResendCountdown();
-                document.querySelector('.otp-input').focus();
+                document.querySelector('.otp-input')?.focus();
             })
             .fail(function(xhr) {
-                showAlert('error', xhr.responseJSON.message || 'Failed to send SMS');
+                const message = xhr.responseJSON?.message || 'Failed to send SMS code. Please try again.';
+                showAlert('error', message);
+            })
+            .always(function() {
+                // ✅ Re-enable button after request finishes
+                btn.disabled = false;
+                btn.textContent = 'Send SMS Code';
             });
     }
 
@@ -1772,34 +1824,40 @@
         const otpInputs = document.querySelectorAll('.otp-input');
         let otpCode = '';
 
-        otpInputs.forEach(input => {
-            otpCode += input.value;
-        });
+        otpInputs.forEach(input => otpCode += input.value.trim());
 
         if (otpCode.length !== otpInputs.length) {
             showAlert('error', 'Please enter the complete code');
             return;
         }
-        var url = '{{ url('driver/verify-sms-code') }}';
+
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const url = '{{ url('driver/verify-sms-code') }}';
+
+        // Ensure we have a normalized number (no spaces)
+        const phoneToVerify = currentPhoneNumber.replace(/\s+/g, '');
+
+        console.log(phoneToVerify);
+
         $.post(url, {
-            phone: currentPhoneNumber,
+            phone: phoneToVerify,
             code: otpCode,
-            _token: $('meta[name="csrf-token"]').attr('content')
+            _token: csrfToken
         })
             .done(function(res) {
-                showAlert('success', res.message);
+                showAlert('success', res.message || 'Phone verified successfully!');
                 toastr.success('Verified Successfully.');
-                isPhoneVerified = true; // mark verified
+                isPhoneVerified = true;
                 document.getElementById('otp-verification').classList.add('hidden');
                 nextStep();
             })
             .fail(function(xhr) {
-                showAlert('error', 'Invalid code. Please try again.');
+                const message = xhr.responseJSON?.message || 'Invalid code. Please try again.';
+                showAlert('error', message);
+                toastr.error(message);
                 otpInputs.forEach(input => input.value = '');
                 otpInputs[0].focus();
                 checkOTPComplete();
-                toastr.error('Invalid code. Please try again.');
-                showAlert('error', xhr.responseJSON.message || 'Invalid code');
             });
     }
 
@@ -1867,68 +1925,111 @@
     }
 
     // Final signup
-    function completeSignup() {
+    async function completeSignup() {
         if (!validateStep(7)) return;
-        let formElement = document.getElementById('signup-form');
-        let formData = new FormData();
 
-        formData.append('firstName', document.getElementById('first-name').value);
-        formData.append('lastName', document.getElementById('last-name').value);
-        formData.append('profession', document.getElementById('profession').value);
-        formData.append('birthDate', document.getElementById('birth-date').value);
-        formData.append('address', document.getElementById('address').value);
-        formData.append('email', document.getElementById('email').value);
-        formData.append('shipperType', document.getElementById('shipper-type').value);
-        formData.append('companyName', document.getElementById('company-name').value);
-        formData.append('packageTypes', document.getElementById('package-types').value);
-        formData.append('specialRequirements', document.getElementById('special-requirements').value);
-        formData.append('phone', currentPhoneNumber);
-        formData.append('password', document.getElementById('password').value);
-        formData.append('emailVerified', isEmailVerified);
-        formData.append('phoneVerified', isPhoneVerified);
+        const btn = document.getElementById('complete-signup-btn');
+        const formElement = document.getElementById('signup-form');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-        if (selectedPhoto) {
-            formData.append('photo', selectedPhoto); // Must be a File object
-        }
-        const selectedfrequencyOption = document.querySelectorAll('.frequency-option.selected');
-        if (selectedfrequencyOption.length > 0) {
-            selectedfrequencyOption.forEach((el, i) => {
-                formData.append(`frequencyOption[${i}]`, el.dataset.value || el.textContent);
+        // ✅ Disable button and show loading
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Creating account...';
+
+        try {
+            const formData = new FormData();
+
+            // ✅ Append basic fields
+            const fields = [
+                'first-name', 'last-name', 'profession', 'birth-date',
+                'address', 'email', 'shipper-type', 'company-name',
+                'package-types', 'special-requirements', 'password'
+            ];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    // Remove dashes and camelCase mapping
+                    const keyMap = {
+                        'first-name': 'firstName',
+                        'last-name': 'lastName',
+                        'birth-date': 'birthDate',
+                        'shipper-type': 'shipperType',
+                        'company-name': 'companyName',
+                        'package-types': 'packageTypes',
+                        'special-requirements': 'specialRequirements'
+                    };
+                    const key = keyMap[id] || id; // default to same ID
+                    formData.append(key, el.value.trim());
+                }
             });
-        }
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-        console.log('Complete signup data:', formData);
+            // ✅ Append other required data
+            formData.append('phone', currentPhoneNumber || '');
+            formData.append('emailVerified', isEmailVerified);
+            formData.append('phoneVerified', isPhoneVerified);
+            formData.append('_token', csrfToken);
 
-        $.ajax({
-            url: formElement.action,
-            method: formElement.method,
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if(response.success){
-                    showAlert('success', 'Account created successfully! Welcome to JeConfie!');
-                    setTimeout(() => {
-                        window.location.href = '/user/home';
-                    }, 2000);
+            // ✅ Handle file upload safely
+            const photoInput = document.getElementById('photo-upload');
+            if (photoInput && photoInput.files.length > 0) {
+                const file = photoInput.files[0];
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlert('error', 'Profile photo must be smaller than 2MB.');
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                    return;
                 }
-            },
-            error: function(xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    let message = '';
-                    for (const field in errors) {
-                        message += errors[field].join('<br>') + '<br>';
-                    }
-                    toastr.error(message);
-                    showAlert('error', message); // show all validation errors
-                } else {
-                    toastr.error('Something went wrong. Please try again.');
-                    showAlert('error', 'Something went wrong. Please try again.');
+                if (!file.type.startsWith('image/')) {
+                    showAlert('error', 'Please upload a valid image file.');
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                    return;
                 }
+                formData.append('profile', file);
             }
-        });
+
+            // ✅ Handle frequency options
+            const selectedFrequencyOptions = document.querySelectorAll('.frequency-option.selected');
+            selectedFrequencyOptions.forEach((el, i) => {
+                formData.append(`frequencyOption[${i}]`, el.dataset.value || el.textContent.trim());
+            });
+
+            console.log('Submitting signup data...');
+
+            // ✅ Send request
+            const response = await $.ajax({
+                url: formElement.action,
+                method: formElement.method,
+                data: formData,
+                processData: false,
+                contentType: false
+            });
+
+            // ✅ Handle success
+            if (response.success) {
+                showAlert('success', 'Account created successfully! Welcome to JeConfie!');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                showAlert('error', response.message || 'Something went wrong. Please try again.');
+            }
+        } catch (xhr) {
+            if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                const errors = xhr.responseJSON.errors;
+                const message = Object.values(errors).flat().join('<br>');
+                toastr.error(message);
+                showAlert('error', message);
+            } else {
+                toastr.error('Something went wrong. Please try again.');
+                showAlert('error', 'Something went wrong. Please try again.');
+            }
+        } finally {
+            // ✅ Restore button
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
     }
 
     // Event listeners initialization
