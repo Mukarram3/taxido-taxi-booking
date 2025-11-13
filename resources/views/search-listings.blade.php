@@ -1317,7 +1317,7 @@
 
                                 <div class="offer-info">
                                     <span class="info-item">📅 <span data-lang="fr" class="active">Demain</span><span data-lang="en">{{ \Illuminate\Support\Carbon::parse($offer->pickup_date)->format('l, j F Y') }}</span></span>
-                                    <span class="info-item">⏰ {{ round(now()->diffInHours(\Illuminate\Support\Carbon::parse($offer->pickup_date), false)) }}h</span>
+                                    <span class="info-item">⏰ {{ round(now()->diffInHours(\Illuminate\Support\Carbon::parse($offer->pickup_date), true)) }}h left</span>
                                     <span class="info-item">{{ $transportIcon }} {{ $offer->vehicle_type_needed }}</span>
                                 </div>
 
