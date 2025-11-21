@@ -129,7 +129,7 @@ class RideController extends Controller
             $cancelled_ride->destination_city = $this->getCityFromAddress($cancelled_ride->destination_location);
         }
 
-        return view('driver-app.proposals-management', compact('active_rides','personal_offers','pending_rides', 'completed_rides', 'cancelled_rides','pending_offers','pending_reserved_kilo_rides','active_reserved_kilo_rides','completed_reserved_kilo_rides','cancelled_reserved_kilo_rides'));
+        return view('driver-app.my-rides', compact('active_rides','personal_offers','pending_rides', 'completed_rides', 'cancelled_rides','pending_offers','pending_reserved_kilo_rides','active_reserved_kilo_rides','completed_reserved_kilo_rides','cancelled_reserved_kilo_rides'));
     }
 
     protected function getCityFromAddress($address)
@@ -180,6 +180,10 @@ class RideController extends Controller
             ->where('id', $id)
             ->with('driver', 'user')
             ->first();
+
+        $track_ride->pickup_city = $this->getCityFromAddress($track_ride->pickup_location);
+        $track_ride->destination_city = $this->getCityFromAddress($track_ride->destination_location);
+
         return view('driver-app.track-ride', compact('track_ride'));
     }
 

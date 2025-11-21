@@ -36,7 +36,7 @@
             <a href="index.blade.php">Onboarding<i class="iconsax" data-icon="chevron-right"></i></a>
           </li>
           <li class="pages">
-            <a href="login.blade.php">Login<i class="iconsax" data-icon="chevron-right"></i></a>
+            <a href="login-backup-20-11-2025.blade.php">Login<i class="iconsax" data-icon="chevron-right"></i></a>
           </li>
           <li class="pages">
             <a href="otp.blade.php">OTP<i class="iconsax" data-icon="chevron-right"></i></a>
@@ -107,7 +107,7 @@
       <div class="element-menu">
         <ul class="navigation">
           <li class="pages">
-            <a href="my-rides.blade.php">My Ride<i class="iconsax" data-icon="chevron-right"></i></a>
+            <a href="my-rides-backup-19-11-2025.blade.php">My Ride<i class="iconsax" data-icon="chevron-right"></i></a>
           </li>
           <li class="pages">
             <a href="pending-ride-details.blade.php">Pending Ride Details<i class="iconsax"

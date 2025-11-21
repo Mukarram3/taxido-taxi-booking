@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\Validator;
 
 class DriverriderequestController extends Controller
 {
+
+    public function dashboard(){
+        return view('driver-app.dashboard');
+    }
+
     public function driver_fare_request(Request $request)
     {
 

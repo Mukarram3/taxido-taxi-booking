@@ -30,11 +30,9 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
 
         Route::get('/logout', [\App\Http\Controllers\Driver\AuthController::class, 'logout'])->name('logout');
 
-        Route::get('/profile-setting', function (){
-            return view('driver-app.profile-setting');
-        });
+        Route::get('/profile-setting', [\App\Http\Controllers\Driver\ProfileController::class, 'profile']);
 
-        Route::post('/update_profile',[\App\Http\Controllers\Driver\AuthController::class,'update_profile'])->name('update_profile');
+        Route::post('/update_profile',[\App\Http\Controllers\Driver\ProfileController::class,'update_profile'])->name('update_profile');
 
         Route::post('vehicle-registeration', [\App\Http\Controllers\Driver\AuthController::class,'vehicle_registeration'])->name('vehicle-registration');
         Route::get('/vehicle-registeration', function (){
@@ -50,6 +48,7 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
     });
 
     Route::get('/home', [\App\Http\Controllers\Driver\DriverfarerequestController::class, 'home'])->name('home');
+    Route::get('/dashboard', [\App\Http\Controllers\Driver\DriverriderequestController::class, 'dashboard'])->name('dashboard');
     Route::get('/get-driver-ride-request', [\App\Http\Controllers\Driver\RideController::class, 'get_driver_ride_request'])->name('get_driver_ride_request');
 
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
@@ -114,8 +113,13 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
         return view('driver-app.offer');
     });
 
+    Route::get('/forgot-password', function (){
+        return view('driver-app.forgot-password');
+    });
+
     Route::post('/send-verification-email', [AuthController::class, 'sendVerificationEmail'])->name('send.verification.email');
     Route::post('/verify-email-code', [AuthController::class, 'verifyEmailCode'])->name('verify.email.code');
+    Route::post('/update-password', [AuthController::class, 'update_password'])->name('update_password');
     Route::post('/send-sms-code', [AuthController::class, 'sendSMSCode'])->name('send.sms.code');
     Route::post('/verify-sms-code', [AuthController::class, 'verifySMSCode'])->name('verify.sms.code');
 
@@ -162,6 +166,7 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
         return view('driver-app.withdraw');
     });
     Route::post('/mark-as-read', [\App\Http\Controllers\NotificationController::class,'markNotification'])->name('markNotification');
+    Route::post('/mark-as-read-all', [\App\Http\Controllers\NotificationController::class,'markDriverAllNotification'])->name('markDriverAllNotification');
     Route::post('/mollie-webhook', [\App\Http\Controllers\Driver\MolliewebhookController::class,'mollie_webhook'])->withoutMiddleware([Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])->name('mollie_webhook');
 
 //    Reservation based transportation system

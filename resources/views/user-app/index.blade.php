@@ -23,7 +23,7 @@
                     <option value="3">Spanish</option>
                 </select>
             </div>
-            <a href="login.blade.php" class="content-color fw-normal skip-btn">Skip</a>
+            <a href="login-backup-20-11-2025.blade.php" class="content-color fw-normal skip-btn">Skip</a>
         </div>
 
         <div class="swiper main-slider">

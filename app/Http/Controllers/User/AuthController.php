@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -152,7 +153,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Redirect to /profile after successful login
-            return redirect('/');
+            return redirect('user/dashboard');
         }
 
         // If authentication fails, redirect back with errors
@@ -167,7 +168,7 @@ class AuthController extends Controller
 
         if ($user) {
             Auth::guard('user')->login($user);
-            return redirect('/');
+            return redirect('user/dashboard');
         }
         else {
             return back()->withErrors([
@@ -219,21 +220,6 @@ class AuthController extends Controller
     public function logout(){
         Auth::guard('user')->logout();
         return redirect('/user/login');
-    }
-
-    public function update_profile(Request $request)
-    {
-
-        $user = User::where('id', Auth::guard('user')->id())->first();
-        if ($request->hasFile('profile') && $request->file('profile')->isValid()) {
-            $path = $request->file('profile')->store('documents/profile', 'public');
-            $user->profile = $path;
-        }
-        $user->name = $request->name;
-        $user->phone = $request->phone;
-        $user->email = $request->email;
-        $user->save();
-        return redirect()->back()->with('success', 'Profile updated successfully');
     }
 
     public function user_bank_details(Request $request)
@@ -290,6 +276,33 @@ class AuthController extends Controller
         }
         else{
             return redirect()->back()->with('error', 'Invalid Phone');
+        }
+    }
+
+    public function sendVerificationEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user){
+            return response()->json(['success' => false, 'message' => 'Email not registered']);
+        }
+
+        $code = rand(100000, 999999); // 6-digit code
+        $email = $request->email;
+
+        // store code temporarily (e.g. 10 minutes)
+        Cache::put('email_verification_'.$email, $code, now()->addMinutes(10));
+
+        try {
+            Mail::send('emails.verification-code', ['code' => $code], function ($message) use ($email) {
+                $message->to($email)->subject('Your Verification Code');
+            });
+            return response()->json(['success' => true, 'message' => 'Verification email sent']);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => false, 'message' => $e->getMessage()]);
         }
     }
 

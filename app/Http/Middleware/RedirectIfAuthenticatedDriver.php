@@ -17,7 +17,7 @@ class RedirectIfAuthenticatedDriver
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::guard('driver')->check()){
-            return redirect('/');
+            return redirect('/driver/dashboard');
         }
         return $next($request);
     }

@@ -37,7 +37,7 @@
                         <a href="index.blade.php">Onboarding<i class="iconsax" data-icon="chevron-right"></i></a>
                     </li>
                     <li class="pages">
-                        <a href="login.blade.php">Login<i class="iconsax" data-icon="chevron-right"></i></a>
+                        <a href="login-backup-20-11-2025.blade.php">Login<i class="iconsax" data-icon="chevron-right"></i></a>
                     </li>
                     <li class="pages">
                         <a href="login-with-number.blade.php">Login With Number<i class="iconsax"
@@ -50,8 +50,8 @@
                         <a href="signup.blade.php">Sign Up <i class="iconsax" data-icon="chevron-right"></i></a>
                     </li>
                     <li class="pages">
-                        <a href="forgot-password.blade.php">Forgot Password <i class="iconsax"
-                                                                               data-icon="chevron-right"></i></a>
+                        <a href="forgot-password-backup-20-11-2025.blade.php">Forgot Password <i class="iconsax"
+                                                                                                 data-icon="chevron-right"></i></a>
                     </li>
                     <li class="pages">
                         <a href="varification.blade.php">Verification<i class="iconsax" data-icon="chevron-right"></i></a>
@@ -156,7 +156,7 @@
             <div class="element-menu">
                 <ul class="navigation">
                     <li class="pages">
-                        <a href="my-rides.blade.php">My Ride<i class="iconsax" data-icon="chevron-right"></i></a>
+                        <a href="my-rides-backup-19-11-2025.blade.php">My Ride<i class="iconsax" data-icon="chevron-right"></i></a>
                     </li>
                     <li class="pages">
                         <a href="pending-ride-details.blade.php">Pending Ride Details<i class="iconsax"

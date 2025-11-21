@@ -272,7 +272,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="{{url('user/setting')}}" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">No, Keep it</a>
-                    <a href="login.blade.php" class="btn theme-btn w-50 m-0">Yes, Delete</a>
+                    <a href="login-backup-20-11-2025.blade.php" class="btn theme-btn w-50 m-0">Yes, Delete</a>
                 </div>
             </div>
         </div>
