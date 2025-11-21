@@ -59,7 +59,7 @@ mainslider.on("slideChange", function () {
       .querySelector(".driver-onboarding-button")
       .addEventListener("click", function () {
         // Redirect to another page on the last slide's next button click
-        window.location.href = "login.blade.php"; // Replace 'nextPage.html' with your target page
+        window.location.href = "login-backup-20-11-2025.blade.php"; // Replace 'nextPage.html' with your target page
       });
   }
 });

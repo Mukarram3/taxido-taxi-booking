@@ -1,1597 +1,870 @@
-@php use Illuminate\Support\Facades\URL; @endphp
-@extends('user-app.layout')
-
-@section('title')
-    <title>Taxido - User App </title>
-@endsection
-
-@section('style')
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes envois - Je confie</title>
     <style>
-        .badge {
-            display: inline-block;
-            padding: 0.35em 0.65em;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 0.25rem;
-            text-transform: capitalize;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .btn-yellow {
-            background-color: #ffc107 !important; /* Bootstrap’s yellow shade */
-            color: #000;
-        }
-
-        .badge-warning {
-            background-color: #ffc107;
-            color: #212529;
-        }
-
-        .badge-info {
-            background-color: #17a2b8;
-            color: #fff;
-        }
-
-        .badge-success {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-        .badge-secondary {
-            background-color: #6c757d;
-            color: #fff;
-        }
-
-        .badge-light {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-
-        .my-ride-tab-btn {
-            width: 100% !important;
-            padding: 12px !important;
-            font-weight: 500 !important;
-            line-height: 1 !important;
-            font-size: 14px !important;
-            white-space: nowrap !important;
-            color: white !important;
-        }
-
-        .contact-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        .contact-wrapper span {
-            position: absolute;
-            bottom: -5px;
-            right: -5px;
-            background: #007bff;
-            color: #fff;
-            font-size: 10px;
-            padding: 1px 3px;
-            border-radius: 50%;
-        }
-
-    </style>
-
-    <style>
         body {
-            font-family: 'Noto Color Emoji', Arial, sans-serif;
-            background: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1a1a1a;
         }
 
-        .custom-card {
-            border: 3px solid gray;
-            border-radius: 6px;
-            padding: 5px 12px; /* small padding inside */
-            font-size: 15px;
-            line-height: 1.7; /* reduce line spacing */
-            white-space: normal; /* remove extra whitespace handling */
-            margin-bottom: 10px;
+        /* Variables */
+        :root {
+            --primary: #5046e5;
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --eco-green: #059669;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
         }
 
-        .custom-card div {
-            /*margin-bottom: 15px; !* tighter gap between rows *!*/
+        /* Language Management */
+        .lang-content {
+            display: none;
         }
 
-        .custom-section {
-            border-top: 2px dashed #2ecc71;
-            margin: 15px 0; /* less vertical spacing */
-            padding-top: 10px;
-            line-height: 1.7;
+        .lang-content.active {
+            display: inline-block;
         }
 
-        .custom-header {
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .page-header {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
-            font-weight: bold;
-            color: #2c3e50;
+            align-items: center;
+            margin-bottom: 24px;
         }
 
-        .custom-label {
-            font-weight: 500;
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
         }
 
-        .custom-footer {
-            border-top: 2px dashed #2ecc71;
-            padding-top: 10px;
+        .add-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--secondary), var(--eco-green));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
             display: flex;
-            /*justify-content: space-around;*/
+            gap: 12px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
         }
 
-        .cancel-btn {
-            background: none;
-            border: 2px dotted red;
-            color: red;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-weight: bold;
+        .filter-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .cancel-btn:hover {
-            background: red;
+        .filter-tab.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* Shipment Cards Grid */
+        .shipments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .shipment-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .shipment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .shipment-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .status-searching {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-transit {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-delivered {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .shipment-route {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .shipment-location {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 18px;
+        }
+
+        .shipment-arrow {
+            color: var(--gray);
+        }
+
+        .shipment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .shipment-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .shipment-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: var(--light);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .action-btn.primary {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 4px;
+            background: white;
+            padding: 4px;
+            border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--secondary);
             color: white;
         }
 
-        .custom-footer span i,
-        .custom-footer span .icon-green {
-            color: #2ecc71; /* Bootstrap green */
-            font-weight: bold;
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s;
         }
 
-        .dropdown-toggle::after {
-            display: none !important;
+        .back-btn:hover {
+            background: var(--light);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .shipments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .shipment-details {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+</head>
+<body>
 
-@endsection
+@php
+    $icons = [
+                                                'pedestrian' => '🚶',
+                                                'Car' => '🚗',
+                                                'Taxi / VTC' => '🚕',
+                                                'bus' => '🚌',
+                                                'coach' => '🚐',
+                                                'Van' => '🚐',
+                                                'bicycle' => '🚲',
+                                                'motorcycle' => '🛵',
+                                                'Truck' => '🚜',
+                                                '4×4' => '🚙',
+                                                'plane' => '✈️',
+                                                'Helicopter' => '🚁',
+                                                'Ferry/cruise ship' => '🚢',
+                                                'Cargo/cargo ship' => '⛴️',
+                                                'Speedboat' => '🚤',
+                                                'Kayak/canoe' => '🛶',
+                                                'train' => '🚆',
+                                                'TGV' => '🚄',
+                                                'Tram' => '🚈',
+                                                'Metro' => '🚇',
+                                            ];
+@endphp
 
-@section('content')
-    <!-- header starts -->
-    @include('user-app.partials.header')
-    <!-- header end -->
+    <!-- Language Switcher -->
+<div class="lang-switcher">
+    <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
+    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+</div>
 
-    @php
-        $icons = [
-                                                    'pedestrian' => '🚶',
-                                                    'car' => '🚗',
-                                                    'Taxi / VTC' => '🚕',
-                                                    'bus' => '🚌',
-                                                    'coach' => '🚐',
-                                                    'Van/minibus' => '🚐',
-                                                    'bicycle' => '🚲',
-                                                    'motorcycle' => '🛵',
-                                                    'Truck' => '🚜',
-                                                    '4×4' => '🚙',
-                                                    'plane' => '✈️',
-                                                    'Helicopter' => '🚁',
-                                                    'Ferry/cruise ship' => '🚢',
-                                                    'Cargo/cargo ship' => '⛴️',
-                                                    'Speedboat' => '🚤',
-                                                    'Kayak/canoe' => '🛶',
-                                                    'train' => '🚆',
-                                                    'TGV' => '🚄',
-                                                    'Tram' => '🚈',
-                                                    'Metro' => '🚇',
-                                                ];
-    @endphp
-        <!-- my ride section starts -->
-    <section class="section-b-space">
+<div class="container">
+    <!-- Back Button -->
+    <a href="{{ url('user/dashboard') }}" class="back-btn">
+        <span>←</span>
+        <span class="lang-content fr active">Retour au tableau de bord</span>
+        <span class="lang-content en">Back to dashboard</span>
+    </a>
 
-        <ul class="nav nav-pills my-ride-tab w-100 border-0 m-0" id="Tab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="btn btn-warning my-ride-tab-btn active" id="pill-active-tab" data-bs-toggle="pill"
-                        data-bs-target="#active-tab">In Progress
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="btn btn-primary my-ride-tab-btn" id="pill-pending-tab" data-bs-toggle="pill"
-                        data-bs-target="#pending-tab">Accepted
-                </button>
-            </li>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-top">
+            <h1 class="page-title">
+                <span class="lang-content fr active">Mes envois</span>
+                <span class="lang-content en">My shipments</span>
+            </h1>
+            <button class="add-btn">
+                <span class="lang-content fr active">+ Nouvel envoi</span>
+                <span class="lang-content en">+ New shipment</span>
+            </button>
+        </div>
 
-            <li class="nav-item" role="presentation">
-                <button class="nav-link " id="pill-pending-offer-tab" data-bs-toggle="pill"
-                        data-bs-target="#pending-offers-tab">On Hold
-                </button>
-            </li>
+        <!-- Stats Summary -->
+        <div class="stats-summary">
+            <div class="stat-box">
+                <div class="stat-value">{{ count($pending_offers) }}</div>
+                <div class="stat-label">
+                    <span class="lang-content fr active">En recherche</span>
+                    <span class="lang-content en">Searching</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ count($pending_rides) + count($active_rides) }}</div>
+                <div class="stat-label">
+                    <span class="lang-content fr active">En transit</span>
+                    <span class="lang-content en">In transit</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ count($completed_rides) }}</div>
+                <div class="stat-label">
+                    <span class="lang-content fr active">Livrés</span>
+                    <span class="lang-content en">Delivered</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">€785</div>
+                <div class="stat-label">
+                    <span class="lang-content fr active">Économies totales</span>
+                    <span class="lang-content en">Total savings</span>
+                </div>
+            </div>
+        </div>
 
-            <li class="nav-item" role="presentation">
-                <button class="btn btn-secondary my-ride-tab-btn" id="pill-expired-offers-tab" data-bs-toggle="pill"
-                        data-bs-target="#expired-offers-tab">Expired
-                </button>
-            </li>
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterShipments('all',event)">
+                <span class="lang-content fr active">Tous</span>
+                <span class="lang-content en">All</span>
+            </button>
+            <button class="filter-tab" onclick="filterShipments('in-progress', event)">
+                <span class="lang-content fr active">In Progress</span>
+                <span class="lang-content en">In Progress</span>
+                <span class="filter-count">{{ count($active_rides) }}</span>
+            </button>
+            <button class="filter-tab" onclick="filterShipments('accepted', event)">
+                <span class="lang-content fr active">Accepted</span>
+                <span class="lang-content en">Accepted</span>
+                <span class="filter-count">{{ count($pending_rides) }}</span>
+            </button>
+            <button class="filter-tab" onclick="filterShipments('on_hold', event)">
+                <span class="lang-content fr active">En recherche</span>
+                <span class="lang-content en">Searching</span>
+                <span class="filter-count">{{ count($pending_offers) }}</span>
+            </button>
+            <button class="filter-tab" onclick="filterShipments('expired', event)">
+                <span class="lang-content fr active">Expired</span>
+                <span class="lang-content en">Expired</span>
+                {{ count($expired_offers) }}
+            </button>
+            <button class="filter-tab" onclick="filterShipments('finished', event)">
+                <span class="lang-content fr active">Finished</span>
+                <span class="lang-content en">Finished</span>
+                <span class="filter-count">{{ count($completed_rides) }}</span>
+            </button>
+            <button class="filter-tab" onclick="filterShipments('cancelled', event)">
+                <span class="lang-content fr active">Cancelled</span>
+                <span class="lang-content en">Cancelled</span>
+                <span class="filter-count">{{ count($cancelled_rides) }}</span>
+            </button>
+        </div>
+    </div>
 
-            <li class="nav-item" role="presentation">
-                <button class="btn btn-success my-ride-tab-btn" id="pill-complete-tab" data-bs-toggle="pill"
-                        data-bs-target="#complete-tab">
-                    Finished
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="btn btn-danger my-ride-tab-btn" id="pill-cancel-tab" data-bs-toggle="pill"
-                        data-bs-target="#cancel-tab">Cancelled
-                </button>
-            </li>
-        </ul>
-        <div class="custom-container">
-            <div class="tab-content ride-content" id="TabContent">
-                <div class="tab-pane fade active show" id="active-tab">
+    <!-- Shipments Grid -->
+    <div class="shipments-grid">
 
-                    <ul class="my-ride-list">
-                        @foreach($active_rides as $active_ride)
-                            @php
-                                $message = $active_ride->message;
-                                $badgeClass = 'badge'; // base class
-                                $badgeText = '';
+        <!-- Shipment Card 2 - In Transit -->
+        @foreach($active_rides as $ride)
+            @php
+                $message = $ride->message;
+                $badgeClass = 'badge'; // base class
+                $badgeText = '';
 
-                                switch ($message) {
-                                    case 'On the way to pickup':
-                                        $badgeClass .= ' badge-success'; // yellow
-                                        $badgeText = 'On the way to pickup';
-                                        break;
-                                    case 'delivery in progress':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Package Being Delivered';
-                                        break;
-                                        case 'Parcel returned':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Parcel returned';
-                                        break;
-                                        case 'transport completed awaiting validation':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Transport Completed Awaiting Validation';
-                                        break;
-                                    case 'package delivered':
-                                        $badgeClass .= ' badge-success'; // green
-                                        $badgeText = 'Package Delivered';
-                                        break;
-                                    case 'finished':
-                                        $badgeClass .= ' badge-secondary'; // gray
-                                        $badgeText = 'Finished';
-                                        break;
-                                    default:
-                                        $badgeClass .= ' badge-light'; // fallback
-                                        $badgeText = ucfirst(str_replace('_', ' ', $message));
-                                        break;
-                                }
-                            @endphp
-                            <div class="custom-card">
-                                <!-- Header -->
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <span>👤 {{ $active_ride->driver->name }}</span>
-                                    <span>{{ $active_ride->fare_currency }} {{ $active_ride->fare }}</span>
-                                </div>
-
-                                <!-- Badge -->
-                                <div class="custom-section text-center">
-                                    <span class="{{ $badgeClass }}">{{ $badgeText }}</span>
-                                </div>
-
-                                <!-- Transport Title -->
-                                <div class="custom-section">
-                                    <div>
-                                        @php
-                                            $transportName = $active_ride->mean_of_transport->name ?? '';
-                                            $icon = $icons[$transportName] ?? '❓'; // default fallback
-                                        @endphp
-                                        {{ $icon }} <span class="custom-label">Transport:</span> {{ $active_ride->transport_title }}
-                                    </div>
-                                    <div>🔹 <span class="custom-label">Reference Number:</span> {{ $active_ride->reference_id }}</div>
-                                    <div>🔹 <span class="custom-label">Distance:</span> {{ $active_ride->distance }} km</div>
-                                    <div>⏰ <span
-                                            class="custom-label">Follow-up:</span> {{ $active_ride->date_and_time_of_followup }}
-                                    </div>
-                                </div>
-
-                                <!-- Route -->
-                                <div class="custom-section text-center">
-                                    {{ $icon }} {{ $active_ride->pickup_location }} ⟶
-                                    {{ implode(' ⟶ ', json_decode($active_ride->destination_location, true)) }}
-                                </div>
-
-                                <!-- Contact & Details -->
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url('driver/chatting') }}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       href="tel:{{ $active_ride->driver->phone }}">📞 Call Carrier</a>
-                                                </li>
-                                                <li><a class="dropdown-item"
-                                                       href="tel:{{ $active_ride->receiver_phone }}">📞 Call Receiver</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{ url('user/ride-details?ride_id='.$active_ride->id) }}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Actions -->
-                                <div class="custom-section">
-                                    <a href="{{ url('user/track-ride/'. $active_ride->id) }}"
-                                       class="btn theme-btn w-100 mt-2">📍 Track Carrier</a>
-
-                                    @if(($active_ride->status == 'active' || $active_ride->message == 'delivery in progress')
-                                        && !in_array($active_ride->message, ['On the way to pickup','Parcel returned','Delivery in progress, parcel return requested','transport completed awaiting validation','Package return in progress']))
-                                        <a href="{{ url('driver/return-parcel/'. $active_ride->id) }}"
-                                           class="btn btn-warning w-100 mt-2">📦 Request Return Package</a>
-                                    @elseif($active_ride->message == 'Parcel returned')
-                                        @php
-                                            $signedUrl = URL::temporarySignedRoute(
-                                                'user.package.returned',
-                                                now()->addMinutes(60),
-                                                ['ride' => $active_ride->id, 'token' => sha1($active_ride->receiver_email)]
-                                            );
-                                        @endphp
-                                        <a href="{{ $signedUrl }}" class="btn btn-warning w-100 mt-2">✅ Confirm Package
-                                            Return</a>
-                                    @elseif($active_ride->message === 'transport completed awaiting validation')
-                                        @php
-                                            $signedUrl = URL::temporarySignedRoute(
-                                                'user.ride.complete',
-                                                now()->addMinutes(60),
-                                                ['ride' => $active_ride->id, 'token' => sha1($active_ride->receiver_email)]
-                                            );
-                                        @endphp
-                                        <a href="{{ $signedUrl }}" class="btn btn-success w-100 mt-2">✅ Confirm Ride
-                                            Completion</a>
-                                    @else
-                                        <a href="#reasons" data-bs-toggle="offcanvas" data-id="{{ $active_ride->id }}"
-                                           class="btn btn-danger w-100 mt-2 cancel_rideBtn">❌ Cancel Transport</a>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-
-                        @foreach($active_reserved_kilo_rides as $active_reserverd_kilo_ride)
-                            @php
-                                $message = $active_reserverd_kilo_ride->message;
-                                $badgeClass = 'badge'; // base class
-                                $badgeText = '';
-
-                                switch ($message) {
-                                    case 'On the way to pickup':
-                                        $badgeClass .= ' badge-success'; // yellow
-                                        $badgeText = 'On the way to pickup';
-                                        break;
-                                    case 'delivery in progress':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Package Being Delivered';
-                                        break;
-                                        case 'Parcel returned':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Parcel returned';
-                                        break;
-                                        case 'transport completed awaiting validation':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Transport Completed Awaiting Validation';
-                                        break;
-                                    case 'package delivered':
-                                        $badgeClass .= ' badge-success'; // green
-                                        $badgeText = 'Package Delivered';
-                                        break;
-                                    case 'finished':
-                                        $badgeClass .= ' badge-secondary'; // gray
-                                        $badgeText = 'Finished';
-                                        break;
-                                    default:
-                                        $badgeClass .= ' badge-light'; // fallback
-                                        $badgeText = ucfirst(str_replace('_', ' ', $message));
-                                        break;
-                                }
-                            @endphp
-                            <div class="custom-card">
-                                <!-- Header -->
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <span>👤 {{ $active_reserverd_kilo_ride->driver->name }}</span>
-                                    <span>{{ $active_reserverd_kilo_ride->driverriderequest->price_currency }} {{ $active_reserverd_kilo_ride->totale_fare }}</span>
-                                </div>
-
-                                <!-- Badge -->
-                                <div class="custom-section text-center">
-                                    <span class="{{ $badgeClass }}">{{ $badgeText }}</span>
-                                </div>
-
-                                @if($active_reserverd_kilo_ride->driverriderequest->airline)
-                                    <div>✈️ <span
-                                            class="fw-bold">Travel Company:</span> {{ $active_reserverd_kilo_ride->driverriderequest->airline }}
-                                    </div>
-                                @endif
-                                @if($active_reserverd_kilo_ride->driverriderequest->maritimes)
-                                    <div>⛴️ <span
-                                            class="fw-bold">Travel Company:</span> {{ $active_reserverd_kilo_ride->driverriderequest->maritimes }}
-                                    </div>
-                                @endif
-                                <div> 🔹 <span
-                                        class="fw-bold">Reference Number:</span> {{ $active_reserverd_kilo_ride->reference_id }}
-                                </div>
-                                <div>⏰ <span
-                                        class="fw-bold">Follow-up:</span>{{ \Carbon\Carbon::parse($active_reserverd_kilo_ride->date_and_time_of_followup)->format('M d, Y') }}
-                                </div>
-                                <div> 🔹 <span
-                                        class="fw-bold">Distance:</span> {{ $active_reserverd_kilo_ride->driverriderequest->distance }}
-                                    km
-                                </div>
-
-                                <!-- Extra Info -->
-                                <div>⚖️ <span
-                                        class="fw-bold">Reserved Kilos:</span> {{ $active_reserverd_kilo_ride->reserved_kilo }}
-                                </div>
-                                <div>🛫 <span
-                                        class="fw-bold">Departure:</span> {{ $active_reserverd_kilo_ride->driverriderequest->departure_datetime }}
-                                </div>
-                                <div>🛬 <span
-                                        class="fw-bold">Arrival:</span> {{ $active_reserverd_kilo_ride->driverriderequest->arrival_datetime }}
-                                </div>
-                                <div>📅 <span
-                                        class="fw-bold">Expiry:</span> {{ $active_reserverd_kilo_ride->driverriderequest->end_reservation_date }}
-                                </div>
-                                <div>📦 <span
-                                        class="fw-bold">Reception Method:</span> {{ $active_reserverd_kilo_ride->driverriderequest->package_receiving_method }}
-                                </div>
-
-                                <!-- Route -->
-                                <div class="custom-section text-center">
-                                    @if(!empty($active_reserverd_kilo_ride->driverriderequest->airline))
-                                        ✈️
-                                    @endif
-
-                                    @if(!empty($active_reserverd_kilo_ride->driverriderequest->maritimes))
-                                        🚢
-                                    @endif
-                                    {{ $active_reserverd_kilo_ride->driverriderequest->pickup_location }}
-                                    ⟶ {{ implode(' ⟶ ', $active_reserverd_kilo_ride->driverriderequest->destination_location) }}
-                                </div>
-
-                                <!-- Contact & Details -->
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url('driver/chatting') }}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       href="tel:{{ $active_reserverd_kilo_ride->driver->phone }}">📞
-                                                        Call Carrier</a></li>
-                                                <li><a class="dropdown-item"
-                                                       href="tel:{{ $active_reserverd_kilo_ride->receiver_phone }}">📞
-                                                        Call Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{ url('user/ride-details?ride_id='.$active_reserverd_kilo_ride->id) }}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Actions -->
-                                <div class="custom-section">
-                                    @if(trim($active_reserverd_kilo_ride->message) === 'transport completed awaiting validation')
-                                        <a href="{{ route('user.reserved_kilo_ride.complete',['ride' => $active_reserverd_kilo_ride->id]) }}"
-                                           class="btn btn-success w-100 mt-2">
-                                            ✅ Confirm Ride Completion
-                                        </a>
-                                    @elseif($active_reserverd_kilo_ride->message == 'Parcel returned')
-                                        <a href="{{ route('user.reserved_kilo.package.returned',['ride' => $active_reserverd_kilo_ride->id]) }}" class="btn btn-warning w-100 mt-2">✅ Confirm Package
-                                            Return</a>
-                                    @else
-                                    @endif
-                                        @if(in_array($active_reserverd_kilo_ride->message,['delivery in progress','Delivery in progress, parcel return requested','Package return in progress']))
-                                            <a href="{{ url('user/track-reserved-kilo-ride/'. $active_reserverd_kilo_ride->id) }}"
-                                               class="btn theme-btn w-100 mt-2">📍 Track Carrier</a>
-                                            @if(!in_array($active_reserverd_kilo_ride->message,['Delivery in progress, parcel return requested','Package return in progress']))
-                                                    <a href="#reserved_kilo_reasons_after_pickup" data-bs-toggle="offcanvas" data-id="{{ $active_reserverd_kilo_ride->id }}"
-                                                       class="btn btn-warning w-100 mt-2 cancel_rideBtn">📦 Request Return Package</a>
-                                            @endif
-                                        @endif
-                                </div>
-                            </div>
-                        @endforeach
-
-                    </ul>
+                switch ($message) {
+                    case 'On the way to pickup':
+                        $badgeClass .= ' badge-success'; // yellow
+                        $badgeText = 'On the way to pickup';
+                        break;
+                    case 'delivery in progress':
+                        $badgeClass .= ' badge-success'; // blue
+                        $badgeText = 'Package Being Delivered';
+                        break;
+                        case 'Parcel returned':
+                        $badgeClass .= ' badge-success'; // blue
+                        $badgeText = 'Parcel returned';
+                        break;
+                        case 'transport completed awaiting validation':
+                        $badgeClass .= ' badge-success'; // blue
+                        $badgeText = 'Transport Completed Awaiting Validation';
+                        break;
+                    case 'package delivered':
+                        $badgeClass .= ' badge-success'; // green
+                        $badgeText = 'Package Delivered';
+                        break;
+                    case 'finished':
+                        $badgeClass .= ' badge-secondary'; // gray
+                        $badgeText = 'Finished';
+                        break;
+                    default:
+                        $badgeClass .= ' badge-light'; // fallback
+                        $badgeText = ucfirst(str_replace('_', ' ', $message));
+                        break;
+                }
+                $transportName = ucfirst(strtolower($ride->userriderequest->vehicle_type_needed ?? ''));
+                $icon = $icons[$transportName] ?? '❓'; // default fallback
+            @endphp
+            <div class="shipment-card" data-status="in-progress">
+                <span class="shipment-status status-transit">
+                    <span class="lang-content fr active">🚚 En transit</span>
+                    <span class="lang-content en">{{ $icon }} {{ $badgeText }}</span>
+                </span>
+                <div class="shipment-route">
+                    <span class="shipment-location">{{ $ride->pickup_city }}</span>
+                    <span class="shipment-arrow">→</span>
+                    <span class="shipment-location">{{ $ride->destination_city }}</span>
+                </div>
+                @php
+                    $packages = json_decode($ride->userriderequest->packages_json, true);
+                    $totalWeight = collect($packages)->sum('weight');
+                @endphp
+                <div class="shipment-details">
+                    <div class="shipment-detail">📦 Documents</div>
+                    <div class="shipment-detail">⚖️ {{ $totalWeight }}kg</div>
+                    <div class="shipment-detail">
+                        📅 {{ \Carbon\Carbon::parse($ride->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
+                    <div class="shipment-detail">💰 €{{ $ride->fare }}</div>
+                    <div class="shipment-detail">👤 {{ $ride->driver->firstName . ' ' . $ride->driver->lastName }}.
+                    </div>
+                    <div class="shipment-detail">📍 Calais (50%)</div>
                 </div>
 
-                <div class="tab-pane fade" id="pending-tab">
-                    <ul class="my-ride-list">
+                <div class="shipment-actions">
+                    <a href="{{ url('user/track-ride/'. $ride->id) }}" class="action-btn"
+                       style="color: black">
+                        <span class="lang-content fr active">Track your Carrier</span>
+                        <span class="lang-content en">Track your Carrier</span>
+                    </a>
+                </div>
+                @if( ($ride->status == 'active' || $ride->message == 'delivery in progress') && $ride->message != 'On the way to pickup' && $ride->message != 'Parcel returned' && $ride->message !='Delivery in progress, parcel return requested' && $ride->message != 'transport completed awaiting validation' && $ride->message != 'Package return in progress')
+                    <div class="shipment-actions">
+                        <a href="{{ url('driver/return-parcel/'. $ride->id) }}" class="action-btn"
+                           style="color: black">
+                            <span class="lang-content fr active">Request the Return Package</span>
+                            <span class="lang-content en">Request the Return Package</span>
+                        </a>
+                    </div>
+                @else
+
+                    @if($ride->message == 'Parcel returned')
                         @php
-                            $badgeClass = 'badge badge-info';
-                            $badgeText = 'Package Awaiting Collection';
+                            $signedUrl = URL::temporarySignedRoute(
+                                'user.package.returned', // This should match your named route
+                                now()->addMinutes(60),
+                                [
+                                    'ride' => $ride->id,
+                                    'token' => sha1($ride->receiver_email),
+                                ]
+                            );
                         @endphp
+                        <div class="shipment-actions">
+                            <a href="{{ $signedUrl }}" class="action-btn"
+                               style="color: black">
+                                <span class="lang-content fr active">Confirm Package Return</span>
+                                <span class="lang-content en">Confirm Package Return</span>
+                            </a>
+                        </div>
+                    @elseif($ride->message != 'Delivery in progress, parcel return requested' && $ride->message != 'transport completed awaiting validation' && $ride->message != 'Package return in progress')
+                        <div class="shipment-actions">
+                            <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
+                                @csrf
+                                <input type="hidden" name="id" class="offer_id" value="{{ $ride->id }}">
+                                <input type="hidden" name="is_user_cancelled" value="false">
+                                <button type="submit" class="action-btn" style="color: black">
+                                    <span class="lang-content fr active">Cancel the Transport</span>
+                                    <span class="lang-content en">Cancel the Transport</span>
+                                </button>
+                            </form>
+                        </div>
+                    @elseif(trim($ride->message) === 'transport completed awaiting validation')
+                        @php
+                            $signedUrl = URL::temporarySignedRoute(
+                              'user.ride.complete', // This should match your named route
+                              now()->addMinutes(60),
+                              [
+                                  'ride' => $ride->id,
+                                  'token' => sha1($ride->receiver_email),
+                              ]
+                          );
+                        @endphp
+                        <div class="shipment-actions">
+                            <a href="{{ $signedUrl }}" class="action-btn"
+                               style="color: black">
+                                <span class="lang-content fr active">Confirm Ride Completion</span>
+                                <span class="lang-content en">Confirm Ride Completion</span>
+                            </a>
+                        </div>
+                    @endif
+                @endif
 
-                        {{-- 🚚 Pending Rides --}}
-                        @foreach($pending_rides as $ride)
-                            <div class="custom-card">
-                                <!-- Header -->
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <span>👤 {{ $ride->driver->name }}</span>
-                                    <span>{{ $ride->fare_currency }} {{ $ride->fare }}</span>
-                                </div>
-
-                                <!-- Posted On -->
-                                <div>
-                                    <span
-                                        class="custom-label">📅 Posted on:</span> {{ \Carbon\Carbon::parse($ride->created_at)->format('M d, Y') }}
-                                </div>
-
-                                <!-- Badge -->
-                                <div class="custom-section text-center">
-                                    <span class="{{ $badgeClass }}">{{ $badgeText }}</span>
-                                </div>
-
-                                <!-- Ride Details -->
-                                <div class="custom-section">
-                                    <div>
-                                        @php
-                                            $transportName = $ride->mean_of_transport->name ?? '';
-                                            $icon = $icons[$transportName] ?? '❓'; // default fallback
-                                        @endphp
-                                        {{ $icon }} <span class="custom-label">Transport:</span> {{ $ride->transport_title }}
-                                    </div>
-                                    <div>🔹 <span class="custom-label">Reference Number:</span> {{ $ride->reference_id }}</div>
-                                    <div>🔹 <span class="custom-label">Distance:</span> {{ $ride->distance }} km</div>
-                                    <div>⏰ <span
-                                            class="custom-label">Follow-up:</span> {{ $ride->date_and_time_of_followup }}
-                                    </div>
-                                </div>
-
-                                <!-- Route -->
-                                <div class="custom-section text-center">
-                                    {{ $icon }} {{ $ride->pickup_location }} ⟶
-                                    @php
-                                        $locations = json_decode($ride->destination_location, true);
-                                    @endphp
-                                    {{ implode(' ⟶ ', $locations) }}
-                                </div>
-
-                                <!-- Contact + Details -->
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url('driver/chatting') }}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->driver->phone }}">📞
-                                                        Call Carrier</a></li>
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->receiver_phone }}">📞
-                                                        Call Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{ url('user/ride-details?ride_id='.$ride->id) }}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Cancel Button -->
-                                <a href="#reasons" data-bs-toggle="offcanvas" data-id="{{ $ride->id }}"
-                                   class="btn btn-danger w-100 mt-3 cancel_rideBtn">
-                                    ❌ Cancel the Transport
-                                </a>
-                            </div>
-                        @endforeach
-
-
-                        {{-- 📦 Reserved Kilo Rides --}}
-                        @foreach($pending_reserverd_kilo_rides as $kilo)
-                            @php
-                                $message = $kilo->message;
-                                $badgeClass = 'badge'; // base class
-                                $badgeText = '';
-
-                                switch ($message) {
-                                    case 'On the way to pickup':
-                                        $badgeClass .= ' badge-success'; // yellow
-                                        $badgeText = 'On the way to pickup';
-                                        break;
-                                    case 'delivery in progress':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Package Being Delivered';
-                                        break;
-                                        case 'Parcel returned':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Parcel returned';
-                                        break;
-                                        case 'transport completed awaiting validation':
-                                        $badgeClass .= ' badge-success'; // blue
-                                        $badgeText = 'Transport Completed Awaiting Validation';
-                                        break;
-                                    case 'package delivered':
-                                        $badgeClass .= ' badge-success'; // green
-                                        $badgeText = 'Package Delivered';
-                                        break;
-                                    case 'finished':
-                                        $badgeClass .= ' badge-secondary'; // gray
-                                        $badgeText = 'Finished';
-                                        break;
-                                    default:
-                                        $badgeClass .= ' badge-light'; // fallback
-                                        $badgeText = ucfirst(str_replace('_', ' ', $message));
-                                        break;
-                                }
-                            @endphp
-                            <div class="custom-card">
-                                <!-- Header -->
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <span>👤 {{ $kilo->driver->name }}</span>
-                                    <span>{{ $kilo->driverriderequest->price_currency }} {{ $kilo->totale_fare }}</span>
-                                </div>
-
-                                <!-- Badge -->
-                                <div class="custom-section text-center">
-                                    <span class="{{ $badgeClass }}">{{ $badgeText }}</span>
-                                </div>
-
-                                <!-- Travel Company (Airline) -->
-                                @if($kilo->driverriderequest->airline)
-                                    <div>✈️ <span class="fw-bold">Travel Company:</span>
-                                        {{ $kilo->driverriderequest->airline }}</div>
-                                @endif
-
-                                <!-- Travel Company (Maritimes) -->
-                                @if($kilo->driverriderequest->maritimes)
-                                    <div>⛴️ <span class="fw-bold">Travel Company:</span>
-                                        {{ $kilo->driverriderequest->maritimes }}
-                                    </div>
-                                @endif
-                                <div>🔹 <span class="fw-bold">Reference Number:</span> {{ $kilo->reference_id }}
-                                <div>🔹 <span class="fw-bold">Distance:</span> {{ $kilo->driverriderequest->distance }}km
-                                <div>⏰ <span
-                                        class="fw-bold">Follow-up:</span> {{ \Carbon\Carbon::parse($kilo->date_and_time_of_followup)->format('M d, Y H:i') }}
-                                </div>
-                                </div>
-                                <div>⚖️ <span class="fw-bold">Reserved Kilos:</span> {{ $kilo->reserved_kilo }}</div>
-                                <div>🛫 <span
-                                        class="fw-bold">Departure:</span> {{ $kilo->driverriderequest->departure_datetime }}
-                                </div>
-                                <div>🛬 <span
-                                        class="fw-bold">Arrival:</span> {{ $kilo->driverriderequest->arrival_datetime }}
-                                </div>
-                                <div>📅 <span
-                                        class="fw-bold">Expiry:</span> {{ $kilo->driverriderequest->end_reservation_date }}
-                                </div>
-                                <div>📦 <span
-                                        class="fw-bold">Reception Method:</span> {{ $kilo->driverriderequest->package_receiving_method }}
-                                </div>
-
-                                <div class="custom-section text-center">
-                                    @if(!empty($kilo->driverriderequest->airline))
-                                        ✈️
-                                    @endif
-
-                                    @if(!empty($kilo->driverriderequest->maritimes))
-                                        🚢
-                                    @endif
-                                    {{ $kilo->driverriderequest->pickup_location }}
-                                    ⟶ {{ implode(' ⟶ ', $kilo->driverriderequest->destination_location) }}
-                                </div>
-
-                                <!-- Contact + Details -->
-                                <div class="custom-footer d-flex align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url('driver/chatting') }}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="tel:{{ $kilo->driver->phone }}">📞
-                                                        Call Carrier</a></li>
-                                                <li><a class="dropdown-item" href="tel:{{ $kilo->receiver_phone }}">📞
-                                                        Call Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{ url('user/ride-details?ride_id='.$kilo->id) }}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Actions -->
-                                @if($kilo->message == 'Package Awaiting Collection')
-                                    <a href="{{ url('user/start-package-delivery-collection-address/'.$kilo->id) }}"
-                                       class="btn btn-warning w-100 mt-3">📦 Start Package delivery to Collection Address</a>
-                                @endif
-                                @if($kilo->message == 'delivery in progress to collection address')
-                                    <a href="{{ url('user/request-package-collected/'.$kilo->id) }}"
-                                       class="btn btn-warning w-100 mt-3">📦 Request Package Collected</a>
-                                @endif
-                                <a href="#reserved_kilo_reasons_before_pickup" data-bs-toggle="offcanvas" data-id="{{ $kilo->id }}" class="btn btn-danger w-100 mt-3 cancel_rideBtn">❌ Cancel the Transport</a>
-                            </div>
-                        @endforeach
-
-                    </ul>
-                </div>
-
-                <div class="tab-pane fade" id="pending-offers-tab">
-                    <ul class="my-ride-list">
-                        @foreach($pending_offers as $offer)
-                            <div class="custom-card">
-                                <!-- Header -->
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <span>👤 {{ $offer->user->name }}</span>
-                                    <span>{{ $offer->fare_currency }} {{ $offer->fare }}</span>
-                                </div>
-
-                                <!-- Posted On -->
-                                <div>
-                                    <span
-                                        class="custom-label">📅 Posted on:</span> {{ \Carbon\Carbon::parse($offer->created_at)->format('M d, Y') }}
-                                </div>
-
-                                <div class="custom-section text-center">
-                                    <span class="badge badge-info">{{ $offer->status }}</span>
-                                </div>
-
-                                <!-- Ride Details -->
-                                <div class="custom-section">
-                                    <div>🚚 <span class="custom-label">Transport:</span> {{ $offer->transport_title }}</div>
-                                    <div>🔹 <span class="custom-label">Reference Number:</span> {{ $offer->reference_id }}</div>
-                                    <div>🔹 <span class="custom-label">Distance:</span> {{ $offer->distance }} km</div>
-                                    <div>📅 <span
-                                            class="custom-label">Expiry:</span> {{ \Carbon\Carbon::parse($offer->expiry)->format('M d, Y') }}
-                                    </div>
-                                </div>
-
-                                <!-- Route -->
-                                <div class="custom-section text-center">
-                                    @if(!empty($offer->airline))
-                                        ✈️
-                                    @endif
-
-                                    @if(!empty($offer->maritimes))
-                                        🚢
-                                    @endif
-                                    {{ $offer->pickup_location }} ⟶
-                                    @php
-                                        $locations = json_decode($offer->destination_location, true);
-                                    @endphp
-                                    {{ implode(' ⟶ ', $locations) }}
-                                </div>
-
-                                <!-- Footer -->
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View Carriers Requests" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="text-center my-3">
-                                    <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}"
-                                       class="btn btn-success w-100 mb-2">✅ View Carriers Requests</a>
-                                    <a href="#offers" data-bs-toggle="offcanvas" data-id="{{ $offer->id }}"
-                                       class="btn btn-danger w-100 cancel_offerBtn">🔴 Cancel the Offer</a>
-                                </div>
-                            </div>
-                        @endforeach
-
-                    </ul>
-                </div>
-
-                <div class="tab-pane fade" id="expired-offers-tab">
-                    <ul class="my-ride-list">
-                        @foreach($expired_offers as $offer)
-                            <div class="custom-card">
-                                <!-- Header -->
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <span>👤 {{ $offer->user->name }}</span>
-                                    <span>{{ $offer->fare_currency }} {{ $offer->fare }}</span>
-                                </div>
-
-                                <!-- Posted On -->
-                                <div>
-                                    <span
-                                        class="custom-label">📅 Posted on:</span> {{ \Carbon\Carbon::parse($offer->created_at)->format('M d, Y') }}
-                                </div>
-
-                                <div class="custom-section text-center">
-                                    <span class="badge badge-info">{{ $offer->status }}</span>
-                                </div>
-
-                                <!-- Ride Details -->
-                                <div class="custom-section">
-                                    <div>🚚 <span class="custom-label">Transport:</span> {{ $offer->transport_title }}</div>
-                                    <div>🔹 <span class="custom-label">Reference Number:</span> {{ $offer->reference_id }}</div>
-                                    <div>🔹 <span class="custom-label">Distance:</span> {{ $offer->distance }} km</div>
-                                    <div>📅 <span
-                                            class="custom-label">Expiry:</span> {{ \Carbon\Carbon::parse($offer->expiry)->format('M d, Y') }}
-                                    </div>
-                                </div>
-
-                                <!-- Route -->
-                                <div class="custom-section text-center">
-                                    @if(!empty($offer->airline))
-                                        ✈️
-                                    @endif
-
-                                    @if(!empty($offer->maritimes))
-                                        🚢
-                                    @endif
-                                    {{ $offer->pickup_location }} ⟶
-                                    @php
-                                        $locations = json_decode($offer->destination_location, true);
-                                    @endphp
-                                    {{ implode(' ⟶ ', $locations) }}
-                                </div>
-
-                                <!-- Footer -->
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View Carriers Requests" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="text-center my-3">
-                                    <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}"
-                                       class="btn btn-success w-100 mb-2">Details</a>
-                                </div>
-                            </div>
-                        @endforeach
-
-                    </ul>
-                </div>
-
-                <div class="tab-pane fade" id="complete-tab">
-                    <ul class="my-ride-list">
-                        @foreach($completed_rides as $ride)
-                            <div class="custom-card">
-                                {{-- Header: User + Fare --}}
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>👤 {{ $ride->driver->name ?? 'Unknown User' }}</span>
-                                    </div>
-                                    <span>{{ $ride->fare_currency }} {{ $ride->fare }}</span>
-                                </div>
-
-                                {{-- Posted On --}}
-                                <div>
-                                    <span class="custom-label">📅 Posted on:</span>
-                                    {{ $ride->created_at->format('M d, Y') }}
-                                </div>
-
-                                {{-- Ride Details --}}
-                                <div class="custom-section">
-                                    @php
-                                        $transportName = $ride->mean_of_transport->name ?? '';
-                                        $icon = $icons[$transportName] ?? '❓'; // default fallback
-                                    @endphp
-                                    <div>{{ $icon }} <span class="custom-label">Title:</span> {{ $ride->transport_title }}</div>
-                                    <div>📏 <span class="custom-label">Reference Number:</span> {{ $ride->reference_id }}</div>
-                                    <div>📏 <span class="custom-label">Distance:</span> {{ $ride->distance }} km</div>
-                                    <div><span class="custom-label">Follow-up:</span> {{ \Illuminate\Support\Carbon::parse($ride->date_and_time_of_followup)->format('M d, Y') }}</div>
-                                </div>
-
-                                {{-- Route --}}
-                                <div class="custom-section text-center">
-                                    {{ $icon }} {{ $ride->pickup_location }}
-                                    @php
-                                        $locations = json_decode($ride->destination_location, true);
-                                    @endphp
-                                    @if(!empty($locations))
-                                        ⟶ {{ implode(', ', $locations) }}
-                                    @endif
-                                </div>
-
-                                {{-- Footer / Actions --}}
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{url('driver/chatting')}}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->driver->phone }}">📞
-                                                        Call Sender</a></li>
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->receiver_phone }}">📞
-                                                        Call Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{url('user/ride-details?ride_id='.$ride->id)}}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        @foreach($reserved_kilo_completed_rides as $ride)
-                            <div class="custom-card">
-                                {{-- Header: User + Price --}}
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>👤 {{ $ride->driver->name }}</span>
-                                    </div>
-                                    <span>{{ $ride->driverriderequest->price_currency }}{{ $ride->price_per_kilo }}/Kilo</span>
-                                </div>
-
-                                {{-- Posted On / Follow-up Date --}}
-                                <div>
-                                    <span class="custom-label">📅 Posted on:</span>
-                                    {{ \Carbon\Carbon::parse($ride->created_at)->format('M d, Y') }}
-                                </div>
-
-                                {{-- Ride Type / Badge --}}
-                                @if(!empty($ride->driverriderequest->airline))
-                                    <div class="custom-section">
-                                        ✈️ I Travel - I Offer My Kilos Of Luggage For Sale
-                                    </div>
-                                @endif
-
-                                @if(!empty($ride->driverriderequest->maritimes))
-                                    <div class="custom-section">
-                                        🚢 Reserve Your Parcel Shipments
-                                    </div>
-                                @endif
-
-                                {{-- Ride Details --}}
-                                <div class="custom-section">
-                                    @if($ride->driverriderequest->airline)
-                                        <div>🔹 <span
-                                                class="custom-label">Travel Company:</span> {{ $ride->driverriderequest->airline }}
-                                        </div>
-                                    @endif
-                                    @if($ride->driverriderequest->maritimes)
-                                        <div>🔹 <span
-                                                class="custom-label">Travel Company:</span> {{ $ride->driverriderequest->maritimes }}
-                                        </div>
-                                    @endif
-                                        <div>
-                                            <span class="custom-label">🔹  Reference Number:</span>
-                                            {{ $ride->driverriderequest->reference_id }}
-                                        </div>
-                                        <div>
-                                            <span class="custom-label">📏  Distance:</span>
-                                            {{ $ride->driverriderequest->distance }} Km
-                                        </div>
-                                    <div>
-                                        <span class="custom-label">📅  Follow-up:</span>
-                                        {{ \Carbon\Carbon::parse($ride->date_and_time_of_followup)->format('M d, Y') }}
-                                    </div>
-                                    <div>🔹 <span class="custom-label">Reserved Kilos:</span>
-                                        {{ $ride->driverriderequest->total_transport_capacity - $ride->driverriderequest->available_transport_capacity }}
-                                    </div>
-                                    <div>📅 <span
-                                            class="custom-label">Departure:</span> {{ $ride->driverriderequest->departure_datetime->format('M d, Y H:i') }}
-                                    </div>
-                                    <div>📅 <span
-                                            class="custom-label">Arrival:</span> {{ $ride->driverriderequest->arrival_datetime?->format('M d, Y H:i') }}
-                                    </div>
-                                    <div>📅 <span
-                                            class="custom-label">Expiry:</span> {{ $ride->driverriderequest->end_reservation_date?->format('M d, Y H:i') }}
-                                    </div>
-                                    <div>🛡️ <span
-                                            class="custom-label">Reception Method:</span> {{ $ride->driverriderequest->package_receiving_method }}
-                                    </div>
-                                </div>
-
-                                {{-- Route --}}
-                                <div class="custom-section text-center">
-                                    @if(!empty($ride->driverriderequest->airline))
-                                        ✈️
-                                    @endif
-
-                                    @if(!empty($ride->driverriderequest->maritimes))
-                                        🚢
-                                    @endif
-                                    {{ $ride->driverriderequest->pickup_location }}
-                                    @if(!empty($ride->driverriderequest->destination_location))
-                                        ⟶ {{ implode(', ', $ride->driverriderequest->destination_location) }}
-                                    @endif
-                                </div>
-
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{url('driver/chatting')}}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->driver->phone }}">📞
-                                                        Call Sender</a></li>
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->receiver_phone }}">📞
-                                                        Call Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{url('user/reserved-kilo-ride-details?ride_id='.$ride->id)}}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                            </div>
-                        @endforeach
-
-                    </ul>
-                </div>
-
-                <div class="tab-pane fade" id="cancel-tab">
-                    <ul class="my-ride-list">
-
-                        @foreach($cancelled_rides as $cancelled_ride)
-                            <div class="custom-card">
-                                {{-- Header: User + Fare --}}
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>👤 {{ $cancelled_ride->driver->name ?? 'Unknown User' }}</span>
-                                    </div>
-                                    <span>{{ $cancelled_ride->fare_currency }} {{ $cancelled_ride->fare }}</span>
-                                </div>
-
-                                {{-- Posted On --}}
-                                <div>
-                                    <span class="custom-label">📅 Posted on:</span>
-                                    {{ $cancelled_ride->created_at->format('M d, Y') }}
-                                </div>
-
-                                {{-- Ride Details --}}
-                                <div class="custom-section">
-                                    @php
-                                        $transportName = $cancelled_ride->mean_of_transport->name ?? '';
-                                        $icon = $icons[$transportName] ?? '❓'; // default fallback
-                                    @endphp
-                                    <div>{{ $icon }} <span
-                                            class="custom-label">Title:</span> {{ $cancelled_ride->transport_title }}
-                                    </div>
-                                    <div>📏 <span class="custom-label">Reference Number:</span> {{ $cancelled_ride->reference_id }}
-                                    </div>
-                                    <div>📏 <span class="custom-label">Distance:</span> {{ $cancelled_ride->distance }}km
-                                    </div>
-                                    <div>
-                                        <span class="custom-label">Follow-up:</span> {{ \Illuminate\Support\Carbon::parse($cancelled_ride->date_and_time_of_followup)->format('M d, Y') }}
-                                    </div>
-                                </div>
-
-                                {{-- Route --}}
-                                <div class="custom-section text-center">
-                                    {{ $icon }} {{ $cancelled_ride->pickup_location }}
-                                    @php
-                                        $locations = json_decode($cancelled_ride->destination_location, true);
-                                    @endphp
-                                    @if(!empty($locations))
-                                        ⟶ {{ implode(', ', $locations) }}
-                                    @endif
-                                </div>
-
-                                {{-- Footer / Actions --}}
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{url('driver/chatting')}}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       href="tel:{{ $cancelled_ride->driver->phone }}">📞 Call Sender</a>
-                                                </li>
-                                                <li><a class="dropdown-item"
-                                                       href="tel:{{ $cancelled_ride->receiver_phone }}">📞 Call
-                                                        Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{url('user/ride-details?ride_id='.$cancelled_ride->id)}}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        @foreach($reserved_kilo_cancelled_rides as $ride)
-                            <div class="custom-card">
-                                {{-- Header: User + Price --}}
-                                <div class="custom-header d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>👤 {{ $ride->driver->name }}</span>
-                                    </div>
-                                    <span>{{ $ride->driverriderequest->price_currency }}{{ $ride->price_per_kilo }}/Kilo</span>
-                                </div>
-
-                                {{-- Posted On / Follow-up Date --}}
-                                <div>
-                                    <span class="custom-label">📅 Posted on:</span>
-                                    {{ \Carbon\Carbon::parse($ride->created_at)->format('M d, Y') }}
-                                </div>
-
-                                {{-- Ride Type / Badge --}}
-                                @if(!empty($ride->driverriderequest->airline))
-                                    <div class="custom-section">
-                                        ✈️ I Travel - I Offer My Kilos Of Luggage For Sale
-                                    </div>
-                                @endif
-
-                                @if(!empty($ride->driverriderequest->maritimes))
-                                    <div class="custom-section">
-                                        🚢 Reserve Your Parcel Shipments
-                                    </div>
-                                @endif
-
-                                {{-- Ride Details --}}
-                                <div class="custom-section">
-                                    @if($ride->driverriderequest->airline)
-                                        <div>🔹 <span
-                                                class="custom-label">Travel Company:</span> {{ $ride->driverriderequest->airline }}
-                                        </div>
-                                    @endif
-                                    @if($ride->driverriderequest->maritimes)
-                                        <div>🔹 <span
-                                                class="custom-label">Travel Company:</span> {{ $ride->driverriderequest->maritimes }}
-                                        </div>
-                                    @endif
-                                        <div>
-                                            <span class="custom-label">📏  Reference Number:</span>
-                                            {{ $ride->reference_id }}
-                                        </div>
-                                        <div>
-                                            <span class="custom-label">📏  Distance:</span>
-                                            {{ $ride->driverriderequest->distance }} Km
-                                        </div>
-                                    <div>
-                                        <span class="custom-label">📅  Follow-up:</span>
-                                        {{ \Carbon\Carbon::parse($ride->date_and_time_of_followup)->format('M d, Y') }}
-                                    </div>
-                                    <div>🔹 <span class="custom-label">Reserved Kilos:</span>
-                                        {{ $ride->driverriderequest->total_transport_capacity - $ride->driverriderequest->available_transport_capacity }}
-                                    </div>
-                                    <div>📅 <span
-                                            class="custom-label">Departure:</span> {{ $ride->driverriderequest->departure_datetime->format('M d, Y H:i') }}
-                                    </div>
-                                    <div>📅 <span
-                                            class="custom-label">Arrival:</span> {{ $ride->driverriderequest->arrival_datetime?->format('M d, Y H:i') }}
-                                    </div>
-                                    <div>📅 <span
-                                            class="custom-label">Expiry:</span> {{ $ride->driverriderequest->end_reservation_date?->format('M d, Y H:i') }}
-                                    </div>
-                                    <div>🛡️ <span
-                                            class="custom-label">Reception Method:</span> {{ $ride->driverriderequest->package_receiving_method }}
-                                    </div>
-                                </div>
-
-                                {{-- Route --}}
-                                <div class="custom-section text-center">
-                                    @if(!empty($ride->driverriderequest->airline))
-                                        ✈️
-                                    @endif
-
-                                    @if(!empty($ride->driverriderequest->maritimes))
-                                        🚢
-                                    @endif
-                                    {{ $ride->driverriderequest->pickup_location }}
-                                    @if(!empty($ride->driverriderequest->destination_location))
-                                        ⟶ {{ implode(', ', $ride->driverriderequest->destination_location) }}
-                                    @endif
-                                </div>
-
-                                <div class="custom-footer d-flex justify-content-between align-items-center">
-                                    <div class="d-flex gap-2">
-                                        <a href="{{url('driver/chatting')}}" class="text-decoration-none">
-                                            <img class="img-fluid communication-icon"
-                                                 src="{{asset('assets/images/svg/messages-fill.svg')}}" alt="messages">
-                                        </a>
-
-                                        <div class="dropdown">
-                                            <a class="btn btn-light p-0" href="#" role="button"
-                                               data-bs-toggle="dropdown" aria-expanded="false">
-                                                <img class="img-fluid communication-icon"
-                                                     src="{{asset('assets/images/svg/call-fill.svg')}}" alt="contact">
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->driver->phone }}">📞
-                                                        Call Sender</a></li>
-                                                <li><a class="dropdown-item" href="tel:{{ $ride->receiver_phone }}">📞
-                                                        Call Receiver</a></li>
-                                            </ul>
-                                        </div>
-
-                                        <a href="{{url('user/reserved-kilo-ride-details?ride_id='.$ride->id)}}">
-                                            <img src="{{ asset('public/assets/images/view-detail-image.png') }}"
-                                                 title="View package details" width="30px" alt="loading">
-                                        </a>
-                                    </div>
-                                </div>
-
-                            </div>
-                        @endforeach
-
-                    </ul>
-                </div>
             </div>
-        </div>
+        @endforeach
 
-        <!-- reasons offcanvas starts -->
-        <div class="offcanvas offcanvas-bottom ride-offcanvas" tabindex="-1" id="reasons">
-            <div class="offcanvas-body p-0">
-                <div class="alert-part">
-                    <div class="title-content">
-                        <h3 class="justify-content-center">Why do you want to cancel?</h3>
+        <!-- Shipment Card 1 - Searching -->
+        @foreach($pending_rides as $ride)
+            @php
+                $message = $ride->message;
+                $badgeClass = 'badge'; // base class
+                $badgeText = '';
+
+                switch ($message) {
+                    case 'On the way to pickup':
+                        $badgeClass .= ' badge-success'; // yellow
+                        $badgeText = 'On the way to pickup';
+                        break;
+                    case 'delivery in progress':
+                        $badgeClass .= ' badge-success'; // blue
+                        $badgeText = 'Package Being Delivered';
+                        break;
+                        case 'Parcel returned':
+                        $badgeClass .= ' badge-success'; // blue
+                        $badgeText = 'Parcel returned';
+                        break;
+                        case 'transport completed awaiting validation':
+                        $badgeClass .= ' badge-success'; // blue
+                        $badgeText = 'Transport Completed Awaiting Validation';
+                        break;
+                    case 'package delivered':
+                        $badgeClass .= ' badge-success'; // green
+                        $badgeText = 'Package Delivered';
+                        break;
+                    case 'finished':
+                        $badgeClass .= ' badge-secondary'; // gray
+                        $badgeText = 'Finished';
+                        break;
+                    default:
+                        $badgeClass .= ' badge-light'; // fallback
+                        $badgeText = ucfirst(str_replace('_', ' ', $message));
+                        break;
+                }
+                $transportName = ucfirst(strtolower($ride->userriderequest->vehicle_type_needed ?? ''));
+                $icon = $icons[$transportName] ?? '❓'; // default fallback
+            @endphp
+            <div class="shipment-card" data-status="accepted">
+                <span class="shipment-status status-searching">
+                    <span class="lang-content fr active">{{ $ride->message }}</span>
+                    <span class="lang-content en"> {{ $icon }} {{ $badgeText }}</span>
+                </span>
+                <div class="shipment-route">
+                    <span class="shipment-location">{{ $ride->pickup_city }}</span>
+                    <span class="shipment-arrow">→</span>
+                    <span class="shipment-location">{{ $ride->destination_city }}</span>
+                </div>
+                @php
+                    $packages = json_decode($ride->userriderequest->packages_json, true);
+                    $totalWeight = collect($packages)->sum('weight');
+                @endphp
+                <div class="shipment-details">
+                    <div class="shipment-detail">📦 Canapé 2 places</div>
+                    <div class="shipment-detail">⚖️ ~{{ $totalWeight }}kg</div>
+                    <div class="shipment-detail">
+                        📅 {{ \Carbon\Carbon::parse($ride->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
+                    <div class="shipment-detail">💰 Budget: €{{ $ride->fare }}</div>
+                    <div class="shipment-detail">👁️ 3 offres reçues</div>
+                    <div class="shipment-detail">
+                        👤️ {{ $ride->driver->firstName . ' ' . $ride->driver->lastName }}</div>
+                </div>
+                <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="id" class="offer_id" value="{{ $ride->id }}">
+                    <input type="hidden" name="is_user_cancelled" value="true">
+                    <div class="shipment-actions">
+                        <a href="{{url('user/ride-details?ride_id='.$ride->id)}}" class="action-btn">
+                            <span class="lang-content fr active">Details</span>
+                            <span class="lang-content en">Details</span>
+                        </a>
+                        <button type="submit" class="action-btn primary">
+                            <span class="lang-content fr active">Cancel the Transport</span>
+                            <span class="lang-content en">Cancel the Transport</span>
+                        </button>
                     </div>
-
-                    <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <input type="hidden" name="is_user_cancelled" value="true">
-                        <ul class="reasons-list">
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed01">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/user-cross.svg')}}"
-                                             alt="user-cross"> Recipient Unavailable</label>
-                                    <input class="form-check-input" type="radio" name="reason"
-                                           value="Recipient Unavailable" id="fixed01">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Package Error</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Package Error"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="mt-5">
-                            <a href="{{url('user/my-rides')}}" class="btn theme-btn w-100 mt-0">Close</a>
-                            <button type="submit" class="btn theme-btn w-100 mt-1">Cancel Transport</button>
-                        </div>
-                    </form>
-                </div>
+                </form>
             </div>
-        </div>
-        <!-- reasons offcanvas end -->
+        @endforeach
 
-        <!-- reserved kilo reasons offcanvas starts -->
-        <div class="offcanvas offcanvas-bottom ride-offcanvas" tabindex="-1" id="reserved_kilo_reasons_before_pickup">
-            <div class="offcanvas-body p-0">
-                <div class="alert-part">
-                    <div class="title-content">
-                        <h3 class="justify-content-center">Why do you want to cancel?</h3>
+        <!-- Shipment Card 4 - Searching -->
+        @foreach($pending_offers as $offer)
+            <div class="shipment-card" data-status="on_hold">
+                <span class="shipment-status status-searching">
+                    <span class="lang-content fr active">🔍 En recherche</span>
+                    <span class="lang-content en">🔍 Searching</span>
+                </span>
+                <div class="shipment-route">
+                    <span class="shipment-location">{{ $offer->pickup_city }}</span>
+                    <span class="shipment-arrow">→</span>
+                    <span class="shipment-location">{{ $offer->destination_city }}</span>
+                </div>
+                @php
+                    $packages = json_decode($offer->packages_json, true);
+                    $totalWeight = collect($packages)->sum('weight');
+                @endphp
+                <div class="shipment-details">
+                    <div class="shipment-detail">📦 Cartons déménagement</div>
+                    <div class="shipment-detail">⚖️ {{ $totalWeight }}kg</div>
+                    <div class="shipment-detail">
+                        📅 {{ \Carbon\Carbon::parse($offer->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
+                    <div class="shipment-detail">💰 Budget: €{{ $offer->fare }}</div>
+                    <div class="shipment-detail">👁️ 1 offre reçue</div>
+                    <div class="shipment-detail">
+                        ⏱️ {{ \Carbon\Carbon::parse($offer->expiry)->translatedFormat('d F Y') }}</div>
+                </div>
+                <form class="theme-form mt-0" action="{{url('driver/cancel-offer')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="id" class="offer_id" value="{{ $offer->id }}">
+                    <div class="shipment-actions">
+                        <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}"
+                           class="action-btn" style="color: black;">
+                            <span class="lang-content fr active">Voir offres</span>
+                            <span class="lang-content en">View offers</span>
+                        </a>
+                        <button type="submit" class="action-btn primary">
+                            <span class="lang-content fr active">Cancel the Offer</span>
+                            <span class="lang-content en">Cancel the Offer</span>
+                        </button>
                     </div>
+                </form>
+            </div>
+        @endforeach
 
-                    <form class="theme-form mt-0" action="{{url('driver/cancel-reserved-kilo-ride')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <input type="hidden" name="is_user_cancelled" value="true">
-                        <ul class="reasons-list">
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed01">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/user-cross.svg')}}"
-                                             alt="user-cross"> Change of plan (package entrusted to another carrier)</label>
-                                    <input class="form-check-input" type="radio" name="reason"
-                                           value="Change of plan (package entrusted to another carrier)" id="fixed01">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Error in the announcement (weight, dimensions, contents)</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Error in the announcement (weight, dimensions, contents)"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed01">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/user-cross.svg')}}"
-                                             alt="user-cross"> Sender late or unavailable for the appointment</label>
-                                    <input class="form-check-input" type="radio" name="reason"
-                                           value="Sender late or unavailable for the appointment" id="fixed01">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Voluntary cancellation (no need to ship the package)</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Voluntary cancellation (no need to ship the package)"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed01">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/user-cross.svg')}}"
-                                             alt="user-cross"> Package not ready (packaging not finished, contents incomplete)</label>
-                                    <input class="form-check-input" type="radio" name="reason"
-                                           value="Package not ready (packaging not finished, contents incomplete)" id="fixed01">
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="mt-5">
-                            <a href="{{url('user/my-rides')}}" class="btn theme-btn w-100 mt-0">Close</a>
-                            <button type="submit" class="btn theme-btn w-100 mt-1">Cancel Transport</button>
-                        </div>
-                    </form>
+        <!-- Shipment Card 4 - Searching -->
+        @foreach($expired_offers as $offer)
+            <div class="shipment-card" data-status="expired">
+                <span class="shipment-status status-searching">
+                    <span class="lang-content fr active">⏳ Expired</span>
+                    <span class="lang-content en">⏳ Expired</span>
+                </span>
+                <div class="shipment-route">
+                    <span class="shipment-location">{{ $offer->pickup_city }}</span>
+                    <span class="shipment-arrow">→</span>
+                    <span class="shipment-location">{{ $offer->destination_city }}</span>
+                </div>
+                @php
+                    $packages = json_decode($offer->packages_json, true);
+                    $totalWeight = collect($packages)->sum('weight');
+                @endphp
+                <div class="shipment-details">
+                    <div class="shipment-detail">📦 Cartons déménagement</div>
+                    <div class="shipment-detail">⚖️ {{ $totalWeight }}kg</div>
+                    <div class="shipment-detail">
+                        📅 {{ \Carbon\Carbon::parse($offer->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
+                    <div class="shipment-detail">💰 Budget: €{{ $offer->fare }}</div>
+                    <div class="shipment-detail">👁️ 1 offre reçue</div>
+                    <div class="shipment-detail">
+                        ⏱️ {{ \Carbon\Carbon::parse($offer->expiry)->translatedFormat('d F Y') }}</div>
+                </div>
+                <div class="shipment-actions">
+                    <a href="{{ url('user/ride-details?ride_id='.$offer->id) }}" class="action-btn">
+                        <span class="lang-content fr active">Voir offres</span>
+                        <span class="lang-content en">View offers</span>
+                    </a>
                 </div>
             </div>
-        </div>
-        <!-- reserved kilo reasons offcanvas end -->
+        @endforeach
 
-        <!-- reserved kilo reasons  offcanvas starts -->
-        <div class="offcanvas offcanvas-bottom ride-offcanvas" tabindex="-1" id="reserved_kilo_reasons_after_pickup">
-            <div class="offcanvas-body p-0">
-                <div class="alert-part">
-                    <div class="title-content">
-                        <h3 class="justify-content-center">Why do you want to Request Return?</h3>
+        <!-- Shipment Card 3 - Delivered -->
+        @foreach($completed_rides as $completed_ride)
+            <div class="shipment-card" data-status="finished">
+                <span class="shipment-status status-delivered">
+                    <span class="lang-content fr active">✅ Livré</span>
+                    <span class="lang-content en">✅ Delivered</span>
+                </span>
+                <div class="shipment-route">
+                    <span class="shipment-location">{{ $completed_ride->pickup_city }}</span>
+                    <span class="shipment-arrow">→</span>
+                    <span class="shipment-location">{{ $completed_ride->destination_city }}</span>
+                </div>
+                @php
+                    $packages = json_decode($completed_ride->userriderequest->packages_json, true);
+                    $totalWeight = collect($packages)->sum('weight');
+                @endphp
+                <div class="shipment-details">
+                    <div class="shipment-detail">📦 Valise</div>
+                    <div class="shipment-detail">⚖️ {{ $totalWeight }}kg</div>
+                    <div class="shipment-detail">
+                        📅 {{ \Carbon\Carbon::parse($completed_ride->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
+                    <div class="shipment-detail">💰 €{{ $completed_ride->fare }}</div>
+                    <div class="shipment-detail">
+                        👤 {{ $completed_ride->driver->firstName . ' ' . $completed_ride->driver->lastName }}.
                     </div>
-
-                    <form class="theme-form mt-0" action="{{url('user/return-reserved-kilo-parcel')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <input type="hidden" name="is_user_cancelled" value="true">
-                        <ul class="reasons-list">
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed01">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/user-cross.svg')}}"
-                                             alt="user-cross"> Carrier refuses the package (non-compliant, too heavy, dangerous)</label>
-                                    <input class="form-check-input" type="radio" name="reason"
-                                           value="Carrier refuses the package (non-compliant, too heavy, dangerous)" id="fixed01">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Broken trust (sender no longer wishes to hand over the package to the carrier)</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Broken trust (sender no longer wishes to hand over the package to the carrier)"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Missing documents (customs, invoice, supporting documents)</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Missing documents (customs, invoice, supporting documents)"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Carrier does not show up for the appointment</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Carrier does not show up for the appointment"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="mt-5">
-                            <a href="{{url('user/my-rides')}}" class="btn theme-btn w-100 mt-0">Close</a>
-                            <button type="submit" class="btn theme-btn w-100 mt-1">Return Parcel</button>
-                        </div>
-                    </form>
+                    <div class="shipment-detail">⭐ 5/5</div>
+                </div>
+                <div class="shipment-actions">
+                    <a href="{{ url('user/ride-details?ride_id='.$completed_ride->id) }}" class="action-btn"
+                       style="color: black">
+                        <span class="lang-content fr active">Détails</span>
+                        <span class="lang-content en">Details</span>
+                    </a>
                 </div>
             </div>
-        </div>
-        <!-- reserved kilo reasons offcanvas end -->
+        @endforeach
 
-        <!-- reasons offcanvas starts -->
-        <div class="offcanvas offcanvas-bottom ride-offcanvas" tabindex="-1" id="offers">
-            <div class="offcanvas-body p-0">
-                <div class="alert-part">
-                    <div class="title-content">
-                        <h3 class="justify-content-center">Why do you want to cancel?</h3>
-                    </div>
-
-                    <form class="theme-form mt-0" action="{{url('driver/cancel-offer')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <ul class="reasons-list">
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed01">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/user-cross.svg')}}"
-                                             alt="user-cross"> Recipient Unavailable</label>
-                                    <input class="form-check-input" type="radio" name="reason"
-                                           value="Recipient Unavailable" id="fixed01">
-                                </div>
-                            </li>
-                            <li class="reasons-box">
-                                <div class="form-check">
-                                    <label class="form-check-label" for="fixed03">
-                                        <img class="img-fluid reasons-icon"
-                                             src="{{asset('assets/images/svg/security-time.svg')}}"
-                                             alt="security"> Package Error</label>
-                                    <input class="form-check-input" type="radio" name="reason" value="Package Error"
-                                           id="fixed03">
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="mt-5">
-                            <a href="{{url('user/my-rides')}}" class="btn theme-btn w-100 mt-0">Close</a>
-                            <button type="submit" class="btn theme-btn w-100 mt-1">Cancel Transport</button>
-                        </div>
-                    </form>
+        <!-- Shipment Card 4 - Searching -->
+        @foreach($cancelled_rides as $cancelled_ride)
+            <div class="shipment-card" data-status="cancelled">
+                <span class="shipment-status status-searching">
+                    <span class="lang-content fr active">× Cancelled</span>
+                    <span class="lang-content en">× Cancelled</span>
+                </span>
+                <div class="shipment-route">
+                    <span class="shipment-location">{{ $cancelled_ride->pickup_city }}</span>
+                    <span class="shipment-arrow">→</span>
+                    <span class="shipment-location">{{ $cancelled_ride->destination_city }}</span>
+                </div>
+                <div class="shipment-details">
+                    <div class="shipment-detail">📦 Cartons déménagement</div>
+                    <div class="shipment-detail">⚖️ 120kg</div>
+                    <div class="shipment-detail">
+                        📅 {{ \Carbon\Carbon::parse($cancelled_ride->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
+                    <div class="shipment-detail">💰 Budget: €{{ $cancelled_ride->fare }}</div>
+                    <div class="shipment-detail">👁️ 1 offre reçue</div>
+                    <div class="shipment-detail">
+                        ⏱️ {{ \Carbon\Carbon::parse($cancelled_ride->expiry_date)->translatedFormat('d F Y') }}</div>
+                </div>
+                <div class="shipment-actions">
+                    <a href="{{ url('user/ride-details?ride_id='.$cancelled_ride->id) }}" class="action-btn"
+                       style="color: black">
+                        <span class="lang-content fr active">Détails</span>
+                        <span class="lang-content en">Details</span>
+                    </a>
                 </div>
             </div>
-        </div>
-        <!-- reasons offcanvas end -->
+        @endforeach
 
-        <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Cancel Transport</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form class="theme-form mt-0" action="{{url('driver/cancel-ride')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <input type="hidden" name="is_user_cancelled" value="true">
-                        <div class="modal-body">
-                            <div class="form-group mt-3">
-                                <label class="form-label mb-2" for="InputComments">Reasons</label>
-                                <textarea class="form-control white-background" required id="InputComments"
-                                          name="reason"
-                                          placeholder="Enter Reason" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Cancel Offer</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    </div>
+</div>
 
-        <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Cancel Transport</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form class="theme-form mt-0" action="{{url('driver/cancel-offer')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" class="offer_id">
-                        <div class="modal-body">
-                            <div class="form-group mt-3">
-                                <label class="form-label mb-2" for="InputComments">Reasons</label>
-                                <textarea class="form-control white-background" required id="InputComments"
-                                          name="reason"
-                                          placeholder="Enter Reason" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Cancel Offer</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<script>
+    // Language switcher
+    function switchLanguage(lang) {
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
 
-    </section>
-    <!-- my ride section end -->
-
-    <!-- panel-space start -->
-    <section class="panel-space"></section>
-    <!-- panel-space end -->
-
-    <!-- bottom navbar start -->
-    @include('user-app.partials.bottom-navbar')
-    <!-- bottom navbar end -->
-
-    <!-- sidebar starts -->
-    @include('user-app.partials.sidear')
-    <!-- sidebar end -->
-
-@endsection
-
-@section('script')
-
-    <script>
-
-        $(document).ready(function () {
-
-            $('.cancel_rideBtn').click(function () {
-                $('.offer_id').val($(this).data('id'));
-            })
-
-            $('.cancel_offerBtn').click(function () {
-                $('.offer_id').val($(this).data('id'));
-            })
-
+        document.querySelectorAll('.lang-content').forEach(content => {
+            content.classList.remove('active');
         });
 
-    </script>
+        document.querySelectorAll('.lang-content.' + lang).forEach(content => {
+            content.classList.add('active');
+        });
 
-@endsection
+        localStorage.setItem('preferredLanguage', lang);
+    }
+
+    // Filter shipments
+    function filterShipments(status, event) {
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        const cards = document.querySelectorAll('.shipment-card');
+        cards.forEach(card => {
+            if (status === 'all' || card.dataset.status === status) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // Initialize preferences
+    document.addEventListener('DOMContentLoaded', function () {
+        const preferredLang = localStorage.getItem('preferredLanguage');
+        if (preferredLang === 'en') {
+            document.querySelector('.lang-btn[onclick*="en"]').click();
+        }
+    });
+</script>
+</body>
+</html>

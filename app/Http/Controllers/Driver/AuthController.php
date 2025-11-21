@@ -169,7 +169,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('driver')->attempt($credentials)) {
-            return redirect('/driver/home');
+            return redirect('/driver/dashboard');
         }
         else {
             return back()->withErrors([
@@ -290,23 +290,15 @@ class AuthController extends Controller
         }
     }
 
-    public function update_profile(Request $request)
-    {
-        $driver = Driver::where('id', Auth::guard('driver')->id())->first();
-        if ($request->hasFile('profile')) {
-            $path = $request->file('profile')->store('documents/profile', 'public');
-            $driver->profile = $path;
-        }
-        $driver->name = $request->name;
-        $driver->phone = $request->phone;
-        $driver->email = $request->email;
-        $driver->save();
-        return redirect()->back()->with('success', 'Profile updated successfully');
-    }
-
     public function sendVerificationEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
+
+        $driver = Driver::where('email', $request->email)->first();
+
+        if (!$driver){
+            return response()->json(['success' => false, 'message' => 'Email not registered']);
+        }
 
         $code = rand(100000, 999999); // 6-digit code
         $email = $request->email;
@@ -392,6 +384,18 @@ class AuthController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Invalid or expired code'], 422);
+    }
+
+    public function update_password(Request $request){
+        $request->validate([
+            'password' => 'required|string|min:6',
+            'confirm_password' => 'required|same:password',
+        ]);
+
+        $user = Driver::where('email', $request->email)->first();
+        $user->password = $request->password;
+        $user->save();
+        return response()->json(['success' => true, 'message' => 'Password updated successfully']);
     }
 
 }

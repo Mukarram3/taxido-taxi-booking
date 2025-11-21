@@ -141,7 +141,7 @@ class RideController extends Controller
             $cancelled_ride->destination_city = $this->getCityFromAddress($cancelled_ride->destination_location);
         }
 
-        return view('user-app.proposals-management', compact('pending_rides', 'completed_rides', 'cancelled_rides', 'active_rides','expired_offers','pending_offers','pending_reserverd_kilo_rides','active_reserved_kilo_rides','reserved_kilo_completed_rides','reserved_kilo_cancelled_rides'));
+        return view('user-app.my-rides', compact('pending_rides', 'completed_rides', 'cancelled_rides', 'active_rides','expired_offers','pending_offers','pending_reserverd_kilo_rides','active_reserved_kilo_rides','reserved_kilo_completed_rides','reserved_kilo_cancelled_rides'));
     }
 
     protected function getCityFromAddress($address)
@@ -182,10 +182,11 @@ class RideController extends Controller
             ->where('id', $id)
             ->with('driver', 'user')
             ->first();
-        return view('user-app.track-ride', [
-            'pickup_location' => $track_ride->pickup_location,
-            'destination_location' => $track_ride->destination_location
-        ]);
+
+        $track_ride->pickup_city = $this->getCityFromAddress($track_ride->pickup_location);
+        $track_ride->destination_city = $this->getCityFromAddress($track_ride->destination_location);
+
+        return view('user-app.track-ride', compact('track_ride'));
     }
     public function track_reserved_kilo_ride($id)
     {

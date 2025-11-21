@@ -441,6 +441,7 @@ class UserriderequestController extends Controller
         ->where('userriderequest_id', $request->input('userriderequest_id'))
             ->where('expiry', '>', Carbon::now())
             ->where('status','!=','rejected')
+            ->where('status','!=','accepted')
             ->orderBy('id', 'desc')
             ->get();
 

@@ -16,7 +16,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
     Route::middleware([\App\Http\Middleware\LoggedinUser::class ])->group(function () {
 
         Route::get('/home', [\App\Http\Controllers\User\UserfarerequestController::class, 'home'])->name('home');
-        Route::get('/dashboard', [\App\Http\Controllers\User\UserriderequestController::class, 'dashboard'])->name('home');
+        Route::get('/dashboard', [\App\Http\Controllers\User\UserriderequestController::class, 'dashboard'])->name('dashboard');
 
         Route::get('/accept-ride-details', [\App\Http\Controllers\User\RidesbookedController::class, 'accept_ride_details'])->name('accept_ride_details');
         Route::get('/reject-ride-details', [\App\Http\Controllers\User\RidesbookedController::class, 'reject_ride_details'])->name('reject_ride_details');
@@ -45,11 +45,9 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
 
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        Route::get('/profile-setting', function (){
-            return view('user-app.profile-setting');
-        });
+        Route::get('profile-setting', [\App\Http\Controllers\User\ProfileController::class,'profile']);
 
-        Route::post('/update_profile',[\App\Http\Controllers\User\AuthController::class,'update_profile'])->name('update_profile');
+        Route::post('/update_profile',[\App\Http\Controllers\User\ProfileController::class,'update_profile'])->name('update_profile');
 
         Route::get('/selact-ride', [\App\Http\Controllers\User\UserriderequestController::class, 'selact_ride'])->name('selact_ride');
         Route::post('/select-ride-targetted', [\App\Http\Controllers\User\UserriderequestController::class, 'selact_ride_targetted_transport_route'])->name('selact_ride_targetted');
@@ -150,6 +148,8 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
         return view('user-app.forgot-password');
     });
 
+    Route::post('/send-verification-email', [AuthController::class, 'sendVerificationEmail'])->name('send.verification.email');
+
     Route::get('/index', function (){
         return view('user-app.index');
     });
@@ -210,6 +210,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
     Route::get('/nearby-drivers', [\App\Http\Controllers\User\RideController::class, 'getNearbyDrivers']);
 
     Route::post('/mark-as-read', [\App\Http\Controllers\NotificationController::class,'markUserNotification'])->name('markNotification');
+    Route::post('/mark-as-read-all', [\App\Http\Controllers\NotificationController::class,'markUserAllNotification'])->name('markAllNotifications');
     Route::get('/google_place_api', function (){
         return view('user-app.google_place_api');
     });

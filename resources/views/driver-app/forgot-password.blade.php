@@ -601,7 +601,7 @@
     <div class="reset-content">
         <!-- Step 1: Email -->
         <div class="content-section active" id="section1">
-            <a href="{{ url('user/login') }}" class="back-link">
+            <a href="{{ url('driver/login') }}" class="back-link">
                 <span>←</span>
                 <span class="lang-content fr active">Retour à la connexion</span>
                 <span class="lang-content en">Back to login</span>
@@ -763,7 +763,7 @@
                 <span class="lang-content en">Your password has been successfully reset. You can now log in with your new password.</span>
             </p>
 
-            <a href="{{ url('user/login') }}" class="btn-primary" style="display: block; text-align: center; text-decoration: none;">
+            <a href="{{ url('driver/login') }}" class="btn-primary" style="display: block; text-align: center; text-decoration: none;">
                 <span class="lang-content fr active">Se connecter</span>
                 <span class="lang-content en">Sign in</span>
             </a>
@@ -820,7 +820,7 @@
         btn.disabled = true;
 
         // Make API call
-        var url = '{{ url('user/send-verification-email') }}';
+        var url = '{{ url('driver/send-verification-email') }}';
 
         $.post(url, {
             email: email,
@@ -952,7 +952,7 @@
         btn.disabled = true;
 
         // Make API call
-        var url = '{{ url('user/update-password') }}';
+        var url = '{{ url('driver/update-password') }}';
 
         $.post(url, {
             email: userEmail,
@@ -1176,7 +1176,7 @@
         }
 
         // Make API call to resend
-        var url = '{{ url('user/send-verification-email') }}';
+        var url = '{{ url('driver/send-verification-email') }}';
 
         $.post(url, {
             email: userEmail,

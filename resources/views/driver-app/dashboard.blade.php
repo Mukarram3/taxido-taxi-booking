@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Co-transport - Je confie</title>
+    <title>Dashboard Réservation - Je confie | Transport collaboratif</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,6 +17,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f8fafc;
             color: #1a1a1a;
+            line-height: 1.6;
         }
 
         /* Variables */
@@ -33,6 +35,13 @@
             --light: #f8fafc;
             --white: #ffffff;
             --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
         }
 
         /* Language Management */
@@ -52,17 +61,38 @@
             display: block;
         }
 
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
         /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
-            top: 0;
+            top: 72px;
             width: 280px;
-            height: 100vh;
+            height: calc(100vh - 72px);
             background: white;
             border-right: 1px solid var(--border);
             overflow-y: auto;
-            z-index: 900;
         }
 
         .sidebar-header {
@@ -80,7 +110,7 @@
         .logo-icon {
             width: 42px;
             height: 42px;
-            background: linear-gradient(135deg, var(--secondary), var(--eco-green));
+            background: linear-gradient(135deg, var(--primary), var(--eco-green));
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -93,10 +123,9 @@
         .logo-text {
             font-size: 22px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--secondary), var(--eco-green));
+            background: linear-gradient(135deg, var(--primary), var(--eco-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .user-profile {
@@ -108,7 +137,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--secondary), var(--eco-green));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -139,7 +168,7 @@
             align-items: center;
             gap: 8px;
             padding: 12px 16px;
-            background: linear-gradient(135deg, var(--secondary), var(--eco-green));
+            background: linear-gradient(135deg, var(--primary), var(--eco-green));
             color: white;
             border-radius: 12px;
             font-weight: 600;
@@ -164,13 +193,13 @@
 
         .nav-item:hover {
             background: var(--light);
-            color: var(--secondary);
+            color: var(--primary);
         }
 
         .nav-item.active {
-            background: linear-gradient(90deg, rgba(6,182,212,0.1), transparent);
-            color: var(--secondary);
-            border-left: 3px solid var(--secondary);
+            background: linear-gradient(90deg, rgba(80,70,229,0.1), transparent);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
         }
 
         .nav-divider {
@@ -192,9 +221,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 800;
         }
 
         .page-title {
@@ -469,7 +495,7 @@
 
         .lang-btn.active {
             background: white;
-            color: var(--secondary);
+            color: var(--primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
@@ -497,14 +523,15 @@
         }
 
         .action-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: var(--primary);
         }
 
         .action-icon {
             width: 48px;
             height: 48px;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -525,41 +552,47 @@
 
         /* Stats Section */
         .stats-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
             margin-bottom: 32px;
         }
 
         .stats-header {
-            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
         }
 
         .stats-title {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 600;
             color: var(--dark);
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
         }
 
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+            padding: 16px;
+            background: var(--light);
+            border-radius: 10px;
+            text-align: center;
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 12px;
+            font-size: 20px;
+            margin: 0 auto 12px;
         }
 
         .stat-value {
@@ -572,42 +605,35 @@
         .stat-label {
             font-size: 13px;
             color: var(--gray);
-            margin-bottom: 8px;
         }
 
         .stat-trend {
+            margin-top: 8px;
             font-size: 12px;
             font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 6px;
-            display: inline-block;
         }
 
         .stat-trend.up {
-            background: rgba(16,185,129,0.1);
             color: var(--success);
-        }
-
-        .stat-trend.down {
-            background: rgba(239,68,68,0.1);
-            color: var(--danger);
         }
 
         /* Activity Section */
         .activity-section {
-            margin-bottom: 32px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .section-title {
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 600;
             color: var(--dark);
         }
 
@@ -618,29 +644,20 @@
 
         .filter-tab {
             padding: 8px 16px;
+            background: transparent;
             border: 1px solid var(--border);
-            background: white;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 500;
+            color: var(--gray);
             cursor: pointer;
             transition: all 0.3s;
-            color: var(--gray);
         }
 
         .filter-tab.active {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
-            border-color: var(--secondary);
-        }
-
-        .filter-tab:hover {
-            border-color: var(--secondary);
-            color: var(--secondary);
-        }
-
-        .filter-tab.active:hover {
-            color: white;
+            border-color: var(--primary);
         }
 
         .activity-list {
@@ -650,10 +667,16 @@
         }
 
         .activity-card {
-            background: white;
             padding: 16px;
-            border-radius: 12px;
+            background: var(--light);
+            border-radius: 10px;
             border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .activity-card:hover {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .activity-header {
@@ -667,7 +690,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
             font-weight: 600;
             color: var(--dark);
         }
@@ -676,34 +698,36 @@
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .type-cotransport {
-            background: rgba(6,182,212,0.1);
-            color: var(--secondary);
+        .type-reservation {
+            background: rgba(80,70,229,0.1);
+            color: var(--primary);
         }
 
         .activity-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 8px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .activity-detail {
-            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
             color: var(--gray);
-            padding: 6px 10px;
-            background: var(--light);
-            border-radius: 6px;
         }
 
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                z-index: 1000;
+                transition: transform 0.3s;
             }
 
             .sidebar.mobile-active {
@@ -714,18 +738,43 @@
                 margin-left: 0;
             }
 
-            .notification-dropdown {
-                width: calc(100vw - 40px);
-                right: 20px;
-                left: 20px;
+            .mobile-menu-toggle {
+                display: block;
             }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .mobile-overlay.active {
+            display: block;
         }
     </style>
 </head>
 <body>
 <!-- Sidebar -->
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
             <div class="logo-icon">JC</div>
@@ -734,45 +783,43 @@
     </div>
 
     <div class="user-profile">
-        <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('user')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('user')->user()->lastName) }}&background=random&color=fff" />
-        <div class="user-name">{{ urlencode(\Illuminate\Support\Facades\Auth::guard('user')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('user')->user()->lastName) }}</div>
+        <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}&background=random&color=fff" />
+        <div class="user-name">{{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}</div>
         <div class="user-role">
             <span class="lang-content fr active">Membre depuis {{\Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year}}</span>
             <span class="lang-content en">Member since {{\Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year}}</span>
         </div>
     </div>
 
-    <a href="{{ url('driver/dashboard') }}">
-        <div class="service-mode">
-            <div class="service-badge">
-                🚛 <span class="lang-content fr active">MODE CO-TRANSPORT</span>
-                <span class="lang-content en">CO-TRANSPORT MODE</span>
-            </div>
+    <div class="service-mode">
+        <div class="service-badge">
+            ✈️ <span class="lang-content fr active">MODE RÉSERVATION</span>
+            <span class="lang-content en">BOOKING MODE</span>
         </div>
-    </a>
+    </div>
 
     <nav class="nav-menu">
-        <a href="{{ url('user/dashboard') }}" class="nav-item active">
+        <a href="{{ url('driver/dashboard') }}" class="nav-item active">
             <span>📊</span>
             <span class="lang-content fr active">Tableau de bord</span>
             <span class="lang-content en">Dashboard</span>
         </a>
-        <a href="{{ url('user/my-rides') }}" class="nav-item">
-            <span>📮</span>
-            <span class="lang-content fr active">Mes envois</span>
-            <span class="lang-content en">My shipments</span>
+        <a href="{{ url('driver/my-rides') }}" class="nav-item">
+            <span>✈️</span>
+            <span class="lang-content fr active">Mes voyages</span>
+            <span class="lang-content en">My trips</span>
         </a>
         <a href="#" class="nav-item">
-            <span>🔍</span>
-            <span class="lang-content fr active">Rechercher un transporteur</span>
-            <span class="lang-content en">Find a carrier</span>
+            <span>📦</span>
+            <span class="lang-content fr active">Réservations reçues</span>
+            <span class="lang-content en">Received bookings</span>
         </a>
         <a href="#" class="nav-item">
-            <span>💶</span>
-            <span class="lang-content fr active">Mes économies</span>
-            <span class="lang-content en">My savings</span>
+            <span>💰</span>
+            <span class="lang-content fr active">Mes gains</span>
+            <span class="lang-content en">My earnings</span>
         </a>
-        <a href="{{ url('user/profile-setting') }}" class="nav-item">
+        <a href="{{ url('driver/profile-setting') }}" class="nav-item">
             <span>👤</span>
             <span class="lang-content fr active">Mon profil</span>
             <span class="lang-content en">My profile</span>
@@ -810,32 +857,37 @@
             <span class="lang-content fr active">Suivi des colis</span>
             <span class="lang-content en">Package tracking</span>
         </a>
-        <a href="dashboard-reservation.html" class="nav-item">
+        <a href="dashboard-cotransport.html" class="nav-item">
             <span>🔄</span>
-            <span class="lang-content fr active">Mode Réservation</span>
-            <span class="lang-content en">Booking Mode</span>
+            <span class="lang-content fr active">Mode Co-transport</span>
+            <span class="lang-content en">Co-transport Mode</span>
         </a>
-        <a href="{{url('user/logout')}}" class="nav-item">
+        <a href="{{url('driver/logout')}}" class="nav-item">
             <span>🔄</span>
             <span class="lang-content fr active">Logout</span>
             <span class="lang-content en">Logout</span>
         </a>
     </nav>
-</aside>
+</div>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
 
 @php
-    $notifications = \Illuminate\Support\Facades\Auth::guard('user')->user()->unreadNotifications;
+    $notifications = \Illuminate\Support\Facades\Auth::guard('driver')->user()->unreadNotifications;
     $unreadCount = $notifications->count();
 @endphp
 
 <!-- Main Content -->
 <div class="main-content">
     <div class="top-bar">
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
         <div class="page-title">
-            <span class="lang-content fr active">Dashboard Co-transport</span>
-            <span class="lang-content en">Co-transport Dashboard</span>
+            <span class="lang-content fr active">Dashboard Réservation</span>
+            <span class="lang-content en">Booking Dashboard</span>
         </div>
         <div class="top-actions">
+
             <!-- Notification Bell -->
             <div class="notification-bell {{ $unreadCount > 0 ? 'has-notifications' : '' }}"
                  id="notificationBell"
@@ -844,7 +896,6 @@
                 <span class="bell-icon">🔔</span>
             </div>
 
-            <!-- Language Switcher -->
             <div class="lang-switcher">
                 <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
                 <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
@@ -928,53 +979,51 @@
     <div class="dashboard-content">
         <!-- Quick Actions -->
         <div class="quick-actions">
-            <a href="{{ url('/create-offer') }}">
-                <div class="action-card">
-                    <div class="action-icon" style="background: rgba(6,182,212,0.1); color: var(--secondary);">📤</div>
-                    <div class="action-title">
-                        <span class="lang-content fr active">Envoyer un colis</span>
-                        <span class="lang-content en">Send a package</span>
-                    </div>
-                    <div class="action-desc">
-                        <span class="lang-content fr active">Trouvez un transporteur</span>
-                        <span class="lang-content en">Find a carrier</span>
-                    </div>
-                </div>
-            </a>
-
             <div class="action-card">
-                <div class="action-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">🔎</div>
+                <div class="action-icon" style="background: rgba(80,70,229,0.1); color: var(--primary);">➕</div>
                 <div class="action-title">
-                    <span class="lang-content fr active">{{ $activeSearches ?? 2 }} recherches en cours</span>
-                    <span class="lang-content en">{{ $activeSearches ?? 2 }} searches in progress</span>
+                    <span class="lang-content fr active">Publier un voyage</span>
+                    <span class="lang-content en">Post a trip</span>
                 </div>
                 <div class="action-desc">
-                    <span class="lang-content fr active">{{ $receivedOffers ?? 3 }} propositions reçues</span>
-                    <span class="lang-content en">{{ $receivedOffers ?? 3 }} offers received</span>
+                    <span class="lang-content fr active">Créez une nouvelle annonce</span>
+                    <span class="lang-content en">Create a new listing</span>
                 </div>
             </div>
 
             <div class="action-card">
-                <div class="action-icon" style="background: rgba(80,70,229,0.1); color: var(--primary);">🚚</div>
+                <div class="action-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">🔔</div>
                 <div class="action-title">
-                    <span class="lang-content fr active">{{ $inTransit ?? 3 }} en transit</span>
-                    <span class="lang-content en">{{ $inTransit ?? 3 }} in transit</span>
+                    <span class="lang-content fr active">3 demandes en attente</span>
+                    <span class="lang-content en">3 pending requests</span>
                 </div>
                 <div class="action-desc">
-                    <span class="lang-content fr active">Suivre mes colis</span>
-                    <span class="lang-content en">Track my packages</span>
+                    <span class="lang-content fr active">À traiter rapidement</span>
+                    <span class="lang-content en">Process quickly</span>
                 </div>
             </div>
 
             <div class="action-card">
-                <div class="action-icon" style="background: rgba(16,185,129,0.1); color: var(--success);">💰</div>
+                <div class="action-icon" style="background: rgba(6,182,212,0.1); color: var(--secondary);">📍</div>
                 <div class="action-title">
-                    <span class="lang-content fr active">Calculer un prix</span>
-                    <span class="lang-content en">Calculate price</span>
+                    <span class="lang-content fr active">Suivi en temps réel</span>
+                    <span class="lang-content en">Real-time tracking</span>
                 </div>
                 <div class="action-desc">
-                    <span class="lang-content fr active">Estimez vos économies</span>
-                    <span class="lang-content en">Estimate your savings</span>
+                    <span class="lang-content fr active">Suivez vos colis</span>
+                    <span class="lang-content en">Track your packages</span>
+                </div>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon" style="background: rgba(16,185,129,0.1); color: var(--success);">💬</div>
+                <div class="action-title">
+                    <span class="lang-content fr active">Messages</span>
+                    <span class="lang-content en">Messages</span>
+                </div>
+                <div class="action-desc">
+                    <span class="lang-content fr active">2 non lus</span>
+                    <span class="lang-content en">2 unread</span>
                 </div>
             </div>
         </div>
@@ -990,46 +1039,47 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(6,182,212,0.1); color: var(--secondary);">📦</div>
-                    <div class="stat-value">{{ $stats['packages_sent'] ?? 12 }}</div>
+                    <div class="stat-icon" style="background: rgba(80,70,229,0.1); color: var(--primary);">✈️</div>
+                    <div class="stat-value">8</div>
                     <div class="stat-label">
-                        <span class="lang-content fr active">Colis envoyés</span>
-                        <span class="lang-content en">Packages sent</span>
+                        <span class="lang-content fr active">Voyages postés</span>
+                        <span class="lang-content en">Trips posted</span>
                     </div>
-                    <div class="stat-trend up">↗ +{{ $stats['packages_trend'] ?? 5 }} vs mois dernier</div>
+                    <div class="stat-trend up">↗ +3 vs mois dernier</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16,185,129,0.1); color: var(--success);">📦</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">
+                        <span class="lang-content fr active">Colis transportés</span>
+                        <span class="lang-content en">Packages transported</span>
+                    </div>
+                    <div class="stat-trend up">↗ +15%</div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-icon" style="background: rgba(5,150,105,0.1); color: var(--eco-green);">💰</div>
-                    <div class="stat-value">€{{ $stats['savings'] ?? 485 }}</div>
+                    <div class="stat-value">€1,245</div>
                     <div class="stat-label">
-                        <span class="lang-content fr active">Économies réalisées</span>
-                        <span class="lang-content en">Savings made</span>
+                        <span class="lang-content fr active">Revenus générés</span>
+                        <span class="lang-content en">Revenue generated</span>
                     </div>
-                    <div class="stat-trend down">↘ -{{ $stats['savings_percent'] ?? 60 }}% vs transporteurs classiques</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(80,70,229,0.1); color: var(--primary);">🌍</div>
-                    <div class="stat-value">{{ $stats['co2_saved'] ?? 850 }}kg</div>
-                    <div class="stat-label">
-                        <span class="lang-content fr active">CO2 économisé</span>
-                        <span class="lang-content en">CO2 saved</span>
-                    </div>
+                    <div class="stat-trend up">↗ +€320 ce mois</div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-icon" style="background: rgba(239,68,68,0.1); color: var(--danger);">⭐</div>
-                    <div class="stat-value">{{ $stats['rating'] ?? 4.8 }}/5</div>
+                    <div class="stat-value">4.9/5</div>
                     <div class="stat-label">
-                        <span class="lang-content fr active">Note moyenne donnée</span>
-                        <span class="lang-content en">Average rating given</span>
+                        <span class="lang-content fr active">Note moyenne</span>
+                        <span class="lang-content en">Average rating</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Activités récentes -->
         <div class="activity-section">
             <div class="section-header">
                 <h2 class="section-title">
@@ -1053,58 +1103,55 @@
             </div>
 
             <div class="activity-list">
-                @forelse($recentActivities ?? [] as $activity)
-                    <div class="activity-card">
-                        <div class="activity-header">
-                            <div class="activity-route">
-                                <span>🔵 {{ $activity['from'] }}</span>
-                                <span>→</span>
-                                <span>🔴 {{ $activity['to'] }}</span>
-                            </div>
-                            <span class="activity-type type-cotransport">{{ $activity['type_icon'] ?? '🚗' }} CO-TRANSPORT</span>
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-route">
+                            <span>🔵 Paris CDG</span>
+                            <span>→</span>
+                            <span>🔴 New York JFK</span>
                         </div>
-                        <div class="activity-details">
-                            <div class="activity-detail">📦 {{ $activity['item'] }}</div>
-                            <div class="activity-detail">💰 €{{ $activity['price'] }}</div>
-                            <div class="activity-detail">📅 {{ $activity['date'] }}</div>
-                            <div class="activity-detail">🚚 {{ $activity['vehicle'] }}</div>
+                        <span class="activity-type type-reservation">✈️ RÉSERVATION</span>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-detail">
+                            📦 2.5kg
+                        </div>
+                        <div class="activity-detail">
+                            💰 €30
+                        </div>
+                        <div class="activity-detail">
+                            📅 28 janvier
+                        </div>
+                        <div class="activity-detail">
+                            👤 Thomas M.
                         </div>
                     </div>
-                @empty
-                    <div class="activity-card">
-                        <div class="activity-header">
-                            <div class="activity-route">
-                                <span>🔵 Lyon</span>
-                                <span>→</span>
-                                <span>🔴 Marseille</span>
-                            </div>
-                            <span class="activity-type type-cotransport">🚗 CO-TRANSPORT</span>
-                        </div>
-                        <div class="activity-details">
-                            <div class="activity-detail">📦 Canapé 2 places</div>
-                            <div class="activity-detail">💰 €65</div>
-                            <div class="activity-detail">📅 Demain</div>
-                            <div class="activity-detail">🚚 Mercedes Vito</div>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="activity-card">
-                        <div class="activity-header">
-                            <div class="activity-route">
-                                <span>🔵 Paris</span>
-                                <span>→</span>
-                                <span>🔴 Lille</span>
-                            </div>
-                            <span class="activity-type type-cotransport">🚛 CO-TRANSPORT</span>
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-route">
+                            <span>🔵 Marseille</span>
+                            <span>→</span>
+                            <span>🔴 Alger</span>
                         </div>
-                        <div class="activity-details">
-                            <div class="activity-detail">📦 Électroménager</div>
-                            <div class="activity-detail">💰 €85</div>
-                            <div class="activity-detail">📅 8 février</div>
-                            <div class="activity-detail">🚚 Renault Master</div>
+                        <span class="activity-type type-reservation">🚢 RÉSERVATION</span>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-detail">
+                            📦 5kg
+                        </div>
+                        <div class="activity-detail">
+                            💰 €30
+                        </div>
+                        <div class="activity-detail">
+                            📅 2 février
+                        </div>
+                        <div class="activity-detail">
+                            👤 Ahmed K.
                         </div>
                     </div>
-                @endforelse
+                </div>
             </div>
         </div>
     </div>
@@ -1158,7 +1205,7 @@
     });
 
     function sendMarkRequest(id = null) {
-        return $.ajax("{{ route('user.markNotification') }}", {
+        return $.ajax("{{ route('driver.markNotification') }}", {
             method: 'POST',
             data: {
                 _token,
@@ -1223,7 +1270,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: '{{ route('user.markAllNotifications') }}',
+                    url: '{{ route('driver.markDriverAllNotification') }}',
                     data: {
                         _token: '{{ csrf_token() }}'
                     }
@@ -1293,18 +1340,21 @@
         updateBadgeCount();
     }
 
-    // Initialize language preference
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+
+        sidebar.classList.toggle('mobile-active');
+        overlay.classList.toggle('active');
+    }
+
+    // Initialize preferences
     document.addEventListener('DOMContentLoaded', function() {
         const preferredLang = localStorage.getItem('preferredLanguage');
         if (preferredLang === 'en') {
             document.querySelector('.lang-btn[onclick*="en"]').click();
         }
-
-        // Listen for real-time notifications (integrate with your WebSocket/Pusher)
-        // Example: Echo.private('notifications.' + userId).listen('NotificationSent', (e) => {
-        //     ringBell();
-        //     // Add notification to dropdown
-        // });
     });
 </script>
 </body>
