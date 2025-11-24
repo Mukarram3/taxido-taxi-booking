@@ -1806,12 +1806,12 @@
 <!-- Quick Actions Bar -->
 <div class="quick-actions-bar">
     <div class="quick-actions-container">
-        <a href="{{ url('/transportation-request') }}" class="quick-action-btn primary">
+        <a href="{{ url('/driver/login') }}" class="quick-action-btn primary">
             ✈️
             <span class="lang-content fr active">Je voyage</span>
             <span class="lang-content en">I'm traveling</span>
         </a>
-        <a href="{{ url('/create-offer') }}" class="quick-action-btn">
+        <a href="{{ url('/user/login') }}" class="quick-action-btn">
             📦
             <span class="lang-content fr active">Expédier</span>
             <span class="lang-content en">Ship</span>

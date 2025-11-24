@@ -132,6 +132,8 @@ class AuthController extends Controller
 
             $user->save();
 
+            Mail::to($user->email)->send(new \App\Mail\UserCreated($user));
+
             $credentials = $request->only('email', 'password');
             if (Auth::guard('user')->attempt($credentials)) {
                 return response()->json(['success' => 'Account created successfully!']);
