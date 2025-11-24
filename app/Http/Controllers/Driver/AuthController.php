@@ -265,6 +265,8 @@ class AuthController extends Controller
 
             $credentials = $request->only('email', 'password');
 
+            Mail::to($driver->email)->send(new \App\Mail\CarrierCreated($driver));
+
             if (Auth::guard('driver')->attempt($credentials)) {
                 return response()->json(['success' => 'Account created successfully!']);
             }
