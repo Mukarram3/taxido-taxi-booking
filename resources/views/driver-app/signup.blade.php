@@ -1424,17 +1424,17 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    $(document).ready(function (){
-
+    $(document).ready(function () {
         console.log('Complete integrated signup - Script started');
 
-        // Variables
+        // ---------- State ----------
         let currentStep = 1;
         let selectedPhoto = null;
         let currentPhoneNumber = '';
-        let resendCountdown = 60;
-        let resendemailCountdown = 60;
-        let resendTimer = null;
+        let resendPhoneCountdown = 60;
+        let resendEmailCountdown = 60;
+        let resendPhoneTimer = null;
+        let resendEmailTimer = null;
         let isEmailVerified = false;
         let isPhoneVerified = false;
         let currentEmailCaptcha = '';
@@ -1443,87 +1443,50 @@
             '', 'Account Type', 'Personal Info', 'Email Verification', 'Check Email', 'Phone Verification', 'Preferences', 'Complete Setup'
         ];
 
-        // Initialization
-        function initializeSignup() {
-            generateEmailCaptcha();
-            initializeOTPInputs();
-            initializeEventListeners();
-        }
-
-        // Photo upload functions
-        function triggerPhotoUpload() {
-            document.getElementById('photo-upload').click();
-        }
-
-        function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const MAX_SIZE_MB = 2; // Laravel limit = 2048 KB = 2 MB
-
-            // ✅ Validate size
-            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                showAlert('error', `File size must be less than ${MAX_SIZE_MB} MB.`);
-                event.target.value = ''; // clear file input
-                selectedPhoto = null;
-                return;
-            }
-
-            // ✅ Validate type
-            if (!file.type.startsWith('image/')) {
-                showAlert('error', 'Please select a valid image file (JPG, PNG, JPEG).');
-                event.target.value = '';
-                selectedPhoto = null;
-                return;
-            }
-
-            // ✅ Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('photo-preview');
-                preview.innerHTML = `
-            <img src="${e.target.result}" alt="Profile picture" class="rounded-xl shadow-md">
-            <div class="photo-overlay">📷</div>
-        `;
-                selectedPhoto = file;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Update profile preview with initials
-        function updateProfilePreview() {
-            const firstName = document.getElementById('first-name').value;
-            const lastName = document.getElementById('last-name').value;
-
-            if (firstName && lastName && !selectedPhoto) {
-                const preview = document.getElementById('photo-preview');
-                const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-                if (!preview.querySelector('img')) {
-                    preview.innerHTML = `${initials}<div class="photo-overlay">📷</div>`;
-                }
+        // ---------- Helpers ----------
+        function getCsrfToken() {
+            // prefer meta tag via DOM; fallback to jQuery if present
+            const meta = document.querySelector('meta[name="csrf-token"]');
+            if (meta && meta.content) return meta.content;
+            try {
+                return $('meta[name="csrf-token"]').attr('content');
+            } catch (e) {
+                return '';
             }
         }
 
-        // Language switch
-        function switchToFrench() {
-            alert('Switching to French version...');
+        function showAlert(type, message) {
+            document.querySelectorAll('.alert').forEach(alert => alert.remove());
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span><span>${message}</span>`;
+
+            const activeSection = document.querySelector('.step-section.active') || document.body;
+            activeSection.insertBefore(alertDiv, activeSection.firstChild);
+
+            setTimeout(() => {
+                if (alertDiv.parentNode) alertDiv.remove();
+            }, 5000);
         }
 
-        // Progress management
+        // ---------- Progress ----------
         function updateProgress(step) {
             for (let i = 1; i <= 7; i++) {
                 const stepEl = document.getElementById(`step-${i}`);
                 const lineEl = document.getElementById(`line-${i}`);
 
-                if (i < step) {
-                    stepEl.className = 'progress-step completed';
-                    stepEl.textContent = '✓';
-                } else if (i === step) {
-                    stepEl.className = 'progress-step active';
-                    stepEl.textContent = i;
-                } else {
-                    stepEl.className = 'progress-step';
-                    stepEl.textContent = i;
+                if (stepEl) {
+                    if (i < step) {
+                        stepEl.className = 'progress-step completed';
+                        stepEl.textContent = '✓';
+                    } else if (i === step) {
+                        stepEl.className = 'progress-step active';
+                        stepEl.textContent = i;
+                    } else {
+                        stepEl.className = 'progress-step';
+                        stepEl.textContent = i;
+                    }
                 }
 
                 if (lineEl) {
@@ -1531,17 +1494,18 @@
                 }
             }
 
-            document.getElementById('progress-title').textContent = stepTitles[step];
+            const titleEl = document.getElementById('progress-title');
+            if (titleEl) titleEl.textContent = stepTitles[step] || '';
 
             document.querySelectorAll('.step-section').forEach((section, index) => {
                 section.classList.toggle('active', index + 1 === step);
             });
         }
 
-        // Navigation
+        // ---------- Navigation (public) ----------
         function nextStep() {
             if (validateStep(currentStep)) {
-                currentStep++;
+                currentStep = Math.min(currentStep + 1, 7);
                 updateProgress(currentStep);
             }
         }
@@ -1553,51 +1517,52 @@
             }
         }
 
-        // Step validation
+        // Expose navigation for inline onclick handlers
+        window.nextStep = nextStep;
+        window.prevStep = prevStep;
+
+        // ---------- Validation ----------
         function validateStep(step) {
             switch (step) {
                 case 1:
-                    return true; // Account type always selected by default
+                    return true; // assume account type preselected
+                case 2: {
+                    const firstName = (document.getElementById('first-name') || {}).value || '';
+                    const lastName = (document.getElementById('last-name') || {}).value || '';
+                    const profession = (document.getElementById('profession') || {}).value || '';
+                    const birthDate = (document.getElementById('birth-date') || {}).value || '';
 
-                case 2:
-                    const firstName = document.getElementById('first-name').value.trim();
-                    const lastName = document.getElementById('last-name').value.trim();
-                    const profession = document.getElementById('profession').value.trim();
-                    const birthDate = document.getElementById('birth-date').value;
-
-                    if (!firstName || !lastName || !profession || !birthDate) {
+                    if (!firstName.trim() || !lastName.trim() || !profession.trim() || !birthDate.trim()) {
                         showAlert('error', 'Please fill in all required fields.');
                         return false;
                     }
                     return true;
-
-                case 3:
-                    const email = document.getElementById('email').value.trim();
-                    const emailCaptcha = document.getElementById('email-captcha-input').value.trim().toUpperCase();
-
-                    if (!email || !email.includes('@')) {
+                }
+                case 3: {
+                    const email = (document.getElementById('email') || {}).value || '';
+                    const emailCaptcha = (document.getElementById('email-captcha-input') || {}).value || '';
+                    if (!email.trim() || !email.includes('@')) {
                         showAlert('error', 'Please enter a valid email address.');
                         return false;
                     }
-
-                    if (emailCaptcha !== currentEmailCaptcha) {
+                    if (emailCaptcha.trim().toUpperCase() !== currentEmailCaptcha) {
                         showAlert('error', 'Incorrect verification code.');
                         generateEmailCaptcha();
                         return false;
                     }
                     return true;
-
-                case 5:
-                    const phoneNumber = document.getElementById('phone-number').value.trim();
-                    if (!phoneNumber) {
+                }
+                case 5: {
+                    const phoneNumber = (document.getElementById('phone-number') || {}).value || '';
+                    if (!phoneNumber.trim()) {
                         showAlert('error', 'Please enter a phone number.');
                         return false;
                     }
                     return true;
-
-                case 7:
-                    const password = document.getElementById('password').value;
-                    const confirmPassword = document.getElementById('confirm-password').value;
+                }
+                case 7: {
+                    const password = (document.getElementById('password') || {}).value || '';
+                    const confirmPassword = (document.getElementById('confirm-password') || {}).value || '';
                     const termsCheckbox = document.querySelector('.checkbox[data-checkbox="terms"]');
                     const privacyCheckbox = document.querySelector('.checkbox[data-checkbox="privacy"]');
 
@@ -1605,29 +1570,26 @@
                         showAlert('error', 'Password must be at least 8 characters.');
                         return false;
                     }
-
                     if (password !== confirmPassword) {
                         showAlert('error', 'Passwords do not match.');
                         return false;
                     }
-
                     if (!termsCheckbox || !termsCheckbox.classList.contains('checked')) {
                         showAlert('error', 'You must accept the terms of use.');
                         return false;
                     }
-
                     if (!privacyCheckbox || !privacyCheckbox.classList.contains('checked')) {
                         showAlert('error', 'You must accept the privacy policy.');
                         return false;
                     }
                     return true;
-
+                }
                 default:
                     return true;
             }
         }
 
-        // Captcha functions
+        // ---------- Captcha ----------
         function generateEmailCaptcha() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let captcha = '';
@@ -1635,339 +1597,403 @@
                 captcha += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             currentEmailCaptcha = captcha;
-            document.getElementById('email-captcha-display').textContent = captcha;
-            document.getElementById('email-captcha-input').value = '';
+            const display = document.getElementById('email-captcha-display');
+            if (display) display.textContent = captcha;
+            const input = document.getElementById('email-captcha-input');
+            if (input) input.value = '';
         }
 
-        // Email verification
+        // ---------- Photo upload ----------
+        function triggerPhotoUpload() {
+            const el = document.getElementById('photo-upload');
+            if (el) el.click();
+        }
+
+        function handlePhotoUpload(event) {
+            const input = event && event.target;
+            if (!input) return;
+            const file = input.files && input.files[0];
+            if (!file) return;
+
+            const MAX_SIZE_MB = 2;
+            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                showAlert('error', `File size must be less than ${MAX_SIZE_MB} MB.`);
+                input.value = '';
+                selectedPhoto = null;
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                showAlert('error', 'Please select a valid image file (JPG, PNG, JPEG).');
+                input.value = '';
+                selectedPhoto = null;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('photo-preview');
+                if (!preview) return;
+                preview.innerHTML = `
+                <img src="${e.target.result}" alt="Profile picture" class="rounded-xl shadow-md">
+                <div class="photo-overlay">📷</div>
+            `;
+                selectedPhoto = file;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Expose photo helpers
+        window.triggerPhotoUpload = triggerPhotoUpload;
+        window.handlePhotoUpload = handlePhotoUpload;
+
+        // ---------- Profile preview ----------
+        function updateProfilePreview() {
+            const firstName = (document.getElementById('first-name') || {}).value || '';
+            const lastName = (document.getElementById('last-name') || {}).value || '';
+
+            const preview = document.getElementById('photo-preview');
+            if (!preview) return;
+
+            if (firstName && lastName && !selectedPhoto) {
+                const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+                // Replace only when there's no img
+                if (!preview.querySelector('img')) {
+                    preview.innerHTML = `${initials}<div class="photo-overlay">📷</div>`;
+                }
+            }
+        }
+
+        // ---------- Email verification (send/resend/verify) ----------
         function sendVerificationEmail() {
             if (!validateStep(3)) return;
 
-            const email = document.getElementById('email').value.trim();
+            const email = (document.getElementById('email') || {}).value || '';
             const btn = document.getElementById('send-verification-btn');
             const emailDisplay = document.getElementById('verification-email');
             const emailVerificationSection = document.getElementById('email-verification');
-            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            const csrfToken = getCsrfToken();
             const url = '{{ url('driver/send-verification-email') }}';
 
-            if (!email) {
+            if (!email.trim()) {
                 showAlert('error', 'Please enter a valid email address');
                 return;
             }
 
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Sending...';
+            }
 
             $.post(url, { email: email, _token: csrfToken })
-                .done(function(res) {
-                    emailDisplay.textContent = email;
-                    emailVerificationSection.classList.remove('hidden');
+                .done(function (res) {
+                    if (emailDisplay) emailDisplay.textContent = email;
+                    if (emailVerificationSection) emailVerificationSection.classList.remove('hidden');
                     showAlert('success', res.message || 'Verification email sent!');
-                    startemailResendCountdown();
+                    startEmailResendCountdown();
                     nextStep();
                 })
-                .fail(function(xhr) {
+                .fail(function (xhr) {
                     const message = xhr.responseJSON?.message || 'Failed to send verification email';
                     showAlert('error', message);
                 })
-                .always(function() {
-                    // Re-enable button
-                    btn.disabled = false;
-                    btn.textContent = 'Send Verification Email';
+                .always(function () {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = 'Send Verification Email';
+                    }
                 });
-        }
-
-        function getEmailOTP() {
-            const emailotpInputs = document.querySelectorAll('.email-otp-input');
-            return Array.from(emailotpInputs).map(input => input.value.trim()).join('');
         }
 
         function resendVerificationEmail() {
+            const email = (document.getElementById('email') || {}).value || '';
+            if (!email.trim()) {
+                showAlert('error', 'No email found to resend to.');
+                return;
+            }
 
-            const email = document.getElementById('email').value.trim();
-            document.getElementById('verification-email').textContent = email;
-            document.getElementById('email-verification').classList.remove('hidden');
+            const url = '{{ url('driver/send-verification-email') }}';
+            const csrfToken = getCsrfToken();
 
-            var url = '{{ url('driver/send-verification-email') }}';
-
-            $.post(url, { email: email, _token: $('meta[name="csrf-token"]').attr('content') })
-                .done(function(res) {
-                    document.getElementById('verification-email').textContent = email;
-                    document.getElementById('email-verification').classList.remove('hidden');
-                    startemailResendCountdown();
-                    showAlert('success', res.message);
+            $.post(url, { email: email, _token: csrfToken })
+                .done(function (res) {
+                    const emailDisplay = document.getElementById('verification-email');
+                    const emailVerificationSection = document.getElementById('email-verification');
+                    if (emailDisplay) emailDisplay.textContent = email;
+                    if (emailVerificationSection) emailVerificationSection.classList.remove('hidden');
+                    startEmailResendCountdown();
+                    showAlert('success', res.message || 'Verification email sent again!');
                 })
-                .fail(function(xhr) {
-                    showAlert('error', xhr.responseJSON.message || 'Failed to send verification email');
+                .fail(function (xhr) {
+                    showAlert('error', xhr.responseJSON?.message || 'Failed to send verification email');
                 });
-            showAlert('success', 'Verification email sent again!');
         }
 
-        function simulateEmailVerification() {
-            isEmailVerified = true;
-            showAlert('success', 'Email verified successfully!');
-            nextStep();
+        // wrapper name used in your event listeners
+        function sendemailOTPCode() {
+            // alias to resendVerificationEmail (preserves prior behavior)
+            resendVerificationEmail();
         }
 
-        // Phone verification
+        function getEmailOTP() {
+            const inputs = document.querySelectorAll('.email-otp-input');
+            return Array.from(inputs).map(i => i.value.trim()).join('');
+        }
+
+        function verifyemailOTP() {
+            const email = (document.getElementById('email') || {}).value || '';
+            const code = getEmailOTP();
+
+            if (!code || code.length === 0) {
+                showAlert('error', 'Please enter the code.');
+                return;
+            }
+
+            const url = '{{ url('driver/verify-email-code') }}';
+            const csrfToken = getCsrfToken();
+
+            $.post(url, { email: email, code: code, _token: csrfToken })
+                .done(function (res) {
+                    showAlert('success', res.message || 'Email verified!');
+                    isEmailVerified = true;
+                    const emailVerification = document.getElementById('email-verification');
+                    if (emailVerification) emailVerification.classList.add('hidden');
+                    if (window.toastr) toastr.success('Verified Successfully.');
+                    nextStep();
+                })
+                .fail(function (xhr) {
+                    const msg = xhr.responseJSON?.message || 'Invalid code. Please try again.';
+                    showAlert('error', msg);
+                    if (window.toastr) toastr.error(msg);
+                });
+        }
+
+        // Expose email functions for inline usage
+        window.sendVerificationEmail = sendVerificationEmail;
+        window.resendVerificationEmail = resendVerificationEmail;
+        window.sendemailOTPCode = sendemailOTPCode;
+        window.verifyemailOTP = verifyemailOTP;
+
+        // ---------- Phone verification (send/resend/verify) ----------
         function sendOTPCode() {
             if (!validateStep(5)) return;
 
             const btn = document.getElementById('send-sms-btn');
-            const countryCode = document.getElementById('country-code').value.trim();
-            const phoneNumber = document.getElementById('phone-number').value.trim();
+            const countryCode = (document.getElementById('country-code') || {}).value || '';
+            const phoneNumber = (document.getElementById('phone-number') || {}).value || '';
             const phoneDisplay = document.getElementById('phone-display');
-            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            const csrfToken = getCsrfToken();
             const url = '{{ url('driver/send-sms-code') }}';
             const phoneVerificationForm = document.querySelector('.phone-verification-form');
             const otpVerification = document.getElementById('otp-verification');
 
-            // Validate input
-            if (!phoneNumber) {
+            if (!phoneNumber.trim()) {
                 showAlert('error', 'Please enter your phone number');
                 return;
             }
 
-            // Normalize and concatenate
-            const formattedPhone = `${countryCode}${phoneNumber.replace(/\s+/g, '')}`; // no spaces
+            const formattedPhone = `${countryCode}${phoneNumber.replace(/\s+/g, '')}`;
 
-            // Disable button while sending
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Sending...';
+            }
 
-            // Send to backend
-            $.post(url, {
-                phone: formattedPhone,
-                _token: csrfToken
-            })
-                .done(function(res) {
-                    currentPhoneNumber = formattedPhone; // store for verification
-                    phoneDisplay.textContent = formattedPhone; // no spaces in display
-                    console.log(phoneDisplay);
-                    phoneVerificationForm.classList.add('hidden');
-                    otpVerification.classList.remove('hidden');
+            $.post(url, { phone: formattedPhone, _token: csrfToken })
+                .done(function (res) {
+                    currentPhoneNumber = formattedPhone;
+                    if (phoneDisplay) phoneDisplay.textContent = formattedPhone;
+                    if (phoneVerificationForm) phoneVerificationForm.classList.add('hidden');
+                    if (otpVerification) otpVerification.classList.remove('hidden');
                     showAlert('success', res.message || 'Verification code sent!');
-                    startResendCountdown();
-                    document.querySelector('.otp-input').focus();
+                    startPhoneResendCountdown();
+                    const firstOtp = document.querySelector('.otp-input');
+                    if (firstOtp) firstOtp.focus();
                 })
-                .fail(function(xhr) {
+                .fail(function (xhr) {
                     const message = xhr.responseJSON?.message || 'Failed to send SMS code';
                     showAlert('error', message);
                 })
-                .always(function() {
-                    btn.disabled = false;
-                    btn.textContent = 'Send SMS Code';
+                .always(function () {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = 'Send SMS Code';
+                    }
                 });
         }
 
-        // OTP management
-        function initializeOTPInputs() {
+        function getPhoneOTP() {
+            const inputs = document.querySelectorAll('.otp-input');
+            return Array.from(inputs).map(i => i.value.trim()).join('');
+        }
+
+        function verifyOTP() {
             const otpInputs = document.querySelectorAll('.otp-input');
-            const emailotpInputs = document.querySelectorAll('.email-otp-input');
+            const otpCode = getPhoneOTP();
 
-            otpInputs.forEach((input, index) => {
-                input.addEventListener('input', function(e) {
-                    if (e.target.value.length === 1) {
-                        if (index < otpInputs.length - 1) {
-                            otpInputs[index + 1].focus();
+            if (!otpCode || otpCode.length !== otpInputs.length) {
+                showAlert('error', 'Please enter the complete code');
+                return;
+            }
+
+            const csrfToken = getCsrfToken();
+            const url = '{{ url('driver/verify-sms-code') }}';
+            const phoneToVerify = (currentPhoneNumber || '').replace(/\s+/g, '');
+
+            $.post(url, { phone: phoneToVerify, code: otpCode, _token: csrfToken })
+                .done(function (res) {
+                    showAlert('success', res.message || 'Phone verified successfully!');
+                    if (window.toastr) toastr.success('Verified Successfully.');
+                    isPhoneVerified = true;
+                    const otpVerification = document.getElementById('otp-verification');
+                    if (otpVerification) otpVerification.classList.add('hidden');
+                    nextStep();
+                })
+                .fail(function (xhr) {
+                    const message = xhr.responseJSON?.message || 'Invalid code. Please try again.';
+                    showAlert('error', message);
+                    if (window.toastr) toastr.error(message);
+                    otpInputs.forEach(input => input.value = '');
+                    if (otpInputs[0]) otpInputs[0].focus();
+                });
+        }
+
+        // expose phone functions
+        window.sendOTPCode = sendOTPCode;
+        window.verifyOTP = verifyOTP;
+
+        // ---------- OTP inputs handling ----------
+        function initializeOTPInputs() {
+            const otpInputs = Array.from(document.querySelectorAll('.otp-input'));
+            const emailOtpInputs = Array.from(document.querySelectorAll('.email-otp-input'));
+
+            function wireInputs(inputs, onCompleteCheck) {
+                inputs.forEach((input, index) => {
+                    input.setAttribute('maxlength', '1');
+                    input.addEventListener('input', function (e) {
+                        const v = e.target.value;
+                        if (v.length >= 1 && index < inputs.length - 1) {
+                            inputs[index + 1].focus();
                         }
-                    }
-                    checkOTPComplete();
-                });
+                        onCompleteCheck && onCompleteCheck();
+                    });
 
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                        otpInputs[index - 1].focus();
-                    }
-                });
-            });
-
-            emailotpInputs.forEach((input, index) => {
-                input.addEventListener('input', function(e) {
-                    if (e.target.value.length === 1) {
-                        if (index < otpInputs.length - 1) {
-                            otpInputs[index + 1].focus();
+                    input.addEventListener('keydown', function (e) {
+                        if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                            inputs[index - 1].focus();
                         }
-                    }
-                    checkemailOTPComplete();
+                    });
                 });
+            }
 
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                        emailotpInputs[index - 1].focus();
-                    }
-                });
-            });
+            wireInputs(otpInputs, checkOTPComplete);
+            wireInputs(emailOtpInputs, checkEmailOTPComplete);
         }
 
         function checkOTPComplete() {
             const otpInputs = document.querySelectorAll('.otp-input');
             const verifyBtn = document.getElementById('verify-otp-btn');
-
             let isComplete = true;
             otpInputs.forEach(input => {
-                if (input.value.length !== 1) {
-                    isComplete = false;
-                }
+                if ((input.value || '').length !== 1) isComplete = false;
             });
-
-            verifyBtn.disabled = !isComplete;
+            if (verifyBtn) verifyBtn.disabled = !isComplete;
         }
 
-        function checkemailOTPComplete() {
+        function checkEmailOTPComplete() {
             const otpInputs = document.querySelectorAll('.email-otp-input');
             const verifyBtn = document.getElementById('verify-email-otp-btn');
-
             let isComplete = true;
             otpInputs.forEach(input => {
-                if (input.value.length !== 1) {
-                    isComplete = false;
-                }
+                if ((input.value || '').length !== 1) isComplete = false;
             });
-
-            verifyBtn.disabled = !isComplete;
+            if (verifyBtn) verifyBtn.disabled = !isComplete;
         }
 
-        function verifyOTP() {
-            const otpInputs = document.querySelectorAll('.otp-input');
-            let otpCode = '';
+        // ---------- Resend countdowns ----------
+        function startPhoneResendCountdown() {
+            // clear existing
+            if (resendPhoneTimer) clearInterval(resendPhoneTimer);
+            resendPhoneCountdown = 60;
 
-            otpInputs.forEach(input => otpCode += input.value.trim());
-
-            if (otpCode.length !== otpInputs.length) {
-                showAlert('error', 'Please enter the complete code');
-                return;
-            }
-
-            const csrfToken = $('meta[name="csrf-token"]').attr('content');
-            const url = '{{ url('driver/verify-sms-code') }}';
-
-            // Ensure we have a normalized number (no spaces)
-            const phoneToVerify = currentPhoneNumber.replace(/\s+/g, '');
-
-            console.log(phoneToVerify);
-
-            $.post(url, {
-                phone: phoneToVerify,
-                code: otpCode,
-                _token: csrfToken
-            })
-                .done(function(res) {
-                    showAlert('success', res.message || 'Phone verified successfully!');
-                    toastr.success('Verified Successfully.');
-                    isPhoneVerified = true;
-                    document.getElementById('otp-verification').classList.add('hidden');
-                    nextStep();
-                })
-                .fail(function(xhr) {
-                    const message = xhr.responseJSON?.message || 'Invalid code. Please try again.';
-                    showAlert('error', message);
-                    toastr.error(message);
-                    otpInputs.forEach(input => input.value = '');
-                    otpInputs[0].focus();
-                    checkOTPComplete();
-                });
-        }
-
-        function verifyemailOTP() {
-
-            const email = document.getElementById('email').value.trim();
-            const code = getEmailOTP();
-
-            var url = '{{url('driver/verify-email-code')}}';
-
-            $.post(url, { email: email, code: code, _token: $('meta[name="csrf-token"]').attr('content') })
-                .done(function(res) {
-                    showAlert('success', res.message);
-                    isEmailVerified = true;
-                    document.getElementById('email-verification').classList.add('hidden');
-                    toastr.success('Verified Successfully.');
-                    nextStep();
-                })
-                .fail(function(xhr) {
-                    toastr.error('Invalid code. Please try again.');
-                    showAlert('error', 'Invalid code. Please try again.');
-                    checkemailOTPComplete();
-                });
-        }
-
-        function startResendCountdown() {
-            resendCountdown = 60;
             const timerElement = document.getElementById('countdown');
             const resendTimerElement = document.getElementById('resend-timer');
             const resendBtnElement = document.getElementById('resend-btn');
 
-            resendBtnElement.classList.add('hidden');
-            resendTimerElement.classList.remove('hidden');
+            if (resendBtnElement) resendBtnElement.classList.add('hidden');
+            if (resendTimerElement) resendTimerElement.classList.remove('hidden');
 
-            resendTimer = setInterval(() => {
-                resendCountdown--;
-                timerElement.textContent = resendCountdown;
-
-                if (resendCountdown <= 0) {
-                    clearInterval(resendTimer);
-                    resendTimerElement.classList.add('hidden');
-                    resendBtnElement.classList.remove('hidden');
+            resendPhoneTimer = setInterval(() => {
+                resendPhoneCountdown--;
+                if (timerElement) timerElement.textContent = resendPhoneCountdown;
+                if (resendPhoneCountdown <= 0) {
+                    clearInterval(resendPhoneTimer);
+                    if (resendTimerElement) resendTimerElement.classList.add('hidden');
+                    if (resendBtnElement) resendBtnElement.classList.remove('hidden');
                 }
             }, 1000);
         }
-        function startemailResendCountdown() {
-            resendCountdown = 60;
+
+        function startEmailResendCountdown() {
+            if (resendEmailTimer) clearInterval(resendEmailTimer);
+            resendEmailCountdown = 60;
+
             const timerElement = document.getElementById('emailcountdown');
             const resendTimerElement = document.getElementById('resend-email-timer');
             const resendBtnElement = document.getElementById('resend-email-btn');
 
-            resendBtnElement.classList.add('hidden');
-            resendTimerElement.classList.remove('hidden');
+            if (resendBtnElement) resendBtnElement.classList.add('hidden');
+            if (resendTimerElement) resendTimerElement.classList.remove('hidden');
 
-            resendTimer = setInterval(() => {
-                resendCountdown--;
-                timerElement.textContent = resendCountdown;
-
-                if (resendCountdown <= 0) {
-                    clearInterval(resendTimer);
-                    resendTimerElement.classList.add('hidden');
-                    resendBtnElement.classList.remove('hidden');
+            resendEmailTimer = setInterval(() => {
+                resendEmailCountdown--;
+                if (timerElement) timerElement.textContent = resendEmailCountdown;
+                if (resendEmailCountdown <= 0) {
+                    clearInterval(resendEmailTimer);
+                    if (resendTimerElement) resendTimerElement.classList.add('hidden');
+                    if (resendBtnElement) resendBtnElement.classList.remove('hidden');
                 }
             }, 1000);
         }
 
-        // Final signup
+        // ---------- Final signup ----------
         async function completeSignup() {
             if (!validateStep(7)) return;
 
             const formElement = document.getElementById('signup-form');
-            const btn = document.getElementById('complete-signup-btn'); // optional
+            if (!formElement) {
+                showAlert('error', 'Signup form not found.');
+                return;
+            }
+            const btn = document.getElementById('complete-signup-btn');
             const formData = new FormData(formElement);
 
-            // Append or override custom fields not in the form
-            formData.set('phone', currentPhoneNumber.replace(/\s+/g, ''));
+            formData.set('phone', (currentPhoneNumber || '').replace(/\s+/g, ''));
             formData.set('emailVerified', isEmailVerified ? 'true' : 'false');
             formData.set('phoneVerified', isPhoneVerified ? 'true' : 'false');
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+            formData.append('_token', getCsrfToken());
 
-            // Experience
+            // experience
             const selectedExperience = document.querySelector('.experience-option.selected');
             if (selectedExperience) {
-                formData.set('experience', selectedExperience.dataset.value?.trim() || selectedExperience.textContent.trim());
+                formData.set('experience', (selectedExperience.dataset.value || selectedExperience.textContent).trim());
             }
 
-            // Transports
+            // transports
             const selectedTransports = document.querySelectorAll('.transport-pref.selected');
-            formData.delete('transports'); // clear any defaults
-            selectedTransports.forEach((el, i) => {
-                formData.append(`transports[${i}]`, (el.dataset.value || el.textContent).trim());
+            // remove any existing 'transports' keys (FormData doesn't have delete for keys with indexes reliably),
+            // we'll append fresh fields.
+            let idx = 0;
+            selectedTransports.forEach(el => {
+                formData.append(`transports[${idx}]`, (el.dataset.value || el.textContent).trim());
+                idx++;
             });
 
-            // Optional file
-            if (window.selectedPhoto instanceof File) {
+            // optional file
+            if (selectedPhoto instanceof File) {
                 formData.set('profile', selectedPhoto);
             }
 
-            // For debugging: log all formData values
-            for (const [k, v] of formData.entries()) console.log(k, v);
-
-            // Disable button to prevent double submit
             if (btn) {
                 btn.disabled = true;
                 btn.textContent = 'Submitting...';
@@ -1979,26 +2005,24 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(response) {
+                success: function (response) {
                     showAlert('success', response.success || 'Account created successfully! Welcome!');
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 2000);
+                    setTimeout(() => { window.location.href = '/'; }, 1500);
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 422 && xhr.responseJSON?.errors) {
                         let message = '';
                         for (const [field, msgs] of Object.entries(xhr.responseJSON.errors)) {
                             message += msgs.join('<br>') + '<br>';
                         }
-                        toastr.error(message);
+                        if (window.toastr) toastr.error(message);
                         showAlert('error', message);
                     } else {
-                        toastr.error('Something went wrong. Please try again.');
+                        if (window.toastr) toastr.error('Something went wrong. Please try again.');
                         showAlert('error', 'Something went wrong. Please try again.');
                     }
                 },
-                complete: function() {
+                complete: function () {
                     if (btn) {
                         btn.disabled = false;
                         btn.textContent = 'Complete Signup';
@@ -2007,115 +2031,111 @@
             });
         }
 
+        // Expose completeSignup
+        window.completeSignup = completeSignup;
 
-        // Event listeners initialization
+        // ---------- Initialization ----------
         function initializeEventListeners() {
-            const travelerForm = document.querySelector('.traveler-form');
+            try {
+                const travelerForm = document.querySelector('.traveler-form');
+                if (travelerForm) travelerForm.classList.add('active');
 
-            travelerForm.classList.add('active');
+                const firstNameEl = document.getElementById('first-name');
+                const lastNameEl = document.getElementById('last-name');
+                if (firstNameEl) firstNameEl.addEventListener('input', updateProfilePreview);
+                if (lastNameEl) lastNameEl.addEventListener('input', updateProfilePreview);
 
-            // Name inputs for profile preview
-            document.getElementById('first-name').addEventListener('input', updateProfilePreview);
-            document.getElementById('last-name').addEventListener('input', updateProfilePreview);
-
-            // Experience selection
-            document.querySelectorAll('.experience-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    document.querySelectorAll('.experience-option').forEach(o => o.classList.remove('selected'));
-                    this.classList.add('selected');
+                document.querySelectorAll('.experience-option').forEach(option => {
+                    option.addEventListener('click', function () {
+                        document.querySelectorAll('.experience-option').forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
                 });
-            });
 
-            // Transport preferences
-            document.querySelectorAll('.transport-pref').forEach(pref => {
-                pref.addEventListener('click', function() {
-                    this.classList.toggle('selected');
+                document.querySelectorAll('.transport-pref').forEach(pref => {
+                    pref.addEventListener('click', function () {
+                        this.classList.toggle('selected');
+                    });
                 });
-            });
 
-            // Shipping frequency
-            document.querySelectorAll('.frequency-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    document.querySelectorAll('.frequency-option').forEach(o => o.classList.remove('selected'));
-                    this.classList.add('selected');
+                document.querySelectorAll('.frequency-option').forEach(option => {
+                    option.addEventListener('click', function () {
+                        document.querySelectorAll('.frequency-option').forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
                 });
-            });
 
-            // Shipper type change
-            const shipperTypeSelect = document.getElementById('shipper-type');
-            if (shipperTypeSelect) {
-                shipperTypeSelect.addEventListener('change', function() {
-                    const companyNameGroup = document.getElementById('company-name-group');
-                    const companyNameInput = document.getElementById('company-name');
+                const shipperTypeSelect = document.getElementById('shipper-type');
+                if (shipperTypeSelect) {
+                    shipperTypeSelect.addEventListener('change', function () {
+                        const companyNameGroup = document.getElementById('company-name-group');
+                        const companyNameInput = document.getElementById('company-name');
+                        if (this.value === 'business' || this.value === 'association') {
+                            if (companyNameGroup) companyNameGroup.style.display = 'block';
+                            if (companyNameInput) companyNameInput.setAttribute('required', 'required');
+                        } else {
+                            if (companyNameGroup) companyNameGroup.style.display = 'none';
+                            if (companyNameInput) companyNameInput.removeAttribute('required');
+                        }
+                    });
+                }
 
-                    if (this.value === 'business' || this.value === 'association') {
-                        companyNameGroup.style.display = 'block';
-                        companyNameInput.setAttribute('required', 'required');
-                    } else {
-                        companyNameGroup.style.display = 'none';
-                        companyNameInput.removeAttribute('required');
-                    }
+                document.querySelectorAll('.checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('click', function () {
+                        this.classList.toggle('checked');
+                    });
+                });
+
+                const resendBtn = document.getElementById('resend-btn');
+                if (resendBtn) resendBtn.addEventListener('click', sendOTPCode);
+
+                const resendEmailBtn = document.getElementById('resend-email-btn');
+                if (resendEmailBtn) resendEmailBtn.addEventListener('click', sendemailOTPCode);
+
+                // file input change
+                const photoInput = document.getElementById('photo-upload');
+                if (photoInput) photoInput.addEventListener('change', handlePhotoUpload);
+
+                // OTP initialize
+                initializeOTPInputs();
+
+                // If you have inline buttons (onclick="..."), they will still work because we exposed via window.*
+            } catch (e) {
+                console.error('Error initializing event listeners', e);
+            }
+        }
+
+        // Flatpickr init (single place)
+        try {
+            if (typeof flatpickr !== 'undefined') {
+                const today = flatpickr.formatDate(new Date(), "Y-m-d");
+                flatpickr("#birth-date", {
+                    enableTime: false,
+                    dateFormat: "Y-m-d",
+                    maxDate: "today",
+                    clickOpens: true,
+                    closeOnSelect: false,
+                    static: true,
+                    defaultDate: today,
                 });
             }
-
-            // Checkboxes
-            document.querySelectorAll('.checkbox').forEach(checkbox => {
-                checkbox.addEventListener('click', function() {
-                    this.classList.toggle('checked');
-                });
-            });
-
-            // Resend button
-            document.getElementById('resend-btn').addEventListener('click', function() {
-                sendOTPCode();
-            });
-
-            document.getElementById('resend-email-btn').addEventListener('click', function() {
-                sendemailOTPCode();
-            });
+        } catch (e) {
+            console.warn('flatpickr init failed', e);
         }
 
-        // Utility functions
-        function showAlert(type, message) {
-            document.querySelectorAll('.alert').forEach(alert => alert.remove());
-
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span><span>${message}</span>`;
-
-            const activeSection = document.querySelector('.step-section.active');
-            activeSection.insertBefore(alertDiv, activeSection.firstChild);
-
-            setTimeout(() => alertDiv.remove(), 5000);
+        // generate captcha and initialize
+        function initializeSignup() {
+            generateEmailCaptcha();
+            initializeEventListeners();
+            updateProgress(currentStep);
         }
 
-        function showLegalPage(pageType) {
-            alert('Legal page: ' + pageType + ' (to be implemented)');
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeSignup);
-        } else {
-            initializeSignup();
-        }
-
-        $(document).ready(function (){
-            const today = flatpickr.formatDate(new Date(), "Y-m-d");
-            flatpickr("#birth-date", {
-                enableTime: false,
-                dateFormat: "Y-m-d",
-                maxDate: "today",
-                clickOpens: true,
-                closeOnSelect: false,
-                static: true,
-                defaultDate: today,
-            });
-        });
+        // initialize immediately
+        initializeSignup();
 
         console.log('Complete signup script loaded');
-
     });
 </script>
+
 </body>
 </html>
