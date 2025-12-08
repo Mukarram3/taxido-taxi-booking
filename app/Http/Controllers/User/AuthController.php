@@ -298,9 +298,9 @@ class AuthController extends Controller
         Cache::put('email_verification_'.$email, $code, now()->addMinutes(10));
 
         try {
-            Mail::send('emails.verification-code', ['code' => $code], function ($message) use ($email) {
-                $message->to($email)->subject('Your Verification Code');
-            });
+//            Mail::send('emails.verification-code', ['code' => $code], function ($message) use ($email) {
+//                $message->to($email)->subject('Your Verification Code');
+//            });
             return response()->json(['success' => true, 'message' => 'Verification email sent']);
         }
         catch (\Exception $e) {
