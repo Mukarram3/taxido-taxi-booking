@@ -13,11 +13,17 @@ class HomeController extends Controller
     {
         $userriderequests = Userriderequest::with(['user'])
             ->where('status', 'waiting')
-//            ->where('expiry', '>', \Carbon\Carbon::now())
+            ->where('expiry_date', '>', \Carbon\Carbon::now())
             ->whereNull('is_targetted')
             ->orderByDesc('id')
             ->limit(6)
             ->get();
+
+        foreach ($userriderequests as $userriderequest) {
+            $userriderequest->pickup_city = $this->getCityFromAddress($userriderequest->pickup_location);
+            $userriderequest->destination_city = $this->getCityFromAddress($userriderequest->destination_location);
+        }
+
         return view('home', compact('userriderequests'));
     }
     public function search_listing()

@@ -61,7 +61,8 @@ class DriverfarerequestController extends Controller
         if ($userriderrequest->status == 'accepted') {
             return redirect()->route('driver.home')->with('success', 'Ride accepted by another driver');
         }
-        return view('driver-app.negotiation',['userriderequest'=>$userriderrequest]);
+        $driver_fare_requests = Driverfarerequest::where('userriderequest_id', $id)->get();
+        return view('driver-app.negotiation',['userriderequest'=>$userriderrequest,'driver_fare_requests' => $driver_fare_requests]);
 //        return view('driver-app.accept-ride',['userriderequest'=>$userriderrequest]);
     }
     public function request_fare(Request $request)

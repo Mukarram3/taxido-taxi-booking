@@ -786,8 +786,8 @@
         <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}&background=random&color=fff" />
         <div class="user-name">{{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}</div>
         <div class="user-role">
-            <span class="lang-content fr active">Membre depuis {{\Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year}}</span>
-            <span class="lang-content en">Member since {{\Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year}}</span>
+            <span class="lang-content fr active">Membre depuis {{\Illuminate\Support\Facades\Auth::guard('driver')->user()->created_at->year}}</span>
+            <span class="lang-content en">Member since {{\Illuminate\Support\Facades\Auth::guard('driver')->user()->created_at->year}}</span>
         </div>
     </div>
 

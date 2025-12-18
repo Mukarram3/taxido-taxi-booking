@@ -1725,10 +1725,25 @@
 
             @if(\Illuminate\Support\Facades\Auth::guard('driver')->user() || \Illuminate\Support\Facades\Auth::guard('user')->user())
                 <!-- Dashboard DROPDOWN -->
+                @php
+                    $userGuard = \Illuminate\Support\Facades\Auth::guard('user')->check();
+                    $driverGuard = \Illuminate\Support\Facades\Auth::guard('driver')->check();
+
+
+                    $authUser = $userGuard
+                    ? \Illuminate\Support\Facades\Auth::guard('user')->user()
+                    : ($driverGuard ? \Illuminate\Support\Facades\Auth::guard('driver')->user() : null);
+
+                    $role = $userGuard ? 'user' : ($driverGuard ? 'driver' : null);
+                    $fullName = trim(($authUser->firstName ?? '').' '.($authUser->lastName ?? '')) ?: ($authUser->name ?? 'Account');
+                    $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($fullName) . '&background=random&color=fff&size=64';
+
+                @endphp
                 <div class="dropdown">
-                    <button class="btn btn-primary" onclick="toggleDropdown('dashboardDropdown')">
-                        <span class="lang-content fr active">Dashboard</span>
-                        <span class="lang-content en">Dashboard</span>
+                    <button class="btn btn-primary" style="display: flex; align-items: center;" onclick="toggleDropdown('dashboardDropdown')">
+                        <img src="{{ $avatar }}" class="rounded-circle" width="36" style="margin-right: 10px; border-radius: inherit;" height="36" alt="{{ $fullName }}">
+                        <span class="lang-content fr active">{{ $fullName }}</span>
+                        <span class="lang-content en">{{ $fullName }}</span>
                     </button>
                     <div id="dashboardDropdown" class="dropdown-menu">
                         <a href="{{ url('user/dashboard') }}">👤 User Dashboard</a>
@@ -2197,8 +2212,8 @@
                         else $transportIcon = '🚢';
                     }
 
-                    $routeFrom = $offer->pickup_location ?? '-';
-                    $routeTo = $offer->destination_location ? $offer->destination_location ?? '-' : '-';
+                    $routeFrom = $offer->pickup_city ?? '-';
+                    $routeTo = $offer->destination_city ? $offer->destination_city ?? '-' : '-';
                     $packageTypes = json_decode($offer->type_of_package) ?? [];
                 @endphp
 
@@ -2234,10 +2249,10 @@
                         ✅ Arrivée : {{ $offer->delivery_date ?? '-' }}
                     </span>
                             <span style="color: var(--primary); font-size: 12px; font-weight: 600;">
-                        {{ $transportIcon }} {{ $offer->transport_title ?? '-' }}
+                        {{ $transportIcon }} {{ $offer->vehicle_type_needed ?? '-' }}
                     </span>
                             <span style="color: var(--danger); font-size: 11px; font-weight: 600;">
-                        ⏰ Fin réservation : {{ $offer->expiry ?? '-' }}
+                        ⏰ Fin réservation : {{ $offer->expiry_date ?? '-' }}
                     </span>
                         </div>
                     </div>
@@ -2246,7 +2261,7 @@
                         <div class="offer-details">
                             <div class="offer-detail">
                                 <div class="detail-icon">{{ $transportIcon }}</div>
-                                <span class="detail-value">{{ $offer->transport_title ? explode(' ', $offer->transport_title)[0] : '-' }}</span>
+                                <span class="detail-value">{{ $offer->vehicle_type_needed }}</span>
                                 <span class="detail-label">Transport</span>
                             </div>
                             <div class="offer-detail">
@@ -2292,9 +2307,9 @@
                         <button class="btn btn-primary btn-sm">
                             {{ $offer->packages_json ? '🙋 Me proposer' : '🎫 Réserver' }}
                         </button>
-                        <button class="btn btn-outline btn-sm">
+                        <a href="{{ url('user/ride-details?ride_id=' . $offer->id) }}" style="text-decoration: none" class="btn btn-outline btn-sm">
                             👁️ Détails
-                        </button>
+                        </a>
                         <button class="btn btn-outline btn-sm">
                             💬 Chat
                         </button>
@@ -2553,87 +2568,87 @@
 <!-- Scripts -->
 <script>
     // Sample offers data
-    const offersData = [
-        {
-            type: 'reservation',
-            route: { from: 'Paris CDG', to: 'New York JFK' },
-            date: '28 janvier - 14h30',
-            arrival: '28 janvier - 16h30 (heure locale)',
-            transport: 'Air France - Vol AF022',
-            deadline: '26 janvier 23h59',
-            transportType: 'Avion',
-            capacity: '15 kg',
-            duration: '8h',
-            user: { name: 'Thomas M.', rating: 4.9, reviews: 127, verified: true },
-            price: { value: 12, unit: 'par kg', savings: '-65% vs DHL' }
-        },
-        {
-            type: 'reservation',
-            route: { from: 'Marseille', to: 'Alger' },
-            date: '2 février - 20h00',
-            arrival: '3 février - 16h00',
-            transport: 'Corsica Linea - Ferry Danielle Casanova',
-            deadline: '31 janvier 23h59',
-            transportType: 'Ferry',
-            capacity: '30 kg',
-            duration: '20h',
-            user: { name: 'Ahmed K.', rating: 4.9, reviews: 156, verified: true },
-            price: { value: 6, unit: 'par kg', savings: '-75% vs DHL' }
-        },
-        {
-            type: 'reservation',
-            route: { from: 'Paris Nord', to: 'Londres' },
-            date: '30 janvier - 09h15',
-            arrival: '30 janvier - 11h45',
-            transport: 'Eurostar - Train 9015',
-            deadline: '28 janvier 23h59',
-            transportType: 'Eurostar',
-            capacity: '10 kg',
-            duration: '2h30',
-            user: { name: 'Lucas B.', rating: 4.8, reviews: 203, verified: true },
-            price: { value: 8, unit: 'par kg', savings: '-60% vs Chronopost' }
-        },
-        {
-            type: 'reservation',
-            route: { from: 'Lyon', to: 'Barcelone' },
-            date: '5 février - 06h00',
-            arrival: '5 février - 13h30',
-            transport: 'FlixBus - Ligne 732',
-            deadline: '3 février 23h59',
-            transportType: 'FlixBus',
-            capacity: '20 kg',
-            duration: '7h30',
-            user: { name: 'Emma R.', rating: 4.7, reviews: 89, verified: true },
-            price: { value: 5, unit: 'par kg', savings: '-70% vs UPS' }
-        },
-        {
-            type: 'cotransport',
-            route: { from: 'Lyon', to: 'Marseille' },
-            date: 'Demain',
-            arrival: 'Demain soir (18h00)',
-            transport: 'Mercedes Vito - Van 9 places',
-            deadline: '8 heures',
-            transportType: 'Mercedes Vito',
-            capacity: 'Meuble',
-            duration: '4h',
-            user: { name: 'Marie D.', rating: 5.0, reviews: 89 },
-            price: { value: 65, unit: 'Total', savings: '-70% vs pro' },
-            urgent: true
-        },
-        {
-            type: 'cotransport',
-            route: { from: 'Paris', to: 'Lille' },
-            date: '8 février',
-            arrival: '8 février - 11h30',
-            transport: 'Renault Master - Fourgon L3H2',
-            deadline: '5 février 23h59',
-            transportType: 'Renault Master',
-            capacity: 'Électroménager',
-            duration: '2h30',
-            user: { name: 'Pierre L.', rating: 4.6, reviews: 45 },
-            price: { value: 85, unit: 'Total', savings: '-60% vs déménageur' }
-        }
-    ];
+    // const offersData = [
+    //     {
+    //         type: 'reservation',
+    //         route: { from: 'Paris CDG', to: 'New York JFK' },
+    //         date: '28 janvier - 14h30',
+    //         arrival: '28 janvier - 16h30 (heure locale)',
+    //         transport: 'Air France - Vol AF022',
+    //         deadline: '26 janvier 23h59',
+    //         transportType: 'Avion',
+    //         capacity: '15 kg',
+    //         duration: '8h',
+    //         user: { name: 'Thomas M.', rating: 4.9, reviews: 127, verified: true },
+    //         price: { value: 12, unit: 'par kg', savings: '-65% vs DHL' }
+    //     },
+    //     {
+    //         type: 'reservation',
+    //         route: { from: 'Marseille', to: 'Alger' },
+    //         date: '2 février - 20h00',
+    //         arrival: '3 février - 16h00',
+    //         transport: 'Corsica Linea - Ferry Danielle Casanova',
+    //         deadline: '31 janvier 23h59',
+    //         transportType: 'Ferry',
+    //         capacity: '30 kg',
+    //         duration: '20h',
+    //         user: { name: 'Ahmed K.', rating: 4.9, reviews: 156, verified: true },
+    //         price: { value: 6, unit: 'par kg', savings: '-75% vs DHL' }
+    //     },
+    //     {
+    //         type: 'reservation',
+    //         route: { from: 'Paris Nord', to: 'Londres' },
+    //         date: '30 janvier - 09h15',
+    //         arrival: '30 janvier - 11h45',
+    //         transport: 'Eurostar - Train 9015',
+    //         deadline: '28 janvier 23h59',
+    //         transportType: 'Eurostar',
+    //         capacity: '10 kg',
+    //         duration: '2h30',
+    //         user: { name: 'Lucas B.', rating: 4.8, reviews: 203, verified: true },
+    //         price: { value: 8, unit: 'par kg', savings: '-60% vs Chronopost' }
+    //     },
+    //     {
+    //         type: 'reservation',
+    //         route: { from: 'Lyon', to: 'Barcelone' },
+    //         date: '5 février - 06h00',
+    //         arrival: '5 février - 13h30',
+    //         transport: 'FlixBus - Ligne 732',
+    //         deadline: '3 février 23h59',
+    //         transportType: 'FlixBus',
+    //         capacity: '20 kg',
+    //         duration: '7h30',
+    //         user: { name: 'Emma R.', rating: 4.7, reviews: 89, verified: true },
+    //         price: { value: 5, unit: 'par kg', savings: '-70% vs UPS' }
+    //     },
+    //     {
+    //         type: 'cotransport',
+    //         route: { from: 'Lyon', to: 'Marseille' },
+    //         date: 'Demain',
+    //         arrival: 'Demain soir (18h00)',
+    //         transport: 'Mercedes Vito - Van 9 places',
+    //         deadline: '8 heures',
+    //         transportType: 'Mercedes Vito',
+    //         capacity: 'Meuble',
+    //         duration: '4h',
+    //         user: { name: 'Marie D.', rating: 5.0, reviews: 89 },
+    //         price: { value: 65, unit: 'Total', savings: '-70% vs pro' },
+    //         urgent: true
+    //     },
+    //     {
+    //         type: 'cotransport',
+    //         route: { from: 'Paris', to: 'Lille' },
+    //         date: '8 février',
+    //         arrival: '8 février - 11h30',
+    //         transport: 'Renault Master - Fourgon L3H2',
+    //         deadline: '5 février 23h59',
+    //         transportType: 'Renault Master',
+    //         capacity: 'Électroménager',
+    //         duration: '2h30',
+    //         user: { name: 'Pierre L.', rating: 4.6, reviews: 45 },
+    //         price: { value: 85, unit: 'Total', savings: '-60% vs déménageur' }
+    //     }
+    // ];
 
     // Populate offers grid
     function populateOffers() {
