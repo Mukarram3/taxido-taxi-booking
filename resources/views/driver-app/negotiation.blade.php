@@ -1030,7 +1030,7 @@
                         }
 
                         $routeFrom = $userriderequest->pickup_location ?? '-';
-                        $routeTo = $userriderequest->destination_location ? $offer->destination_location ?? '-' : '-';
+                        $routeTo = $userriderequest->destination_location ? $userriderequest->destination_location ?? '-' : '-';
                     @endphp
                     <!-- Transport Details -->
                     <div class="transport-details">
@@ -1157,63 +1157,37 @@
                             </div>
                         </div>
 
-                        <div class="price-timeline">
-                            <div class="price-item sender">
-                                <div class="price-offer">
-                                    <div class="offer-info">
-                                        <div class="offer-author">
-                                            👤 {{ $userriderequest->user->firstName }}.
-                                            (<span data-lang="fr" class="active">Expéditeur</span>
-                                            <span data-lang="en">Sender</span>)
+                        @foreach($driver_fare_requests as $driver_fare_request)
+                            <div class="price-timeline">
+                                <div class="price-item sender">
+                                    <div class="price-offer">
+                                        <div class="offer-info">
+                                            <div class="offer-author">
+                                                👤 {{ $driver_fare_request->driver->firstName }}.
+                                                (<span data-lang="fr" class="active">Carrier</span>
+                                                <span data-lang="en">Carrier</span>)
+                                            </div>
+                                            <div class="offer-amount">{{ $driver_fare_request->requested_fare }}€</div>
+                                            <div class="offer-time">
+                                                <span data-lang="fr" class="active">Il y a 2 heures</span>
+                                                <span data-lang="en">{{ $driver_fare_request->updated_at->diffForHumans(now()) }}</span>
+                                            </div>
                                         </div>
-                                        <div class="offer-amount">50€</div>
-                                        <div class="offer-time">
-                                            <span data-lang="fr" class="active">Il y a 2 heures</span>
-                                            <span data-lang="en">2 hours ago</span>
-                                        </div>
-                                    </div>
-                                    <div class="offer-status-badge rejected" data-lang="fr" class="active">Refusée</div>
-                                    <div class="offer-status-badge rejected" data-lang="en">Rejected</div>
-                                </div>
-                            </div>
 
-                            <div class="price-item transporter">
-                                <div class="price-offer">
-                                    <div class="offer-info">
-                                        <div class="offer-author">
-                                            🚚 Pierre L.
-                                            (<span data-lang="fr" class="active">Transporteur</span>
-                                            <span data-lang="en">Transporter</span>)
-                                        </div>
-                                        <div class="offer-amount">85€</div>
-                                        <div class="offer-time">
-                                            <span data-lang="fr" class="active">Il y a 1 heure</span>
-                                            <span data-lang="en">1 hour ago</span>
-                                        </div>
-                                    </div>
-                                    <div class="offer-status-badge rejected" data-lang="fr" class="active">Refusée</div>
-                                    <div class="offer-status-badge rejected" data-lang="en">Rejected</div>
-                                </div>
-                            </div>
+                                        @if($loop->last)
+                                            <div class="offer-status-badge current" data-lang="fr" class="active">En cours</div>
+                                            <div class="offer-status-badge current" data-lang="en">Current</div>
+                                        @else
+                                            <div class="offer-status-badge rejected" data-lang="fr" class="active">Refusée</div>
+                                            <div class="offer-status-badge rejected" data-lang="en">Rejected</div>
+                                        @endif
 
-                            <div class="price-item sender">
-                                <div class="price-offer">
-                                    <div class="offer-info">
-                                        <div class="offer-author">
-                                            👤 Sophie M.
-                                            (<span data-lang="fr" class="active">Expéditeur</span>
-                                            <span data-lang="en">Sender</span>)
-                                        </div>
-                                        <div class="offer-amount">65€</div>
-                                        <div class="offer-time">
-                                            <span data-lang="fr" class="active">Il y a 30 minutes</span>
-                                            <span data-lang="en">30 minutes ago</span>
-                                        </div>
+
+
                                     </div>
-                                    <div class="offer-status-badge current" data-lang="fr" class="active">En cours</div>
-                                    <div class="offer-status-badge current" data-lang="en">Current</div>
                                 </div>
-                            </div>
+
+                            @endforeach
                         </div>
                     </div>
 
