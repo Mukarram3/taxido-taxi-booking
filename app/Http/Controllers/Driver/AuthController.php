@@ -298,8 +298,8 @@ class AuthController extends Controller
 
         $driver = Driver::where('email', $request->email)->first();
 
-        if (!$driver){
-            return response()->json(['success' => false, 'message' => 'Email not registered']);
+        if ($driver){
+            return response()->json(['success' => false, 'message' => 'Email Already registered']);
         }
 
         $code = rand(100000, 999999); // 6-digit code
@@ -328,12 +328,12 @@ class AuthController extends Controller
 
         $cachedCode = Cache::get('email_verification_'.$request->email);
 
-//        if ($cachedCode && $cachedCode == $request->code) {
+        if ($cachedCode && $cachedCode == $request->code) {
             // mark as verified (you can store in session)
             session(['email_verified' => true]);
 
             return response()->json(['success' => true, 'message' => 'Email verified']);
-//        }
+        }
 
         return response()->json(['success' => false, 'message' => 'Invalid or expired code'], 422);
     }
@@ -352,18 +352,18 @@ class AuthController extends Controller
         $message = 'Your verification code is: ' . $code;
 
         try {
-            $account_sid = env('TWILIO_SID_KEY');
-            $auth_token = env('TWILIO_AUTH_TOKEN');
-            $twilio_number =  env('TWILIO_NUMBER');
-
-            $client = new Client($account_sid, $auth_token);
-            $client->messages->create(
-                $request->phone,
-                array(
-                    'from' => $twilio_number,
-                    'body' => $message
-                )
-            );
+//            $account_sid = env('TWILIO_SID_KEY');
+//            $auth_token = env('TWILIO_AUTH_TOKEN');
+//            $twilio_number =  env('TWILIO_NUMBER');
+//
+//            $client = new Client($account_sid, $auth_token);
+//            $client->messages->create(
+//                $request->phone,
+//                array(
+//                    'from' => $twilio_number,
+//                    'body' => $message
+//                )
+//            );
             return response()->json(['success' => true, 'message' => 'SMS code sent']);
         }
         catch (\Exception $exception){

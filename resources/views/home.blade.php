@@ -1101,10 +1101,10 @@
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .offer-actions .btn {
-            flex: 1;
             min-width: 75px;
             padding: 7px 10px;
             font-size: 12px;
@@ -1711,7 +1711,7 @@
                     <span class="lang-content fr active">Le Concept</span>
                     <span class="lang-content en">The Concept</span>
                 </a></li>
-            <li><a href="#" class="nav-link">
+            <li><a href="{{ url('/search-listing') }}" class="nav-link">
                     <span class="lang-content fr active">Voir les annonces</span>
                     <span class="lang-content en">View listings</span>
                 </a></li>
@@ -1748,6 +1748,7 @@
                     <div id="dashboardDropdown" class="dropdown-menu">
                         <a href="{{ url('user/dashboard') }}">👤 User Dashboard</a>
                         <a href="{{ url('driver/dashboard') }}">🚗 Driver Dashboard</a>
+                        <a href="{{ $userGuard ? url('user/logout') : url('driver/logout') }}">🔓 Logout</a>
                     </div>
                 </div>
             @else
@@ -2275,9 +2276,9 @@
                                 </span>
                                 <span class="detail-label">Type</span>
                             </div>
-                            <div class="offer-detail">
+                            <div class="offer-detail" data-ride-id="{{ $offer->id }}">
                                 <div class="detail-icon">⏱️</div>
-                                <span class="detail-value">-</span>
+                                <span class="detail-value duration">-</span>
                                 <span class="detail-label">Durée</span>
                             </div>
                         </div>
@@ -2307,7 +2308,7 @@
                         <button class="btn btn-primary btn-sm">
                             {{ $offer->packages_json ? '🙋 Me proposer' : '🎫 Réserver' }}
                         </button>
-                        <a href="{{ url('user/ride-details?ride_id=' . $offer->id) }}" style="text-decoration: none" class="btn btn-outline btn-sm">
+                        <a href="{{ url('driver/accept-ride/' . $offer->id) }}" style="text-decoration: none" class="btn btn-outline btn-sm">
                             👁️ Détails
                         </a>
                         <button class="btn btn-outline btn-sm">
@@ -2323,7 +2324,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 40px;">
-            <a href="#" class="btn btn-primary btn-large">
+            <a href="{{ url('/search-listing') }}" class="btn btn-primary btn-large">
                 <span class="lang-content fr active">Voir toutes les annonces →</span>
                 <span class="lang-content en">See all offers →</span>
             </a>
@@ -2707,9 +2708,9 @@
                                     <span class="detail-value">${offer.capacity}</span>
                                     <span class="detail-label">${offer.type === 'reservation' ? 'Capacité' : 'Type'}</span>
                                 </div>
-                                <div class="offer-detail">
+                                <div class="offer-detail" data-ride-id="${offer.id}">
                                     <div class="detail-icon">⏱️</div>
-                                    <span class="detail-value">${offer.duration}</span>
+                                    <span class="detail-value duration">${offer.duration}</span>
                                     <span class="detail-label">Durée</span>
                                 </div>
                             </div>
@@ -2810,7 +2811,7 @@
         switchLanguage(preferredLang);
 
         // Populate offers
-        populateOffers();
+        // populateOffers();
     });
 
     function toggleDropdown(id) {
@@ -2833,5 +2834,69 @@
         }
     });
 </script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=geometry&callback=initMap"
+    async defer></script>
+
+<script>
+    let directionsService;
+
+    const userRideRequests = @json($userriderequests);
+
+    function initMap() {
+        directionsService = new google.maps.DirectionsService();
+        calculateAllRides();
+    }
+
+    function calculateAllRides() {
+        userRideRequests.forEach(ride => {
+            calculateRideDistanceDuration(
+                ride.pickup_location,
+                ride.destination_location,
+                ride.id
+            );
+        });
+    }
+
+    function calculateRideDistanceDuration(origin, destination, rideId) {
+        directionsService.route(
+            {
+                origin: origin,
+                destination: destination,
+                travelMode: google.maps.TravelMode.DRIVING
+            },
+            (result, status) => {
+                if (status === "OK") {
+                    let totalMeters = 0;
+                    let totalSeconds = 0;
+
+                    result.routes[0].legs.forEach(leg => {
+                        totalMeters += leg.distance.value;
+                        totalSeconds += leg.duration.value;
+                    });
+
+                    const km = (totalMeters / 1000).toFixed(2);
+
+                    const hours = Math.floor(totalSeconds / 3600);
+                    const minutes = Math.ceil((totalSeconds % 3600) / 60);
+
+                    updateRideUI(rideId, km, hours, minutes);
+                } else {
+                    console.error("Route error:", status);
+                }
+            }
+        );
+    }
+
+    function updateRideUI(rideId, km, hours, minutes) {
+        const rideDiv = document.querySelector(`[data-ride-id="${rideId}"]`);
+
+        if (!rideDiv) return;
+
+        // rideDiv.querySelector('.distance').innerText = `${km} km`;
+        rideDiv.querySelector('.duration').innerText = `${hours}h ${minutes}m`;
+    }
+</script>
+
 </body>
 </html>

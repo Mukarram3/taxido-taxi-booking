@@ -87,7 +87,7 @@
         .sidebar {
             position: fixed;
             left: 0;
-            top: 72px;
+            top: 0;
             width: 280px;
             height: calc(100vh - 72px);
             background: white;
@@ -777,8 +777,10 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <div class="logo-icon">JC</div>
-            <div class="logo-text">Je Confie</div>
+            <a href="{{ url('/') }}" style="text-decoration: none;text-decoration: none;display: flex;flex-direction: row;align-items: center;">
+                <div class="logo-icon">JC</div>
+                <div class="logo-text" style="margin-left: 10px">Je Confie</div>
+            </a>
         </div>
     </div>
 

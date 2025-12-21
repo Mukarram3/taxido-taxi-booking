@@ -4,16 +4,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="taxido">
-    <meta name="keywords" content="taxido">
-    <meta name="author" content="taxido">
+    <meta name="description" content="JeConfie - Create Account">
+    <meta name="keywords" content="jeconfie, shipping, account">
+    <meta name="author" content="JeConfie">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <link rel="icon" href="{{asset('assets/images/logo/favicon.png')}}" type="image/x-icon">
     <title>Create Account - JeConfie</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         * {
             margin: 0;
@@ -21,20 +23,7 @@
             box-sizing: border-box;
         }
 
-        .flatpickr-wrapper{
-            display: inline-grid !important;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-            color: #1a202c;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-        }
-
-        /* VARIABLES */
+        /* CSS Variables */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -48,9 +37,23 @@
             --border: #e5e7eb;
             --text: #374151;
             --text-light: #6b7280;
+            --transition: all 0.3s ease;
         }
 
-        /* NAVIGATION */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            color: var(--text);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+
+        .flatpickr-wrapper {
+            display: inline-grid !important;
+        }
+
+        /* ===== NAVIGATION ===== */
         .navbar {
             position: fixed;
             top: 0;
@@ -59,13 +62,13 @@
             backdrop-filter: blur(20px);
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .nav-container {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -75,8 +78,8 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 24px;
+            gap: 0.75rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
@@ -91,14 +94,14 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
+            font-size: 1.125rem;
             font-weight: bold;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 32px;
+            gap: 2rem;
             align-items: center;
         }
 
@@ -106,7 +109,7 @@
             text-decoration: none;
             color: var(--text);
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: var(--transition);
         }
 
         .nav-link:hover {
@@ -115,22 +118,25 @@
 
         .nav-actions {
             display: flex;
-            gap: 16px;
+            gap: 1rem;
             align-items: center;
         }
 
+        /* ===== BUTTONS ===== */
         .btn {
-            padding: 12px 24px;
+            padding: 0.75rem 1.5rem;
             border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.875rem;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 0.5rem;
+            line-height: 1;
         }
 
         .btn-ghost {
@@ -150,9 +156,14 @@
             box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .btn-secondary {
@@ -166,11 +177,17 @@
             color: white;
         }
 
-        /* MAIN CONTENT */
+        .btn-large {
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-top: 72px;
             min-height: calc(100vh - 72px);
-            padding: 40px 0;
+            padding: 2.5rem 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -179,30 +196,60 @@
         .signup-container {
             max-width: 650px;
             width: 100%;
-            margin: 0 24px;
+            margin: 0 1.5rem;
         }
 
-        /* SIGNUP CARD */
         .signup-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 24px;
-            padding: 40px;
+            padding: 2.5rem;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
         }
 
-        /* PROGRESS INDICATOR */
+        /* ===== LANGUAGE SWITCH ===== */
+        .language-switch {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .lang-btn {
+            padding: 0.375rem 0.75rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== PROGRESS INDICATOR ===== */
         .progress-container {
-            margin-bottom: 32px;
+            margin-bottom: 2rem;
         }
 
         .progress-steps {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 0.375rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
 
@@ -216,9 +263,9 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 0.75rem;
             color: var(--text-light);
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .progress-step.active {
@@ -237,7 +284,7 @@
             width: 30px;
             height: 2px;
             background: var(--border);
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .progress-line.completed {
@@ -246,58 +293,30 @@
 
         .progress-title {
             text-align: center;
-            font-size: 14px;
+            font-size: 0.875rem;
             color: var(--text-light);
             font-weight: 600;
         }
 
-        .language-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .lang-btn {
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            color: white;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .lang-btn.active {
-            background: white;
-            color: var(--primary);
-        }
-
-        .lang-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
+        /* ===== SIGNUP HEADER ===== */
         .signup-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 2rem;
         }
 
         .signup-title {
             font-size: 2rem;
             font-weight: 800;
             color: var(--dark);
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
         }
 
         .signup-subtitle {
             color: var(--text-light);
-            font-size: 14px;
+            font-size: 0.875rem;
         }
 
-        /* STEP SECTIONS */
+        /* ===== STEP SECTIONS ===== */
         .step-section {
             display: none;
         }
@@ -306,53 +325,12 @@
             display: block;
         }
 
-        /* ACCOUNT TYPE SELECTOR */
-        .account-types {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .account-type {
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 20px 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .account-type.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-        .account-type-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .account-type-title {
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 4px;
-            font-size: 1rem;
-        }
-
-        .account-type-description {
-            font-size: 12px;
-            color: var(--text-light);
-            line-height: 1.4;
-        }
-
-        /* PHOTO UPLOAD */
+        /* ===== PHOTO UPLOAD ===== */
         .photo-upload-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 1.5rem;
         }
 
         .photo-preview {
@@ -366,12 +344,12 @@
             color: white;
             font-size: 3rem;
             font-weight: bold;
-            margin-bottom: 16px;
+            margin-bottom: 1rem;
             border: 4px solid white;
             box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
 
@@ -397,7 +375,7 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 14px;
+            font-size: 0.875rem;
             border: 3px solid white;
         }
 
@@ -409,12 +387,12 @@
             background: none;
             border: 2px dashed var(--border);
             border-radius: 8px;
-            padding: 12px 24px;
+            padding: 0.75rem 1.5rem;
             color: var(--primary);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .photo-upload-btn:hover {
@@ -422,185 +400,24 @@
             background: rgba(99, 102, 241, 0.05);
         }
 
-        /* EMAIL VERIFICATION */
-        .verification-container {
-            text-align: center;
-            margin: 24px 0;
-        }
-
-        .verification-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
-        }
-
-        .verification-email {
-            font-weight: 700;
-            color: var(--dark);
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-        }
-
-        .verification-steps {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .verification-step {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: var(--text);
-        }
-
-        .verification-step:last-child {
-            margin-bottom: 0;
-        }
-
-        .step-number {
-            width: 24px;
-            height: 24px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        /* OTP VERIFICATION */
-        .otp-container {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 24px 0;
-        }
-
-        .otp-input, .email-otp-input {
-            width: 50px;
-            height: 50px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .otp-input:focus, .email-otp-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .otp-info {
-            background: rgba(6, 182, 212, 0.1);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .otp-info-text {
-            font-size: 13px;
-            color: #0891b2;
-            margin-bottom: 12px;
-        }
-
-        .resend-timer, .resend-email-timer {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .resend-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
-            font-size: 14px;
-        }
-
-        .phone-display {
-            font-weight: 700;
-            color: var(--dark);
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-        }
-
-        /* CAPTCHA */
-        .captcha-container {
-            background: var(--light);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .captcha-display {
-            font-family: 'Courier New', monospace;
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 8px;
-            color: var(--dark);
-            background: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            user-select: none;
-            text-decoration: line-through;
-            text-decoration-color: rgba(0,0,0,0.3);
-        }
-
-        .captcha-refresh {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: underline;
-        }
-
-        .captcha-refresh:hover {
-            color: var(--primary-dark);
-        }
-
-        /* FORM ELEMENTS */
+        /* ===== FORM ELEMENTS ===== */
         .form-section {
-            margin-bottom: 24px;
+            margin-bottom: 1.5rem;
         }
 
         .section-title {
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 16px;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
         .form-grid {
             display: grid;
-            gap: 16px;
+            gap: 1rem;
         }
 
         .form-grid.two-columns {
@@ -610,11 +427,11 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 0.375rem;
         }
 
         .form-label {
-            font-size: 13px;
+            font-size: 0.8125rem;
             font-weight: 600;
             color: var(--text);
         }
@@ -623,17 +440,22 @@
             color: var(--danger);
         }
 
-        .form-input, .form-select, .form-textarea {
-            padding: 12px 14px;
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 0.75rem 0.875rem;
             border: 2px solid var(--border);
             border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            transition: var(--transition);
             background: white;
             font-family: inherit;
+            width: 100%;
         }
 
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -646,7 +468,7 @@
 
         .phone-input-group {
             display: flex;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
         .country-select {
@@ -657,85 +479,148 @@
             flex: 1;
         }
 
-        /* EXPERIENCE & PREFERENCES */
-        .experience-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+        /* ===== OTP INPUTS ===== */
+        .otp-container {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 1.5rem 0;
         }
 
-        .experience-option {
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 12px 8px;
+        .otp-input,
+        .email-otp-input {
+            width: 50px;
+            height: 50px;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
+            font-size: 1.125rem;
+            font-weight: bold;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            transition: var(--transition);
         }
 
-        .experience-option.selected {
+        .otp-input:focus,
+        .email-otp-input:focus {
+            outline: none;
             border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .experience-title {
-            font-weight: 600;
-            font-size: 13px;
+        /* ===== VERIFICATION ===== */
+        .verification-container {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .verification-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
+        }
+
+        .verification-email,
+        .phone-display {
+            font-weight: 700;
             color: var(--dark);
-            margin-bottom: 2px;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
         }
 
-        .experience-description {
-            font-size: 11px;
+        .otp-info {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.25rem 0;
+            text-align: center;
+        }
+
+        .otp-info-text {
+            font-size: 0.8125rem;
+            color: #0891b2;
+            margin-bottom: 0.75rem;
+        }
+
+        .resend-timer,
+        .resend-email-timer {
+            font-size: 0.875rem;
             color: var(--text-light);
         }
 
-        .transport-preferences {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-
-        .transport-pref {
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
+        .resend-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
+            text-decoration: underline;
+            font-size: 0.875rem;
+            padding: 0.5rem;
         }
 
-        .transport-pref.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
+        .resend-btn:hover {
+            color: var(--primary-dark);
         }
 
-        .transport-icon {
+        /* ===== CAPTCHA ===== */
+        .captcha-container {
+            background: var(--light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1.25rem 0;
+            text-align: center;
+        }
+
+        .captcha-display {
+            font-family: 'Courier New', monospace;
             font-size: 1.5rem;
-            margin-bottom: 4px;
-        }
-
-        .transport-name {
-            font-size: 12px;
-            font-weight: 600;
+            font-weight: bold;
+            letter-spacing: 8px;
             color: var(--dark);
+            background: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            user-select: none;
+            text-decoration: line-through;
+            text-decoration-color: rgba(0,0,0,0.3);
         }
 
+        .captcha-refresh {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            text-decoration: underline;
+        }
+
+        .captcha-refresh:hover {
+            color: var(--primary-dark);
+        }
+
+        /* ===== FREQUENCY & OPTIONS ===== */
         .frequency-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 0.75rem;
         }
 
         .frequency-option {
             border: 2px solid var(--border);
             border-radius: 10px;
-            padding: 16px 12px;
+            padding: 1rem 0.75rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             background: white;
         }
 
@@ -746,108 +631,25 @@
 
         .frequency-title {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.875rem;
             color: var(--dark);
-            margin-bottom: 4px;
+            margin-bottom: 0.25rem;
         }
 
         .frequency-description {
-            font-size: 11px;
+            font-size: 0.6875rem;
             color: var(--text-light);
         }
 
-        /* VERIFICATION INFO */
-        .verification-info {
-            background: rgba(6, 182, 212, 0.1);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 16px 0;
-        }
-
-        .verification-title {
-            font-weight: 600;
-            color: #0891b2;
-            font-size: 14px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .verification-text {
-            font-size: 13px;
-            color: #0891b2;
-            line-height: 1.4;
-        }
-
-        /* TERMS */
-        .terms-section {
-            margin: 24px 0;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .checkbox {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .checkbox.checked {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-        .checkbox-label {
-            font-size: 13px;
-            color: var(--text);
-            line-height: 1.4;
-            cursor: pointer;
-        }
-
-        .checkbox-label a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .checkbox-label a:hover {
-            text-decoration: underline;
-        }
-
-        /* FORM SPECIFIC SECTIONS */
-        .traveler-form, .shipper-form {
-            display: none;
-        }
-
-        .traveler-form.active, .shipper-form.active {
-            display: block;
-        }
-
-        /* ALERTS */
+        /* ===== ALERTS ===== */
         .alert {
-            padding: 12px 16px;
+            padding: 0.75rem 1rem;
             border-radius: 10px;
-            margin-bottom: 16px;
-            font-size: 13px;
+            margin-bottom: 1rem;
+            font-size: 0.8125rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
         .alert-success {
@@ -868,24 +670,93 @@
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
-        /* FORM ACTIONS */
-        .form-actions {
-            margin-top: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* ===== VERIFICATION INFO ===== */
+        .verification-info {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
         }
 
-        .btn-large {
-            padding: 16px 24px;
-            font-size: 16px;
-            border-radius: 12px;
-            width: 100%;
+        .verification-title {
+            font-weight: 600;
+            color: #0891b2;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .verification-text {
+            font-size: 0.8125rem;
+            color: #0891b2;
+            line-height: 1.4;
+        }
+
+        /* ===== CHECKBOXES ===== */
+        .terms-section {
+            margin: 1.5rem 0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            min-height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            margin-top: 0.125rem;
+        }
+
+        .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .checkbox-label {
+            font-size: 0.8125rem;
+            color: var(--text);
+            line-height: 1.4;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .checkbox-label a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== FORM ACTIONS ===== */
+        .form-actions {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .step-navigation {
             display: flex;
-            gap: 12px;
+            gap: 0.75rem;
         }
 
         .btn-back {
@@ -898,9 +769,9 @@
 
         .login-link {
             text-align: center;
-            font-size: 14px;
+            font-size: 0.875rem;
             color: var(--text-light);
-            margin-top: 16px;
+            margin-top: 1rem;
         }
 
         .login-link a {
@@ -909,68 +780,119 @@
             font-weight: 600;
         }
 
-        /* RESPONSIVE */
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
         @media (max-width: 768px) {
             .nav-menu {
                 display: none;
             }
 
+            .signup-container {
+                margin: 0 1rem;
+            }
+
             .signup-card {
-                padding: 24px;
-                margin: 0 16px;
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+
+            .signup-title {
+                font-size: 1.5rem;
             }
 
             .form-grid.two-columns {
                 grid-template-columns: 1fr;
             }
 
-            .account-types {
-                grid-template-columns: 1fr;
-            }
-
-            .experience-options, .transport-preferences {
+            .frequency-options {
                 grid-template-columns: 1fr;
             }
 
             .otp-container {
-                gap: 8px;
+                gap: 0.5rem;
             }
 
-            .otp-input {
-                width: 45px;
-                height: 45px;
-                font-size: 16px;
-            }
-
+            .otp-input,
             .email-otp-input {
                 width: 45px;
                 height: 45px;
-                font-size: 16px;
+                font-size: 1rem;
             }
 
             .language-switch {
                 position: static;
                 justify-content: center;
-                margin-bottom: 20px;
+                margin-bottom: 1.25rem;
             }
 
             .progress-steps {
-                gap: 4px;
+                gap: 0.25rem;
             }
 
             .progress-step {
                 width: 32px;
                 height: 32px;
-                font-size: 11px;
+                font-size: 0.6875rem;
             }
 
             .progress-line {
                 width: 20px;
             }
+
+            .section-title {
+                font-size: 1rem;
+            }
+
+            .photo-preview {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+
+            .verification-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 1.5rem;
+            }
+
+            .step-navigation {
+                flex-direction: column;
+            }
+
+            .btn-back,
+            .btn-next {
+                flex: 1;
+            }
         }
 
-        .hidden {
-            display: none !important;
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 1rem 0;
+            }
+
+            .signup-card {
+                padding: 1.25rem;
+            }
+
+            .otp-input,
+            .email-otp-input {
+                width: 40px;
+                height: 40px;
+                font-size: 0.875rem;
+            }
+
+            .captcha-display {
+                font-size: 1.25rem;
+                letter-spacing: 4px;
+            }
         }
     </style>
 </head>
@@ -1033,9 +955,8 @@
             <form action="{{route('user.verify_otp')}}" method="POST" id="signup-form">
                 @csrf
 
-                <!-- STEP 1: ACCOUNT TYPE & PHOTO -->
+                <!-- STEP 1: PHOTO -->
                 <div class="step-section active" id="step-section-1">
-                    <!-- PHOTO UPLOAD -->
                     <div class="photo-upload-container">
                         <div class="photo-preview" onclick="triggerPhotoUpload()" id="photo-preview">
                             👤
@@ -1121,7 +1042,6 @@
                             <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
                         </div>
 
-                        <!-- CAPTCHA ANTI-SPAM -->
                         <div class="form-group">
                             <label class="form-label" for="email-captcha-input">
                                 Anti-spam verification <span class="required">*</span>
@@ -1153,7 +1073,6 @@
                         <h3 class="section-title">Check your email</h3>
                         <div class="verification-email" id="verification-email">your@email.com</div>
 
-                        <!-- OTP VERIFICATION -->
                         <div class="email-verification-form hidden" id="email-verification">
                             <div class="verification-container">
                                 <h3 class="section-title">📱 Enter Verification Code</h3>
@@ -1177,9 +1096,14 @@
                             </div>
 
                             <div class="form-actions">
-                                <button type="button" class="btn btn-primary btn-large" id="verify-email-otp-btn" disabled onclick="verifyemailOTP()">
-                                    Verify Code
-                                </button>
+                                <div class="step-navigation">
+                                    <button type="button" class="btn btn-secondary btn-large btn-back" onclick="goBackFromEmailVerification()">
+                                        Back
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-large btn-next" id="verify-email-otp-btn" disabled onclick="verifyEmailOTP()">
+                                        Verify Code
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1222,7 +1146,6 @@
                         </div>
                     </div>
 
-                    <!-- OTP VERIFICATION -->
                     <div class="otp-verification-form hidden" id="otp-verification">
                         <div class="verification-container">
                             <h3 class="section-title">📱 Enter Verification Code</h3>
@@ -1242,23 +1165,26 @@
                                 <div class="resend-timer" id="resend-timer">
                                     Resend code in <span id="countdown">60</span>s
                                 </div>
-                                <button type="button" class="resend-btn hidden" id="resend-btn">Resend code</button>
+                                <button type="button" class="resend-btn hidden" id="resend-btn" onclick="sendOTPCode()">Resend code</button>
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="btn btn-primary btn-large" id="verify-otp-btn" disabled onclick="verifyOTP()">
-                                Verify Code
-                            </button>
+                            <div class="step-navigation">
+                                <button type="button" class="btn btn-secondary btn-large btn-back" onclick="goBackFromPhoneVerification()">
+                                    Back
+                                </button>
+                                <button type="button" class="btn btn-primary btn-large btn-next" id="verify-otp-btn" disabled onclick="verifyOTP()">
+                                    Verify Code
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- STEP 6: ACCOUNT PREFERENCES -->
                 <div class="step-section" id="step-section-6">
-                    <!-- SHIPPER PREFERENCES -->
                     <div class="shipper-form active">
-                        <!-- SHIPPING PROFILE -->
                         <div class="form-section">
                             <h3 class="section-title">🏢 Shipping Profile</h3>
                             <div class="form-grid">
@@ -1266,23 +1192,22 @@
                                     <label class="form-label" for="shipper-type">
                                         Account Type <span class="required">*</span>
                                     </label>
-                                    <select id="shipper-type" class="form-select" required>
+                                    <select id="shipper-type" name="shipperType" class="form-select" required>
                                         <option value="">Select...</option>
                                         <option value="individual">Individual</option>
                                         <option value="business">Business</option>
                                         <option value="association">Association</option>
                                     </select>
                                 </div>
-                                <div class="form-group" id="company-name-group" style="display: none;">
+                                <div class="form-group hidden" id="company-name-group">
                                     <label class="form-label" for="company-name">
                                         Company Name <span class="required">*</span>
                                     </label>
-                                    <input type="text" id="company-name" class="form-input" placeholder="Your company name">
+                                    <input type="text" id="company-name" name="companyName" class="form-input" placeholder="Your company name">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- SHIPPING FREQUENCY -->
                         <div class="form-section">
                             <h3 class="section-title">📦 Shipping Frequency</h3>
                             <div class="frequency-options">
@@ -1305,25 +1230,23 @@
                             </div>
                         </div>
 
-                        <!-- PACKAGE TYPES -->
                         <div class="form-section">
                             <h3 class="section-title">📋 Typical Package Types</h3>
                             <div class="form-group">
                                 <label class="form-label" for="package-types">
                                     Describe your typical shipments
                                 </label>
-                                <textarea id="package-types" name="package_types" class="form-textarea" placeholder="Ex: Documents, handmade products, commercial samples, personal gifts..."></textarea>
+                                <textarea id="package-types" name="packageTypes" class="form-textarea" placeholder="Ex: Documents, handmade products, commercial samples, personal gifts..."></textarea>
                             </div>
                         </div>
 
-                        <!-- SPECIAL REQUIREMENTS -->
                         <div class="form-section">
                             <h3 class="section-title">⚡ Specific Needs</h3>
                             <div class="form-group">
                                 <label class="form-label" for="special-requirements">
                                     Special Requirements (optional)
                                 </label>
-                                <textarea id="special-requirements" class="form-textarea" placeholder="Ex: Express delivery, delicate handling, enhanced insurance..."></textarea>
+                                <textarea id="special-requirements" name="specialRequirements" class="form-textarea" placeholder="Ex: Express delivery, delicate handling, enhanced insurance..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -1342,7 +1265,6 @@
 
                 <!-- STEP 7: PASSWORD & FINALIZATION -->
                 <div class="step-section" id="step-section-7">
-                    <!-- PASSWORD SETUP -->
                     <div class="form-section">
                         <h3 class="section-title">🔒 Account Security</h3>
                         <div class="form-grid">
@@ -1356,12 +1278,11 @@
                                 <label class="form-label" for="confirm-password">
                                     Confirm Password <span class="required">*</span>
                                 </label>
-                                <input type="password" id="confirm-password" name="confirm-password" class="form-input" placeholder="Re-enter your password" required>
+                                <input type="password" id="confirm-password" name="confirm_password" class="form-input" placeholder="Re-enter your password" required>
                             </div>
                         </div>
                     </div>
 
-                    <!-- IDENTITY VERIFICATION INFO -->
                     <div class="verification-info">
                         <div class="verification-title">
                             🛡️ Identity Verification
@@ -1371,25 +1292,24 @@
                         </div>
                     </div>
 
-                    <!-- TERMS AND CONDITIONS -->
                     <div class="terms-section">
                         <div class="checkbox-group">
-                            <div class="checkbox" data-checkbox="terms">✓</div>
-                            <label class="checkbox-label" for="terms">
-                                I accept the <a href="#" onclick="showLegalPage('terms-of-use')">Terms of Use</a> and <a href="#" onclick="showLegalPage('terms-of-sale')">Terms of Sale</a> of JeConfie.
+                            <div class="checkbox" data-checkbox="terms" onclick="toggleCheckbox(this)">✓</div>
+                            <label class="checkbox-label" onclick="toggleCheckbox(this.previousElementSibling)">
+                                I accept the <a href="#" onclick="event.stopPropagation(); showLegalPage('terms-of-use')">Terms of Use</a> and <a href="#" onclick="event.stopPropagation(); showLegalPage('terms-of-sale')">Terms of Sale</a> of JeConfie.
                             </label>
                         </div>
 
                         <div class="checkbox-group">
-                            <div class="checkbox" data-checkbox="privacy">✓</div>
-                            <label class="checkbox-label" for="privacy">
-                                I accept the <a href="#" onclick="showLegalPage('privacy-policy')">Privacy Policy</a> and the processing of my personal data in accordance with GDPR.
+                            <div class="checkbox" data-checkbox="privacy" onclick="toggleCheckbox(this)">✓</div>
+                            <label class="checkbox-label" onclick="toggleCheckbox(this.previousElementSibling)">
+                                I accept the <a href="#" onclick="event.stopPropagation(); showLegalPage('privacy-policy')">Privacy Policy</a> and the processing of my personal data in accordance with GDPR.
                             </label>
                         </div>
 
                         <div class="checkbox-group">
-                            <div class="checkbox" data-checkbox="newsletter">✓</div>
-                            <label class="checkbox-label" for="newsletter">
+                            <div class="checkbox" data-checkbox="newsletter" onclick="toggleCheckbox(this)">✓</div>
+                            <label class="checkbox-label" onclick="toggleCheckbox(this.previousElementSibling)">
                                 I want to receive JeConfie news and special offers by email (optional).
                             </label>
                         </div>
@@ -1408,40 +1328,62 @@
                 </div>
 
             </form>
-
         </div>
     </div>
 </main>
 
+<!-- External Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
-    console.log('Complete integrated signup - Script started');
+    // ===== GLOBAL VARIABLES =====
+    const CONFIG = {
+        STEP_TITLES: ['', 'Account Type', 'Personal Info', 'Email Verification', 'Check Email', 'Phone Verification', 'Preferences', 'Complete Setup'],
+        MAX_PHOTO_SIZE_MB: 2,
+        RESEND_COUNTDOWN_SECONDS: 60,
+        URLS: {
+            SEND_EMAIL: '{{ url("user/send-verification-email") }}',
+            VERIFY_EMAIL: '{{ url("driver/verify-email-code") }}',
+            SEND_SMS: '{{ url("driver/send-sms-code") }}',
+            VERIFY_SMS: '{{ url("driver/verify-sms-code") }}'
+        }
+    };
 
-    // Variables
-    let currentStep = 1;
-    let selectedPhoto = null;
-    let currentPhoneNumber = '';
-    let resendCountdown = 60;
-    let resendemailCountdown = 60;
-    let resendTimer = null;
-    let isEmailVerified = false;
-    let isPhoneVerified = false;
-    let currentEmailCaptcha = '';
+    const STATE = {
+        currentStep: 1,
+        selectedPhoto: null,
+        currentPhoneNumber: '',
+        isEmailVerified: false,
+        isPhoneVerified: false,
+        currentEmailCaptcha: '',
+        resendTimer: null,
+        resendEmailTimer: null
+    };
 
-    const stepTitles = [
-        '', 'Account Type', 'Personal Info', 'Email Verification', 'Check Email', 'Phone Verification', 'Preferences', 'Complete Setup'
-    ];
-
-    // Initialization
+    // ===== INITIALIZATION =====
     function initializeSignup() {
         generateEmailCaptcha();
         initializeOTPInputs();
         initializeEventListeners();
+        initializeDatePicker();
     }
 
-    // Photo upload functions
+    function initializeDatePicker() {
+        const today = flatpickr.formatDate(new Date(), "Y-m-d");
+        flatpickr("#birth-date", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            maxDate: "today",
+            clickOpens: true,
+            closeOnSelect: false,
+            static: true,
+            defaultDate: today,
+        });
+    }
+
+    // ===== PHOTO UPLOAD =====
     function triggerPhotoUpload() {
         document.getElementById('photo-upload').click();
     }
@@ -1450,43 +1392,40 @@
         const file = event.target.files[0];
         if (!file) return;
 
-        const MAX_SIZE_MB = 2; // Laravel limit = 2048 KB = 2 MB
-
-        // ✅ Validate size
-        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-            showAlert('error', `File size must be less than ${MAX_SIZE_MB} MB.`);
-            event.target.value = ''; // clear file input
-            selectedPhoto = null;
+        // Validate size
+        if (file.size > CONFIG.MAX_PHOTO_SIZE_MB * 1024 * 1024) {
+            showAlert('error', `File size must be less than ${CONFIG.MAX_PHOTO_SIZE_MB} MB.`);
+            event.target.value = '';
+            STATE.selectedPhoto = null;
             return;
         }
 
-        // ✅ Validate type
+        // Validate type
         if (!file.type.startsWith('image/')) {
             showAlert('error', 'Please select a valid image file (JPG, PNG, JPEG).');
             event.target.value = '';
-            selectedPhoto = null;
+            STATE.selectedPhoto = null;
             return;
         }
 
-        // ✅ Show preview
+        // Show preview
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById('photo-preview');
             preview.innerHTML = `
-            <img src="${e.target.result}" alt="Profile picture" class="rounded-xl shadow-md">
-            <div class="photo-overlay">📷</div>
-        `;
-            selectedPhoto = file;
+                    <img src="${e.target.result}" alt="Profile picture">
+                    <div class="photo-overlay">📷</div>
+                `;
+            STATE.selectedPhoto = file;
         };
         reader.readAsDataURL(file);
     }
 
-    // Update profile preview with initials
     function updateProfilePreview() {
-        const firstName = document.getElementById('first-name').value;
-        const lastName = document.getElementById('last-name').value;
+        const firstName = document.getElementById('first-name').value.trim();
+        const lastName = document.getElementById('last-name').value.trim();
 
-        if (firstName && lastName && !selectedPhoto) {
+        if (firstName && lastName && !STATE.selectedPhoto) {
             const preview = document.getElementById('photo-preview');
             const initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
             if (!preview.querySelector('img')) {
@@ -1495,12 +1434,7 @@
         }
     }
 
-    // Language switch
-    function switchToFrench() {
-        alert('Switching to French version...');
-    }
-
-    // Progress management
+    // ===== PROGRESS MANAGEMENT =====
     function updateProgress(step) {
         for (let i = 1; i <= 7; i++) {
             const stepEl = document.getElementById(`step-${i}`);
@@ -1522,33 +1456,64 @@
             }
         }
 
-        document.getElementById('progress-title').textContent = stepTitles[step];
+        document.getElementById('progress-title').textContent = CONFIG.STEP_TITLES[step];
 
         document.querySelectorAll('.step-section').forEach((section, index) => {
             section.classList.toggle('active', index + 1 === step);
         });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Navigation
+    // ===== NAVIGATION =====
     function nextStep() {
-        if (validateStep(currentStep)) {
-            currentStep++;
-            updateProgress(currentStep);
+        if (validateStep(STATE.currentStep)) {
+            STATE.currentStep++;
+            updateProgress(STATE.currentStep);
         }
     }
 
     function prevStep() {
-        if (currentStep > 1) {
-            currentStep--;
-            updateProgress(currentStep);
+        if (STATE.currentStep > 1) {
+            STATE.currentStep--;
+            updateProgress(STATE.currentStep);
         }
     }
 
-    // Step validation
+    function goBackFromEmailVerification() {
+        // Clear email verification UI
+        document.getElementById('email-verification').classList.add('hidden');
+        clearOTPInputs('email');
+
+        // Stop countdown timer
+        if (STATE.resendEmailTimer) {
+            clearInterval(STATE.resendEmailTimer);
+            STATE.resendEmailTimer = null;
+        }
+
+        // Go back to email input step
+        STATE.currentStep = 3;
+        updateProgress(STATE.currentStep);
+    }
+
+    function goBackFromPhoneVerification() {
+        // Clear phone verification UI
+        document.getElementById('otp-verification').classList.add('hidden');
+        document.querySelector('.phone-verification-form').classList.remove('hidden');
+        clearOTPInputs('phone');
+
+        // Stop countdown timer
+        if (STATE.resendTimer) {
+            clearInterval(STATE.resendTimer);
+            STATE.resendTimer = null;
+        }
+    }
+
+    // ===== VALIDATION =====
     function validateStep(step) {
         switch (step) {
             case 1:
-                return true; // Account type always selected by default
+                return true;
 
             case 2:
                 const firstName = document.getElementById('first-name').value.trim();
@@ -1571,7 +1536,7 @@
                     return false;
                 }
 
-                if (emailCaptcha !== currentEmailCaptcha) {
+                if (emailCaptcha !== STATE.currentEmailCaptcha) {
                     showAlert('error', 'Incorrect verification code.');
                     generateEmailCaptcha();
                     return false;
@@ -1602,12 +1567,12 @@
                     return false;
                 }
 
-                if (!termsCheckbox || !termsCheckbox.classList.contains('checked')) {
+                if (!termsCheckbox.classList.contains('checked')) {
                     showAlert('error', 'You must accept the terms of use.');
                     return false;
                 }
 
-                if (!privacyCheckbox || !privacyCheckbox.classList.contains('checked')) {
+                if (!privacyCheckbox.classList.contains('checked')) {
                     showAlert('error', 'You must accept the privacy policy.');
                     return false;
                 }
@@ -1618,313 +1583,309 @@
         }
     }
 
-    // Captcha functions
+    // ===== CAPTCHA =====
     function generateEmailCaptcha() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let captcha = '';
         for (let i = 0; i < 6; i++) {
             captcha += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        currentEmailCaptcha = captcha;
+        STATE.currentEmailCaptcha = captcha;
         document.getElementById('email-captcha-display').textContent = captcha;
         document.getElementById('email-captcha-input').value = '';
     }
 
-    // Email verification
-    function sendVerificationEmail() {
+    // ===== EMAIL VERIFICATION =====
+    async function sendVerificationEmail() {
         if (!validateStep(3)) return;
 
         const btn = document.getElementById('send-verification-btn');
         const email = document.getElementById('email').value.trim();
-        const verificationEmail = document.getElementById('verification-email');
-        const emailVerificationSection = document.getElementById('email-verification');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-        const url = '{{ url('driver/send-verification-email') }}';
 
-        // ✅ Basic validation
-        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-            showAlert('error', 'Please enter a valid email address.');
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Sending...';
+
+        try {
+            const response = await $.post(CONFIG.URLS.SEND_EMAIL, {
+                email,
+                _token: csrfToken
+            });
+
+            // Handle success response
+            if (response.success) {
+                document.getElementById('verification-email').textContent = email;
+                document.getElementById('email-verification').classList.remove('hidden');
+                showAlert('success', response.message || 'Verification email sent successfully!');
+                toastr.success(response.message || 'Email sent!');
+                startResendCountdown('email');
+                nextStep();
+            } else {
+                // Email already registered
+                showAlert('error', response.message || 'Email is already registered. Please sign in.');
+                toastr.error(response.message || 'Email already exists');
+            }
+        } catch (xhr) {
+            // Handle error response
+            if (xhr.status === 422) {
+                // Validation errors
+                const errors = xhr.responseJSON?.errors;
+                if (errors) {
+                    const message = Object.values(errors).flat().join(', ');
+                    showAlert('error', message);
+                    toastr.error(message);
+                } else {
+                    showAlert('error', xhr.responseJSON?.message || 'Invalid email format');
+                    toastr.error(xhr.responseJSON?.message || 'Invalid email');
+                }
+            } else if (xhr.responseJSON?.success === false) {
+                // Email already registered
+                showAlert('error', xhr.responseJSON.message || 'Email is already registered');
+                toastr.error(xhr.responseJSON.message || 'Email already registered');
+            } else {
+                // Other errors
+                const message = xhr.responseJSON?.message || 'Failed to send verification email. Please try again.';
+                showAlert('error', message);
+                toastr.error(message);
+            }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
+    async function verifyEmailOTP() {
+        const email = document.getElementById('email').value.trim();
+        const code = getOTPCode('email');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        if (code.length !== 6) {
+            showAlert('error', 'Please enter the complete code');
             return;
         }
 
-        // ✅ Disable button & show loading state
-        btn.disabled = true;
-        btn.textContent = 'Sending...';
-
-        // ✅ AJAX POST request
-        $.post(url, { email, _token: csrfToken })
-            .done(function(res) {
-                verificationEmail.textContent = email;
-                emailVerificationSection.classList.remove('hidden');
-                showAlert('success', res.message || 'Verification email sent successfully!');
-                startemailResendCountdown();
-                nextStep();
-            })
-            .fail(function(xhr) {
-                const message = xhr.responseJSON?.message || 'Failed to send verification email.';
-                showAlert('error', message);
-            })
-            .always(function() {
-                // ✅ Re-enable button after request completes
-                btn.disabled = false;
-                btn.textContent = 'Send Verification Email';
+        try {
+            const response = await $.post(CONFIG.URLS.VERIFY_EMAIL, {
+                email,
+                code,
+                _token: csrfToken
             });
+
+            showAlert('success', response.message || 'Email verified successfully!');
+            toastr.success('Email Verified!');
+            STATE.isEmailVerified = true;
+            document.getElementById('email-verification').classList.add('hidden');
+            nextStep();
+        } catch (xhr) {
+            const message = xhr.responseJSON?.message || 'Invalid code. Please try again.';
+            showAlert('error', message);
+            toastr.error(message);
+            clearOTPInputs('email');
+        }
     }
 
-    function getEmailOTP() {
-        const emailotpInputs = document.querySelectorAll('.email-otp-input');
-        return Array.from(emailotpInputs).map(input => input.value.trim()).join('');
-    }
-
-    function resendVerificationEmail() {
-
+    async function resendVerificationEmail() {
         const email = document.getElementById('email').value.trim();
-        document.getElementById('verification-email').textContent = email;
-        document.getElementById('email-verification').classList.remove('hidden');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-        var url = '{{ url('driver/send-verification-email') }}';
-
-        $.post(url, { email: email, _token: $('meta[name="csrf-token"]').attr('content') })
-            .done(function(res) {
-                document.getElementById('verification-email').textContent = email;
-                document.getElementById('email-verification').classList.remove('hidden');
-                startemailResendCountdown();
-                showAlert('success', res.message);
-            })
-            .fail(function(xhr) {
-                showAlert('error', xhr.responseJSON.message || 'Failed to send verification email');
+        try {
+            const response = await $.post(CONFIG.URLS.SEND_EMAIL, {
+                email,
+                _token: csrfToken
             });
-        showAlert('success', 'Verification email sent again!');
+
+            if (response.success) {
+                showAlert('success', response.message || 'Verification email sent again!');
+                toastr.success('Email resent!');
+                startResendCountdown('email');
+            } else {
+                showAlert('error', response.message || 'Failed to resend email');
+                toastr.error(response.message || 'Failed to resend');
+            }
+        } catch (xhr) {
+            const message = xhr.responseJSON?.message || 'Failed to resend email';
+            showAlert('error', message);
+            toastr.error(message);
+        }
     }
 
-    function simulateEmailVerification() {
-        isEmailVerified = true;
-        showAlert('success', 'Email verified successfully!');
-        nextStep();
-    }
-
-    // Phone verification
-    function sendOTPCode() {
+    // ===== PHONE VERIFICATION =====
+    async function sendOTPCode() {
         if (!validateStep(5)) return;
 
         const btn = document.getElementById('send-sms-btn');
         const countryCode = document.getElementById('country-code').value.trim();
         const phoneNumber = document.getElementById('phone-number').value.trim();
-        const phoneDisplay = document.getElementById('phone-display');
-        const phoneVerificationForm = document.querySelector('.phone-verification-form');
-        const otpVerification = document.getElementById('otp-verification');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-        const url = '{{ url('driver/send-sms-code') }}';
 
-        // ✅ Basic validation
         if (!phoneNumber) {
             showAlert('error', 'Please enter your phone number.');
             return;
         }
 
-        // ✅ Clean and concatenate (no spaces)
         const formattedPhone = `${countryCode}${phoneNumber.replace(/\s+/g, '')}`;
-        currentPhoneNumber = formattedPhone;
+        STATE.currentPhoneNumber = formattedPhone;
 
-        // ✅ Disable button & show loading state
         btn.disabled = true;
+        const originalText = btn.textContent;
         btn.textContent = 'Sending...';
 
-        // ✅ AJAX POST request
-        $.post(url, { phone: formattedPhone, _token: csrfToken })
-            .done(function(res) {
-                // ✅ Update UI only after successful send
-                phoneDisplay.textContent = formattedPhone;
-                phoneVerificationForm.classList.add('hidden');
-                otpVerification.classList.remove('hidden');
-                showAlert('success', res.message || 'Verification code sent successfully!');
-                startResendCountdown();
-                document.querySelector('.otp-input')?.focus();
-            })
-            .fail(function(xhr) {
-                const message = xhr.responseJSON?.message || 'Failed to send SMS code. Please try again.';
-                showAlert('error', message);
-            })
-            .always(function() {
-                // ✅ Re-enable button after request finishes
-                btn.disabled = false;
-                btn.textContent = 'Send SMS Code';
+        try {
+            const response = await $.post(CONFIG.URLS.SEND_SMS, {
+                phone: formattedPhone,
+                _token: csrfToken
             });
+
+            document.getElementById('phone-display').textContent = formattedPhone;
+            document.querySelector('.phone-verification-form').classList.add('hidden');
+            document.getElementById('otp-verification').classList.remove('hidden');
+            showAlert('success', response.message || 'Verification code sent successfully!');
+            toastr.success('SMS sent!');
+            startResendCountdown('phone');
+            document.querySelector('.otp-input')?.focus();
+        } catch (xhr) {
+            const message = xhr.responseJSON?.message || 'Failed to send SMS code.';
+            showAlert('error', message);
+            toastr.error(message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
     }
 
-    // OTP management
-    function initializeOTPInputs() {
-        const otpInputs = document.querySelectorAll('.otp-input');
-        const emailotpInputs = document.querySelectorAll('.email-otp-input');
+    async function verifyOTP() {
+        const otpCode = getOTPCode('phone');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', function(e) {
-                if (e.target.value.length === 1) {
-                    if (index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                }
-                checkOTPComplete();
-            });
-
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                    otpInputs[index - 1].focus();
-                }
-            });
-        });
-
-        emailotpInputs.forEach((input, index) => {
-            input.addEventListener('input', function(e) {
-                if (e.target.value.length === 1) {
-                    if (index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                }
-                checkemailOTPComplete();
-            });
-
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                    emailotpInputs[index - 1].focus();
-                }
-            });
-        });
-    }
-
-    function checkOTPComplete() {
-        const otpInputs = document.querySelectorAll('.otp-input');
-        const verifyBtn = document.getElementById('verify-otp-btn');
-
-        let isComplete = true;
-        otpInputs.forEach(input => {
-            if (input.value.length !== 1) {
-                isComplete = false;
-            }
-        });
-
-        verifyBtn.disabled = !isComplete;
-    }
-
-    function checkemailOTPComplete() {
-        const otpInputs = document.querySelectorAll('.email-otp-input');
-        const verifyBtn = document.getElementById('verify-email-otp-btn');
-
-        let isComplete = true;
-        otpInputs.forEach(input => {
-            if (input.value.length !== 1) {
-                isComplete = false;
-            }
-        });
-
-        verifyBtn.disabled = !isComplete;
-    }
-
-    function verifyOTP() {
-        const otpInputs = document.querySelectorAll('.otp-input');
-        let otpCode = '';
-
-        otpInputs.forEach(input => otpCode += input.value.trim());
-
-        if (otpCode.length !== otpInputs.length) {
+        if (otpCode.length !== 6) {
             showAlert('error', 'Please enter the complete code');
             return;
         }
 
-        const csrfToken = $('meta[name="csrf-token"]').attr('content');
-        const url = '{{ url('driver/verify-sms-code') }}';
+        const phoneToVerify = STATE.currentPhoneNumber.replace(/\s+/g, '');
 
-        // Ensure we have a normalized number (no spaces)
-        const phoneToVerify = currentPhoneNumber.replace(/\s+/g, '');
-
-        console.log(phoneToVerify);
-
-        $.post(url, {
-            phone: phoneToVerify,
-            code: otpCode,
-            _token: csrfToken
-        })
-            .done(function(res) {
-                showAlert('success', res.message || 'Phone verified successfully!');
-                toastr.success('Verified Successfully.');
-                isPhoneVerified = true;
-                document.getElementById('otp-verification').classList.add('hidden');
-                nextStep();
-            })
-            .fail(function(xhr) {
-                const message = xhr.responseJSON?.message || 'Invalid code. Please try again.';
-                showAlert('error', message);
-                toastr.error(message);
-                otpInputs.forEach(input => input.value = '');
-                otpInputs[0].focus();
-                checkOTPComplete();
+        try {
+            const response = await $.post(CONFIG.URLS.VERIFY_SMS, {
+                phone: phoneToVerify,
+                code: otpCode,
+                _token: csrfToken
             });
+
+            showAlert('success', response.message || 'Phone verified successfully!');
+            toastr.success('Phone Verified!');
+            STATE.isPhoneVerified = true;
+            document.getElementById('otp-verification').classList.add('hidden');
+            nextStep();
+        } catch (xhr) {
+            const message = xhr.responseJSON?.message || 'Invalid code. Please try again.';
+            showAlert('error', message);
+            toastr.error(message);
+            clearOTPInputs('phone');
+        }
     }
 
-    function verifyemailOTP() {
-
-        const email = document.getElementById('email').value.trim();
-        const code = getEmailOTP();
-
-        var url = '{{url('driver/verify-email-code')}}';
-
-        $.post(url, { email: email, code: code, _token: $('meta[name="csrf-token"]').attr('content') })
-            .done(function(res) {
-                showAlert('success', res.message);
-                isPhoneVerified = true;
-                document.getElementById('email-verification').classList.add('hidden');
-                toastr.success('Verified Successfully.');
-                nextStep();
-            })
-            .fail(function(xhr) {
-                toastr.error('Invalid code. Please try again.');
-                showAlert('error', 'Invalid code. Please try again.');
-                checkemailOTPComplete();
-            });
+    // ===== OTP MANAGEMENT =====
+    function initializeOTPInputs() {
+        setupOTPInputs('.otp-input', 'phone');
+        setupOTPInputs('.email-otp-input', 'email');
     }
 
-    function startResendCountdown() {
-        resendCountdown = 60;
-        const timerElement = document.getElementById('countdown');
-        const resendTimerElement = document.getElementById('resend-timer');
-        const resendBtnElement = document.getElementById('resend-btn');
+    function setupOTPInputs(selector, type) {
+        const inputs = document.querySelectorAll(selector);
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                const value = e.target.value;
+
+                // Only allow digits
+                e.target.value = value.replace(/[^0-9]/g, '');
+
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                checkOTPComplete(type);
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+
+                pastedData.split('').forEach((char, i) => {
+                    if (inputs[i]) {
+                        inputs[i].value = char;
+                    }
+                });
+
+                checkOTPComplete(type);
+            });
+        });
+    }
+
+    function checkOTPComplete(type) {
+        const selector = type === 'email' ? '.email-otp-input' : '.otp-input';
+        const btnId = type === 'email' ? 'verify-email-otp-btn' : 'verify-otp-btn';
+
+        const inputs = document.querySelectorAll(selector);
+        const verifyBtn = document.getElementById(btnId);
+
+        const isComplete = Array.from(inputs).every(input => input.value.length === 1);
+        verifyBtn.disabled = !isComplete;
+    }
+
+    function getOTPCode(type) {
+        const selector = type === 'email' ? '.email-otp-input' : '.otp-input';
+        const inputs = document.querySelectorAll(selector);
+        return Array.from(inputs).map(input => input.value.trim()).join('');
+    }
+
+    function clearOTPInputs(type) {
+        const selector = type === 'email' ? '.email-otp-input' : '.otp-input';
+        const inputs = document.querySelectorAll(selector);
+        inputs.forEach(input => input.value = '');
+        inputs[0]?.focus();
+        checkOTPComplete(type);
+    }
+
+    // ===== RESEND COUNTDOWN =====
+    function startResendCountdown(type) {
+        let countdown = CONFIG.RESEND_COUNTDOWN_SECONDS;
+        const countdownId = type === 'email' ? 'emailcountdown' : 'countdown';
+        const timerId = type === 'email' ? 'resend-email-timer' : 'resend-timer';
+        const btnId = type === 'email' ? 'resend-email-btn' : 'resend-btn';
+
+        const timerElement = document.getElementById(countdownId);
+        const resendTimerElement = document.getElementById(timerId);
+        const resendBtnElement = document.getElementById(btnId);
 
         resendBtnElement.classList.add('hidden');
         resendTimerElement.classList.remove('hidden');
 
-        resendTimer = setInterval(() => {
-            resendCountdown--;
-            timerElement.textContent = resendCountdown;
+        const timer = setInterval(() => {
+            countdown--;
+            timerElement.textContent = countdown;
 
-            if (resendCountdown <= 0) {
-                clearInterval(resendTimer);
+            if (countdown <= 0) {
+                clearInterval(timer);
                 resendTimerElement.classList.add('hidden');
                 resendBtnElement.classList.remove('hidden');
             }
         }, 1000);
-    }
-    function startemailResendCountdown() {
-        resendCountdown = 60;
-        const timerElement = document.getElementById('emailcountdown');
-        const resendTimerElement = document.getElementById('resend-email-timer');
-        const resendBtnElement = document.getElementById('resend-email-btn');
 
-        resendBtnElement.classList.add('hidden');
-        resendTimerElement.classList.remove('hidden');
-
-        resendTimer = setInterval(() => {
-            resendCountdown--;
-            timerElement.textContent = resendCountdown;
-
-            if (resendCountdown <= 0) {
-                clearInterval(resendTimer);
-                resendTimerElement.classList.add('hidden');
-                resendBtnElement.classList.remove('hidden');
-            }
-        }, 1000);
+        if (type === 'email') {
+            STATE.resendEmailTimer = timer;
+        } else {
+            STATE.resendTimer = timer;
+        }
     }
 
-    // Final signup
+    // ===== FINAL SIGNUP =====
     async function completeSignup() {
         if (!validateStep(7)) return;
 
@@ -1932,7 +1893,6 @@
         const formElement = document.getElementById('signup-form');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-        // ✅ Disable button and show loading
         btn.disabled = true;
         const originalText = btn.textContent;
         btn.textContent = 'Creating account...';
@@ -1940,64 +1900,59 @@
         try {
             const formData = new FormData();
 
-            // ✅ Append basic fields
-            const fields = [
-                'first-name', 'last-name', 'profession', 'birth-date',
-                'address', 'email', 'shipper-type', 'company-name',
-                'package-types', 'special-requirements', 'password'
-            ];
-            fields.forEach(id => {
+            // Basic fields mapping
+            const fieldMap = {
+                'first-name': 'firstName',
+                'last-name': 'lastName',
+                'profession': 'profession',
+                'birth-date': 'dob',
+                'address': 'address',
+                'email': 'email',
+                'shipper-type': 'shipperType',
+                'company-name': 'companyName',
+                'package-types': 'packageTypes',
+                'special-requirements': 'specialRequirements',
+                'password': 'password'
+            };
+
+            Object.entries(fieldMap).forEach(([id, name]) => {
                 const el = document.getElementById(id);
-                if (el) {
-                    // Remove dashes and camelCase mapping
-                    const keyMap = {
-                        'first-name': 'firstName',
-                        'last-name': 'lastName',
-                        'birth-date': 'birthDate',
-                        'shipper-type': 'shipperType',
-                        'company-name': 'companyName',
-                        'package-types': 'packageTypes',
-                        'special-requirements': 'specialRequirements'
-                    };
-                    const key = keyMap[id] || id; // default to same ID
-                    formData.append(key, el.value.trim());
+                if (el && el.value) {
+                    formData.append(name, el.value.trim());
                 }
             });
 
-            // ✅ Append other required data
-            formData.append('phone', currentPhoneNumber || '');
-            formData.append('emailVerified', isEmailVerified);
-            formData.append('phoneVerified', isPhoneVerified);
+            // Additional data
+            formData.append('phone', STATE.currentPhoneNumber || '');
+            formData.append('emailVerified', STATE.isEmailVerified);
+            formData.append('phoneVerified', STATE.isPhoneVerified);
             formData.append('_token', csrfToken);
 
-            // ✅ Handle file upload safely
+            // Photo upload
             const photoInput = document.getElementById('photo-upload');
-            if (photoInput && photoInput.files.length > 0) {
+            if (photoInput?.files.length > 0) {
                 const file = photoInput.files[0];
-                if (file.size > 2 * 1024 * 1024) {
-                    showAlert('error', 'Profile photo must be smaller than 2MB.');
-                    btn.disabled = false;
-                    btn.textContent = originalText;
+                if (file.size > CONFIG.MAX_PHOTO_SIZE_MB * 1024 * 1024) {
+                    showAlert('error', `Profile photo must be smaller than ${CONFIG.MAX_PHOTO_SIZE_MB}MB.`);
                     return;
                 }
                 if (!file.type.startsWith('image/')) {
                     showAlert('error', 'Please upload a valid image file.');
-                    btn.disabled = false;
-                    btn.textContent = originalText;
                     return;
                 }
                 formData.append('profile', file);
             }
 
-            // ✅ Handle frequency options
-            const selectedFrequencyOptions = document.querySelectorAll('.frequency-option.selected');
-            selectedFrequencyOptions.forEach((el, i) => {
-                formData.append(`frequencyOption[${i}]`, el.dataset.value || el.textContent.trim());
-            });
+            // Frequency
+            const selectedFrequency = document.querySelector('.frequency-option.selected');
+            if (selectedFrequency) {
+                formData.append('frequency', selectedFrequency.dataset.frequency);
+            }
 
-            console.log('Submitting signup data...');
+            // Newsletter
+            const newsletterCheckbox = document.querySelector('.checkbox[data-checkbox="newsletter"]');
+            formData.append('newsletter', newsletterCheckbox?.classList.contains('checked') ? '1' : '0');
 
-            // ✅ Send request
             const response = await $.ajax({
                 url: formElement.action,
                 method: formElement.method,
@@ -2006,43 +1961,40 @@
                 contentType: false
             });
 
-            // ✅ Handle success
             if (response.success) {
                 showAlert('success', 'Account created successfully! Welcome to JeConfie!');
+                toastr.success('Welcome to JeConfie!');
                 setTimeout(() => {
-                    window.location.href = '/';
+                    window.location.href = response.redirect || '/';
                 }, 1500);
             } else {
-                showAlert('error', response.message || 'Something went wrong. Please try again.');
+                showAlert('error', response.message || 'Something went wrong.');
+                toastr.error(response.message || 'Error occurred');
             }
         } catch (xhr) {
             if (xhr.status === 422 && xhr.responseJSON?.errors) {
                 const errors = xhr.responseJSON.errors;
                 const message = Object.values(errors).flat().join('<br>');
-                toastr.error(message);
                 showAlert('error', message);
+                toastr.error(Object.values(errors).flat()[0]);
             } else {
-                toastr.error('Something went wrong. Please try again.');
-                showAlert('error', 'Something went wrong. Please try again.');
+                const message = xhr.responseJSON?.message || 'Something went wrong. Please try again.';
+                showAlert('error', message);
+                toastr.error(message);
             }
         } finally {
-            // ✅ Restore button
             btn.disabled = false;
             btn.textContent = originalText;
         }
     }
 
-    // Event listeners initialization
+    // ===== EVENT LISTENERS =====
     function initializeEventListeners() {
-        const shipperForm = document.querySelector('.shipper-form');
+        // Name inputs
+        document.getElementById('first-name')?.addEventListener('input', updateProfilePreview);
+        document.getElementById('last-name')?.addEventListener('input', updateProfilePreview);
 
-        shipperForm.classList.add('active');
-
-        // Name inputs for profile preview
-        document.getElementById('first-name').addEventListener('input', updateProfilePreview);
-        document.getElementById('last-name').addEventListener('input', updateProfilePreview);
-
-        // Shipping frequency
+        // Frequency options
         document.querySelectorAll('.frequency-option').forEach(option => {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.frequency-option').forEach(o => o.classList.remove('selected'));
@@ -2050,7 +2002,7 @@
             });
         });
 
-        // Shipper type change
+        // Shipper type
         const shipperTypeSelect = document.getElementById('shipper-type');
         if (shipperTypeSelect) {
             shipperTypeSelect.addEventListener('change', function() {
@@ -2058,67 +2010,60 @@
                 const companyNameInput = document.getElementById('company-name');
 
                 if (this.value === 'business' || this.value === 'association') {
-                    companyNameGroup.style.display = 'block';
+                    companyNameGroup.classList.remove('hidden');
                     companyNameInput.setAttribute('required', 'required');
                 } else {
-                    companyNameGroup.style.display = 'none';
+                    companyNameGroup.classList.add('hidden');
                     companyNameInput.removeAttribute('required');
+                    companyNameInput.value = '';
                 }
             });
         }
-
-        // Checkboxes
-        document.querySelectorAll('.checkbox').forEach(checkbox => {
-            checkbox.addEventListener('click', function() {
-                this.classList.toggle('checked');
-            });
-        });
-
-        // Resend button
-        document.getElementById('resend-btn').addEventListener('click', function() {
-            sendOTPCode();
-        });
     }
 
-    // Utility functions
+    // ===== UTILITY FUNCTIONS =====
+    function toggleCheckbox(checkbox) {
+        checkbox.classList.toggle('checked');
+    }
+
     function showAlert(type, message) {
+        // Remove existing alerts
         document.querySelectorAll('.alert').forEach(alert => alert.remove());
+
+        const iconMap = {
+            success: '✓',
+            error: '✗',
+            info: 'ℹ'
+        };
 
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type}`;
-        alertDiv.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span><span>${message}</span>`;
+        alertDiv.innerHTML = `<span>${iconMap[type] || 'ℹ'}</span><span>${message}</span>`;
 
         const activeSection = document.querySelector('.step-section.active');
-        activeSection.insertBefore(alertDiv, activeSection.firstChild);
-
-        setTimeout(() => alertDiv.remove(), 5000);
+        if (activeSection) {
+            activeSection.insertBefore(alertDiv, activeSection.firstChild);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
     }
 
     function showLegalPage(pageType) {
+        // Implement modal or redirect to legal page
         alert('Legal page: ' + pageType + ' (to be implemented)');
     }
 
-    // Initialize when DOM is ready
+    function switchToFrench() {
+        alert('Switching to French version...');
+    }
+
+    // ===== INITIALIZE ON DOM READY =====
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initializeSignup);
     } else {
         initializeSignup();
     }
 
-    $(document).ready(function (){
-        const today = flatpickr.formatDate(new Date(), "Y-m-d");
-        flatpickr("#birth-date", {
-            enableTime: false,
-            dateFormat: "Y-m-d",
-            maxDate: "today",
-            clickOpens: true,
-            closeOnSelect: false,
-            static: true,
-            defaultDate: today,
-        });
-    });
-
-    console.log('Complete signup script loaded');
+    console.log('Optimized signup script loaded successfully');
 </script>
 </body>
 </html>

@@ -1153,7 +1153,7 @@
                 <span class="lang-content fr active">Messages</span>
                 <span class="lang-content en">Messages</span>
             </a>
-            <a href="/dashboard" class="btn btn-primary">
+            <a href="{{ url('user/dashboard') }}" class="btn btn-primary">
                 <span>📊</span>
                 <span class="lang-content fr active">Tableau de bord</span>
                 <span class="lang-content en">Dashboard</span>
