@@ -1494,7 +1494,6 @@
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=places,geometry&callback=initMap"
     async defer></script>
-
 <script>
     let map, directionsService, directionsRenderer;
     let allLegs = [], allSteps = [];

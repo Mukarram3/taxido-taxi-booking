@@ -728,8 +728,10 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <div class="logo-icon">JC</div>
-            <div class="logo-text">Je Confie</div>
+            <a href="{{ url('/') }}" style="text-decoration: none;text-decoration: none;display: flex;flex-direction: row;align-items: center;">
+                <div class="logo-icon">JC</div>
+                <div class="logo-text" style="margin-left: 10px">Je Confie</div>
+            </a>
         </div>
     </div>
 

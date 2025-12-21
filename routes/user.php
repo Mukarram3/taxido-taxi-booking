@@ -158,6 +158,10 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
         return view('user-app.location');
     });
 
+    Route::get('/email-template', function (){
+        return view('emails.verification-code');
+    });
+
     Route::get('track-ride/{id}',[\App\Http\Controllers\User\RideController::class, 'track_ride'])->name('track_ride');
     Route::get('track-reserved-kilo-ride/{id}',[\App\Http\Controllers\User\RideController::class, 'track_reserved_kilo_ride'])->name('track_ride');
     Route::get('get-driver-location/{id}',[\App\Http\Controllers\User\RideController::class,'get_driver_location'])->name('get_driver_location');

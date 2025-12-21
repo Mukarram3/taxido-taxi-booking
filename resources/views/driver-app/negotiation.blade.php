@@ -954,7 +954,7 @@
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
 
             <div class="nav-links" id="navLinks">
-                <a href="/offers" class="nav-link">
+                <a href="{{ url('driver/my-rides') }}" class="nav-link">
                     <span data-lang="fr" class="active">Mes annonces</span>
                     <span data-lang="en">My offers</span>
                 </a>
@@ -962,11 +962,11 @@
                     <span data-lang="fr" class="active">Messages</span>
                     <span data-lang="en">Messages</span>
                 </a>
-                <a href="/dashboard" class="nav-link">
+                <a href="{{ url('driver/dashboard') }}" class="nav-link">
                     <span data-lang="fr" class="active">Tableau de bord</span>
                     <span data-lang="en">Dashboard</span>
                 </a>
-                <a href="/profile" class="nav-link">
+                <a href="{{ url('driver/profile-setting') }}" class="nav-link">
                     <span data-lang="fr" class="active">Profil</span>
                     <span data-lang="en">Profile</span>
                 </a>
@@ -1181,8 +1181,6 @@
                                             <div class="offer-status-badge rejected" data-lang="fr" class="active">Refusée</div>
                                             <div class="offer-status-badge rejected" data-lang="en">Rejected</div>
                                         @endif
-
-
 
                                     </div>
                                 </div>

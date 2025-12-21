@@ -283,12 +283,22 @@ class AuthController extends Controller
 
     public function sendVerificationEmail(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email format',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user){
-            return response()->json(['success' => false, 'message' => 'Email not registered']);
+        if ($user){
+            return response()->json(['success' => false, 'message' => 'Email Already registered']);
         }
 
         $code = rand(100000, 999999); // 6-digit code
@@ -298,9 +308,9 @@ class AuthController extends Controller
         Cache::put('email_verification_'.$email, $code, now()->addMinutes(10));
 
         try {
-//            Mail::send('emails.verification-code', ['code' => $code], function ($message) use ($email) {
-//                $message->to($email)->subject('Your Verification Code');
-//            });
+            Mail::send('emails.verification-code', ['code' => $code], function ($message) use ($email) {
+                $message->to($email)->subject('Your Verification Code');
+            });
             return response()->json(['success' => true, 'message' => 'Verification email sent']);
         }
         catch (\Exception $e) {

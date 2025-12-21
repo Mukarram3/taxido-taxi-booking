@@ -360,7 +360,7 @@
 
 <div class="container">
     <!-- Back Button -->
-    <a href="{{ url('user/dashboard') }}" class="back-btn">
+    <a href="{{ url('driver/dashboard') }}" class="back-btn">
         <span>←</span>
         <span class="lang-content fr active">Retour au tableau de bord</span>
         <span class="lang-content en">Back to dashboard</span>

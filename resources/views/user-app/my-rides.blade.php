@@ -373,10 +373,10 @@
                 <span class="lang-content fr active">Mes envois</span>
                 <span class="lang-content en">My shipments</span>
             </h1>
-            <button class="add-btn">
+            <a href="{{ url('/create-offer') }}" class="add-btn">
                 <span class="lang-content fr active">+ Nouvel envoi</span>
                 <span class="lang-content en">+ New shipment</span>
-            </button>
+            </a>
         </div>
 
         <!-- Stats Summary -->
