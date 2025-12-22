@@ -9,6 +9,7 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
 
     Route::middleware([\App\Http\Middleware\LoggedinDriver::class ])->group(function () {
 
+        Route::get('/dashboard', [\App\Http\Controllers\Driver\DriverriderequestController::class, 'dashboard'])->name('dashboard');
         Route::get('/accept-ride/{id}', [\App\Http\Controllers\Driver\DriverfarerequestController::class, 'accept_ride'])->name('accept_ride');
         Route::post('/request-fare', [\App\Http\Controllers\Driver\DriverfarerequestController::class, 'request_fare'])->name('request_fare');
         Route::get('/accept-ride-confirmed/{userriderequest_id}', [\App\Http\Controllers\Driver\RidesbookedController::class, 'accept_ride_confirmed'])->name('accept_ride_confirmed');
@@ -48,7 +49,6 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
     });
 
     Route::get('/home', [\App\Http\Controllers\Driver\DriverfarerequestController::class, 'home'])->name('home');
-    Route::get('/dashboard', [\App\Http\Controllers\Driver\DriverriderequestController::class, 'dashboard'])->name('dashboard');
     Route::get('/get-driver-ride-request', [\App\Http\Controllers\Driver\RideController::class, 'get_driver_ride_request'])->name('get_driver_ride_request');
 
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);

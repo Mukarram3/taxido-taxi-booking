@@ -3,29 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Je confie - Envoyez moins cher, Voyagez utile | Transport Écologique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        /* ==================== GLOBAL STYLES ==================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            color: #1a1a1a;
-            background: #ffffff;
-            overflow-x: hidden;
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Variables */
         :root {
             --primary: #5046e5;
             --primary-light: #6366f1;
@@ -49,7 +40,19 @@
             --radius-xl: 24px;
         }
 
-        /* Language Management */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ==================== LANGUAGE MANAGEMENT ==================== */
         .lang-content {
             display: none;
         }
@@ -66,7 +69,6 @@
             display: block;
         }
 
-        /* Language Switcher */
         .language-switcher {
             display: flex;
             gap: 4px;
@@ -92,7 +94,7 @@
             color: white;
         }
 
-        /* Navigation Bar */
+        /* ==================== NAVIGATION ==================== */
         .navbar {
             position: fixed;
             top: 0;
@@ -100,7 +102,7 @@
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             z-index: 1000;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-sm);
             transition: all 0.3s ease;
         }
 
@@ -182,10 +184,325 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow-lg);
+            z-index: 998;
+            max-height: calc(100vh - 72px);
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu-content {
+            padding: 20px;
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .mobile-menu-links li {
+            margin-bottom: 8px;
+        }
+
+        .mobile-menu-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            display: block;
+            padding: 12px;
+            border-radius: var(--radius);
+            transition: background 0.3s ease;
+        }
+
+        .mobile-menu-links a:hover {
+            background: var(--light);
+        }
+
+        /* Mobile Auth Section */
+        .mobile-auth {
+            display: none;
+        }
+
+        .mobile-auth-section {
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+        }
+
+        .mobile-auth-toggle {
+            width: 100%;
+            padding: 16px 12px;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            transition: background 0.3s ease;
+        }
+
+        .mobile-auth-toggle:hover {
+            background: var(--light);
+        }
+
+        .mobile-auth-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-auth-toggle-icon {
+            font-size: 18px;
+        }
+
+        .mobile-auth-toggle-arrow {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+            color: var(--gray);
+        }
+
+        .mobile-auth-section.active .mobile-auth-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .mobile-auth-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .mobile-auth-section.active .mobile-auth-content {
+            max-height: 500px;
+        }
+
+        .mobile-auth-inner {
+            padding: 12px;
+        }
+
+        .mobile-auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mobile-auth-buttons .btn {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .mobile-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--light);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+        }
+
+        .mobile-user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .mobile-user-details {
+            flex: 1;
+        }
+
+        .mobile-user-name {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 15px;
+        }
+
+        .mobile-user-role {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .mobile-auth-links {
+            list-style: none;
+        }
+
+        .mobile-auth-links li {
+            margin-bottom: 8px;
+        }
+
+        .mobile-auth-links a {
+            display: block;
+            padding: 10px 12px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: background 0.3s ease;
+            font-size: 15px;
+        }
+
+        .mobile-auth-links a:hover {
+            background: var(--light);
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            font-family: inherit;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 16px;
+            border-radius: var(--radius-lg);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-eco {
+            background: linear-gradient(135deg, var(--eco-green), var(--success));
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-eco:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-white:hover {
+            background: var(--light);
+        }
+
+        .btn-outline-white {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline-white:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--dark);
+        }
+
+        .btn-ghost:hover {
+            background: var(--light);
+        }
+
+        /* ==================== DROPDOWN ==================== */
+        .dropdown {
             position: relative;
         }
 
-        /* Quick Actions Bar */
+        .dropdown-menu {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            min-width: 200px;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dropdown.active .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-menu a {
+            padding: 0.75rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background: var(--light);
+        }
+
+        /* ==================== QUICK ACTIONS BAR ==================== */
         .quick-actions-bar {
             position: fixed;
             top: 72px;
@@ -193,7 +510,7 @@
             background: linear-gradient(135deg, var(--primary), var(--eco-green));
             z-index: 999;
             padding: 12px 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
         }
 
         .quick-actions-container {
@@ -231,145 +548,7 @@
             color: white;
         }
 
-
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s, color 0.3s;
-            border: 2px solid transparent;
-            font-family: inherit;
-        }
-
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-
-        .btn-ghost {
-            background: transparent;
-            border-color: #ccc;
-            color: #333;
-        }
-
-        .btn-ghost:hover {
-            background: #f2f2f2;
-        }
-
-        .btn-primary {
-            background: #007bff;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: #0066d3;
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 110%;
-            right: 0;
-            background: #fff;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: none;
-            flex-direction: column;
-            min-width: 200px;
-            z-index: 100;
-            overflow: hidden;
-        }
-
-        .dropdown-menu a {
-            padding: 0.75rem 1rem;
-            color: #333;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-
-        .dropdown-menu a:hover {
-            background: #f5f5f5;
-        }
-
-        /* Show dropdown when active */
-        .dropdown.active .dropdown-menu {
-            display: flex;
-        }
-
-        .btn-eco {
-            background: linear-gradient(135deg, var(--eco-green), var(--success));
-            color: white;
-            box-shadow: var(--shadow);
-        }
-
-        .btn-eco:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #dc8a0a;
-            transform: translateY(-2px);
-        }
-
-        .btn-large {
-            padding: 16px 32px;
-            font-size: 16px;
-            border-radius: var(--radius-lg);
-        }
-
-        .btn-secondary {
-            background: var(--white);
-            color: var(--primary);
-            border: 2px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--light);
-            border-color: var(--primary);
-        }
-
-        .btn-white {
-            background: white;
-            color: var(--primary);
-        }
-
-        .btn-white:hover {
-            background: var(--light);
-        }
-
-        .btn-outline-white {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn-outline-white:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Hero Section */
+        /* ==================== HERO SECTION ==================== */
         .hero {
             margin-top: 120px;
             padding: 60px 0 40px;
@@ -445,11 +624,6 @@
             margin-bottom: 40px;
         }
 
-        .hero-stat {
-            display: flex;
-            flex-direction: column;
-        }
-
         .hero-stat-value {
             font-size: 2rem;
             font-weight: 800;
@@ -467,7 +641,7 @@
             flex-wrap: wrap;
         }
 
-        /* Hero Visual */
+        /* ==================== HERO VISUAL ==================== */
         .hero-visual {
             position: relative;
             display: flex;
@@ -555,10 +729,6 @@
             font-weight: 500;
         }
 
-        .feature-icon {
-            font-size: 16px;
-        }
-
         .visual-benefits {
             display: flex;
             gap: 12px;
@@ -574,7 +744,7 @@
             font-weight: 600;
         }
 
-        /* Section Header */
+        /* ==================== SECTION HEADER ==================== */
         .section-header {
             text-align: center;
             max-width: 700px;
@@ -605,7 +775,7 @@
             line-height: 1.8;
         }
 
-        /* Concept Section */
+        /* ==================== CONCEPT SECTION ==================== */
         .concept-section {
             padding: 80px 0;
             background: white;
@@ -688,7 +858,7 @@
             line-height: 1.6;
         }
 
-        /* Service Types Section */
+        /* ==================== SERVICE TYPES ==================== */
         .service-types {
             padding: 60px 0;
             background: var(--light);
@@ -702,19 +872,20 @@
 
         .service-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two equal columns */
-            gap: 2rem; /* space between cards */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
             margin: 2rem 0;
         }
 
         .service-card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
         .service-card::before {
@@ -725,12 +896,12 @@
             right: 0;
             height: 4px;
             background: linear-gradient(90deg, var(--primary), var(--eco-green));
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         }
 
         .service-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-xl);
-            border-color: var(--primary);
         }
 
         .service-real-image {
@@ -743,8 +914,8 @@
 
         .service-real-image img {
             width: 100%;
-            border-radius: 12px;
-            margin-bottom: 1rem;
+            height: 100%;
+            object-fit: cover;
         }
 
         .service-card-icon {
@@ -761,7 +932,9 @@
 
         .service-card-description {
             font-size: 0.95rem;
+            color: var(--gray);
             margin-bottom: 1rem;
+            line-height: 1.6;
         }
 
         .service-highlight {
@@ -799,20 +972,23 @@
             justify-content: center;
             font-weight: 700;
             font-size: 12px;
+            flex-shrink: 0;
         }
 
         .service-card-cta {
             display: flex;
             gap: 12px;
+            margin-top: auto;
         }
 
-        /* Promotional Banner */
+        /* ==================== PROMO BANNER ==================== */
         .promo-banner {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 24px;
             border-radius: var(--radius-lg);
-            margin: 40px 0;
+            margin: 40px auto;
+            max-width: 1280px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -841,7 +1017,7 @@
             margin-bottom: 16px;
         }
 
-        /* Latest Offers Section */
+        /* ==================== OFFERS SECTION ==================== */
         .latest-offers {
             padding: 60px 0;
             background: white;
@@ -898,7 +1074,7 @@
             top: 16px;
             right: 16px;
             display: flex;
-            gap: 8px; /* space between badges */
+            gap: 8px;
             z-index: 10;
         }
 
@@ -912,29 +1088,17 @@
             white-space: nowrap;
         }
 
-        /* Specific badge colors */
         .offer-badge.urgent {
             background: var(--danger);
         }
 
         .offer-badge.professional {
-            background: var(--primary); /* or a custom color you like */
-        }
-
-        /* Make sure header has relative positioning for absolute badges */
-        .offer-card {
-            position: relative;
-            overflow: hidden;
-        }
-
-
-        .offer-badge.eco {
-            background: var(--eco-green);
+            background: var(--primary);
         }
 
         .offer-header {
             padding: 16px;
-            padding-top: 45px;
+            padding-top: 50px;
             border-bottom: 1px solid var(--border);
         }
 
@@ -942,7 +1106,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin: 12px 0px;
+            margin: 12px 0;
         }
 
         .route-point {
@@ -1030,11 +1194,6 @@
             border: 2px solid var(--border);
         }
 
-        .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
         .user-name {
             font-weight: 600;
             color: var(--dark);
@@ -1047,10 +1206,6 @@
             gap: 4px;
             font-size: 12px;
             color: var(--gray);
-        }
-
-        .star {
-            color: var(--warning);
         }
 
         .profile-badges {
@@ -1090,12 +1245,6 @@
             color: var(--gray);
         }
 
-        .price-eco {
-            font-size: 10px;
-            color: var(--eco-green);
-            margin-top: 2px;
-        }
-
         .offer-actions {
             padding: 0 16px 16px;
             display: flex;
@@ -1104,72 +1253,7 @@
             justify-content: center;
         }
 
-        .offer-actions .btn {
-            min-width: 75px;
-            padding: 7px 10px;
-            font-size: 12px;
-            justify-content: center;
-        }
-
-        /* Popular Destinations Section */
-        .popular-destinations {
-            padding: 60px 0;
-            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-        }
-
-        .destinations-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .destinations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
-        }
-
-        .destination-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .destination-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .destination-image {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .destination-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .destination-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            padding: 20px;
-        }
-
-        .destination-info {
-            padding: 20px;
-        }
-
-        /* How It Works */
+        /* ==================== HOW IT WORKS ==================== */
         .how-it-works {
             padding: 60px 0;
             background: var(--light);
@@ -1234,121 +1318,7 @@
             line-height: 1.6;
         }
 
-        /* Features Section */
-        .features {
-            padding: 60px 0;
-            background: white;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .feature-card {
-            text-align: center;
-        }
-
-        .feature-icon-wrapper {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--white), var(--light));
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: var(--shadow);
-            font-size: 32px;
-        }
-
-        .feature-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 8px;
-        }
-
-        .feature-description {
-            font-size: 14px;
-            color: var(--gray);
-            line-height: 1.6;
-        }
-
-        /* Testimonials Section */
-        .testimonials {
-            padding: 60px 0;
-            background: var(--light);
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .testimonial-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            position: relative;
-        }
-
-        .testimonial-quote {
-            font-size: 48px;
-            color: var(--primary);
-            opacity: 0.2;
-            position: absolute;
-            top: 20px;
-            left: 24px;
-            line-height: 1;
-        }
-
-        .testimonial-content {
-            position: relative;
-            z-index: 1;
-            margin-bottom: 24px;
-            color: var(--dark);
-            line-height: 1.8;
-            font-size: 15px;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .author-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .author-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .author-name {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .author-role {
-            font-size: 14px;
-            color: var(--gray);
-        }
-
-        /* CTA Section */
+        /* ==================== CTA SECTION ==================== */
         .cta {
             padding: 60px 0;
             background: linear-gradient(135deg, var(--primary), var(--eco-green));
@@ -1381,7 +1351,7 @@
             flex-wrap: wrap;
         }
 
-        /* Footer */
+        /* ==================== FOOTER ==================== */
         .footer {
             background: var(--dark);
             color: white;
@@ -1469,81 +1439,11 @@
             font-size: 14px;
         }
 
-        /* Mobile Menu */
-        .mobile-menu-toggle {
-            display: none;
-            background: transparent;
-            border: none;
-            font-size: 24px;
-            color: var(--dark);
-            cursor: pointer;
-        }
-
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 72px;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: var(--shadow-lg);
-            z-index: 998;
-            max-height: calc(100vh - 72px);
-            overflow-y: auto;
-        }
-
-        .mobile-menu.active {
-            display: block;
-        }
-
-        .mobile-menu-content {
-            padding: 20px;
-        }
-
-        .mobile-menu-links {
-            list-style: none;
-        }
-
-        .mobile-menu-links li {
-            margin-bottom: 16px;
-        }
-
-        .mobile-menu-links a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 16px;
-            display: block;
-            padding: 12px;
-            border-radius: var(--radius);
-            transition: background 0.3s ease;
-        }
-
-        .mobile-menu-links a:hover {
-            background: var(--light);
-        }
-
-        /* Responsive Design */
+        /* ==================== RESPONSIVE DESIGN ==================== */
         @media (max-width: 1024px) {
             .hero-container {
                 grid-template-columns: 1fr;
                 gap: 40px;
-            }
-
-            .steps-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
             }
 
             .concept-grid {
@@ -1554,28 +1454,57 @@
                 grid-template-columns: 1fr;
             }
 
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+
             .offers-grid {
                 grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 768px) {
-            .nav-menu,
-            .nav-actions .btn {
-                display: none;
+            /* Hide desktop navigation */
+            .nav-menu {
+                display: none !important;
             }
 
-            .hero{
-                margin-top: 0px;
+            .nav-actions > .dropdown,
+            .nav-actions > .language-switcher {
+                display: none !important;
             }
-            .quick-actions-bar{
+
+            /* Show mobile elements */
+            .mobile-menu-toggle {
+                display: block !important;
+            }
+
+            .mobile-auth {
+                display: block !important;
+            }
+
+            .hero {
+                margin-top: 0;
+            }
+
+            .quick-actions-bar {
                 position: relative;
-                top: 0px;
+                top: 0;
                 margin-top: 73px;
             }
 
-            .mobile-menu-toggle {
-                display: block;
+            .quick-actions-container {
+                flex-direction: column;
+                padding: 0 16px;
+            }
+
+            .quick-action-btn {
+                width: 100%;
+                justify-content: center;
             }
 
             .hero-content h1 {
@@ -1594,28 +1523,6 @@
                 font-size: 1.5rem;
             }
 
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .destinations-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-actions-container {
-                flex-direction: column;
-                padding: 0 16px;
-            }
-
-            .quick-action-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
             .hero-actions {
                 flex-direction: column;
             }
@@ -1623,6 +1530,14 @@
             .hero-actions .btn {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .service-card-cta {
+                flex-direction: column;
+            }
+
+            .service-card-cta .btn {
+                width: 100%;
             }
 
             .cta h2 {
@@ -1637,29 +1552,16 @@
                 width: 100%;
             }
 
-            .service-card-cta {
-                flex-direction: column;
-            }
-
-            .service-card-cta .btn {
-                width: 100%;
+            .footer-content {
+                grid-template-columns: 1fr;
             }
 
             .offer-details {
                 grid-template-columns: 1fr;
             }
-
-            .nav-actions {
-                gap: 8px;
-            }
-
-            .language-switcher {
-                display: flex;
-            }
         }
 
         @media (max-width: 480px) {
-
             .hero-content h1 {
                 font-size: 1.5rem;
             }
@@ -1670,13 +1572,6 @@
 
             .section-title {
                 font-size: 1.5rem;
-            }
-
-            .concept-card,
-            .feature-card,
-            .testimonial-card,
-            .service-card {
-                padding: 20px;
             }
 
             .offer-card {
@@ -1690,6 +1585,7 @@
     </style>
 </head>
 <body>
+
 <!-- Navigation -->
 <nav class="navbar">
     <div class="nav-container">
@@ -1723,60 +1619,67 @@
                 <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
             </div>
 
-            @if(\Illuminate\Support\Facades\Auth::guard('driver')->user() || \Illuminate\Support\Facades\Auth::guard('user')->user())
-                <!-- Dashboard DROPDOWN -->
+            @php
+                use Illuminate\Support\Facades\Auth;
+                $userLoggedIn = Auth::guard('user')->check();
+                $driverLoggedIn = Auth::guard('driver')->check();
+            @endphp
+
+            @if ($userLoggedIn)
                 @php
-                    $userGuard = \Illuminate\Support\Facades\Auth::guard('user')->check();
-                    $driverGuard = \Illuminate\Support\Facades\Auth::guard('driver')->check();
-
-
-                    $authUser = $userGuard
-                    ? \Illuminate\Support\Facades\Auth::guard('user')->user()
-                    : ($driverGuard ? \Illuminate\Support\Facades\Auth::guard('driver')->user() : null);
-
-                    $role = $userGuard ? 'user' : ($driverGuard ? 'driver' : null);
-                    $fullName = trim(($authUser->firstName ?? '').' '.($authUser->lastName ?? '')) ?: ($authUser->name ?? 'Account');
-                    $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($fullName) . '&background=random&color=fff&size=64';
-
+                    $user = Auth::guard('user')->user();
+                    $userName = trim(($user->firstName ?? '').' '.($user->lastName ?? '')) ?: ($user->name ?? 'User');
+                    $userAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($userName) . '&background=random&color=fff&size=64';
                 @endphp
                 <div class="dropdown">
-                    <button class="btn btn-primary" style="display: flex; align-items: center;" onclick="toggleDropdown('dashboardDropdown')">
-                        <img src="{{ $avatar }}" class="rounded-circle" width="36" style="margin-right: 10px; border-radius: inherit;" height="36" alt="{{ $fullName }}">
-                        <span class="lang-content fr active">{{ $fullName }}</span>
-                        <span class="lang-content en">{{ $fullName }}</span>
+                    <button class="btn btn-primary" style="display: flex; align-items: center; padding: 0.4rem 1rem;" onclick="toggleDropdown('userDropdown')">
+                        <img src="{{ $userAvatar }}" style="border-radius: 50%; margin-right: 10px;" width="32" height="32" alt="{{ $userName }}">
+                        {{ $userName }}
                     </button>
-                    <div id="dashboardDropdown" class="dropdown-menu">
-                        <a href="{{ url('user/dashboard') }}">👤 User Dashboard</a>
-                        <a href="{{ url('driver/dashboard') }}">🚗 Driver Dashboard</a>
-                        <a href="{{ $userGuard ? url('user/logout') : url('driver/logout') }}">🔓 Logout</a>
+                    <div id="userDropdown" class="dropdown-menu">
+                        <a href="{{ url('user/dashboard') }}">Dashboard</a>
+                        <a href="{{ url('user/logout') }}">Logout</a>
                     </div>
                 </div>
             @else
-                <!-- LOGIN DROPDOWN -->
                 <div class="dropdown">
-                    <button class="btn btn-ghost" onclick="toggleDropdown('loginDropdown')">
-                        <span class="lang-content fr active">Connexion</span>
-                        <span class="lang-content en">Login</span>
+                    <button class="btn btn-ghost" onclick="toggleDropdown('userLoginDropdown')">
+                        👤 User
                     </button>
-                    <div id="loginDropdown" class="dropdown-menu">
-                        <a href="{{ url('user/login') }}">👤 User Login</a>
-                        <a href="{{ url('driver/login') }}">🚗 Driver Login</a>
-                    </div>
-                </div>
-
-                <!-- SIGNUP DROPDOWN -->
-                <div class="dropdown">
-                    <button class="btn btn-primary" onclick="toggleDropdown('signupDropdown')">
-                        <span class="lang-content fr active">Inscription</span>
-                        <span class="lang-content en">Sign up</span>
-                    </button>
-                    <div id="signupDropdown" class="dropdown-menu">
-                        <a href="{{ url('user/signup') }}">👤 User Signup</a>
-                        <a href="{{ url('driver/signup') }}">🚗 Driver Signup</a>
+                    <div id="userLoginDropdown" class="dropdown-menu">
+                        <a href="{{ url('user/login') }}">Login</a>
+                        <a href="{{ url('user/signup') }}">Signup</a>
                     </div>
                 </div>
             @endif
 
+            @if ($driverLoggedIn)
+                @php
+                    $driver = Auth::guard('driver')->user();
+                    $driverName = trim(($driver->firstName ?? '').' '.($driver->lastName ?? '')) ?: ($driver->name ?? 'Driver');
+                    $driverAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($driverName) . '&background=random&color=fff&size=64';
+                @endphp
+                <div class="dropdown">
+                    <button class="btn btn-primary" style="display: flex; align-items: center; padding: 0.4rem 1rem;" onclick="toggleDropdown('driverDropdown')">
+                        <img src="{{ $driverAvatar }}" style="border-radius: 50%; margin-right: 10px;" width="32" height="32" alt="{{ $driverName }}">
+                        {{ $driverName }}
+                    </button>
+                    <div id="driverDropdown" class="dropdown-menu">
+                        <a href="{{ url('driver/dashboard') }}">Dashboard</a>
+                        <a href="{{ url('driver/logout') }}">Logout</a>
+                    </div>
+                </div>
+            @else
+                <div class="dropdown">
+                    <button class="btn btn-ghost" onclick="toggleDropdown('driverLoginDropdown')">
+                        🚗 Driver
+                    </button>
+                    <div id="driverLoginDropdown" class="dropdown-menu">
+                        <a href="{{ url('driver/login') }}">Login</a>
+                        <a href="{{ url('driver/signup') }}">Signup</a>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -1786,6 +1689,7 @@
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-content">
+        <!-- Navigation Links -->
         <ul class="mobile-menu-links">
             <li><a href="#services" onclick="toggleMobileMenu()">
                     <span class="lang-content fr active">Nos Services</span>
@@ -1799,19 +1703,115 @@
                     <span class="lang-content fr active">Le Concept</span>
                     <span class="lang-content en">The Concept</span>
                 </a></li>
-            <li><a href="{{ url('/create-offer') }}" onclick="toggleMobileMenu()">
-                    <span class="lang-content fr active">Créer une annonce</span>
-                    <span class="lang-content en">Create a listing</span>
-                </a></li>
-            <li><a href="#" onclick="toggleMobileMenu()">
-                    <span class="lang-content fr active">Connexion</span>
-                    <span class="lang-content en">Login</span>
-                </a></li>
-            <li><a href="#" onclick="toggleMobileMenu()">
-                    <span class="lang-content fr active">Inscription</span>
-                    <span class="lang-content en">Sign up</span>
+            <li><a href="{{ url('/search-listing') }}" onclick="toggleMobileMenu()">
+                    <span class="lang-content fr active">Voir les annonces</span>
+                    <span class="lang-content en">View listings</span>
                 </a></li>
         </ul>
+
+        <!-- Mobile Auth Section -->
+        <div class="mobile-auth">
+            @php
+                $userLoggedIn = Auth::guard('user')->check();
+                $driverLoggedIn = Auth::guard('driver')->check();
+            @endphp
+
+                <!-- User Dropdown -->
+            <div class="mobile-auth-section" id="mobileUserSection">
+                <button class="mobile-auth-toggle" onclick="toggleMobileAuthSection('mobileUserSection')">
+                    <div class="mobile-auth-toggle-left">
+                        <span class="mobile-auth-toggle-icon">👤</span>
+                        <span>
+                            <span class="lang-content fr active">USER</span>
+                            <span class="lang-content en">USER</span>
+                        </span>
+                    </div>
+                    <span class="mobile-auth-toggle-arrow">▼</span>
+                </button>
+                <div class="mobile-auth-content">
+                    <div class="mobile-auth-inner">
+                        @if ($userLoggedIn)
+                            @php
+                                $user = Auth::guard('user')->user();
+                                $userName = trim(($user->firstName ?? '').' '.($user->lastName ?? '')) ?: ($user->name ?? 'User');
+                                $userAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($userName) . '&background=random&color=fff&size=64';
+                            @endphp
+                            <div class="mobile-user-info">
+                                <img src="{{ $userAvatar }}" alt="{{ $userName }}">
+                                <div class="mobile-user-details">
+                                    <div class="mobile-user-name">{{ $userName }}</div>
+                                    <div class="mobile-user-role">User Account</div>
+                                </div>
+                            </div>
+                            <ul class="mobile-auth-links">
+                                <li><a href="{{ url('user/dashboard') }}" onclick="toggleMobileMenu()">📊 Dashboard</a></li>
+                                <li><a href="{{ url('user/logout') }}" onclick="toggleMobileMenu()">🚪 Logout</a></li>
+                            </ul>
+                        @else
+                            <div class="mobile-auth-buttons">
+                                <a href="{{ url('user/login') }}" class="btn btn-primary" onclick="toggleMobileMenu()">
+                                    <span class="lang-content fr active">Connexion</span>
+                                    <span class="lang-content en">Login</span>
+                                </a>
+                                <a href="{{ url('user/signup') }}" class="btn btn-outline" onclick="toggleMobileMenu()">
+                                    <span class="lang-content fr active">Inscription</span>
+                                    <span class="lang-content en">Sign up</span>
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Driver Dropdown -->
+            <div class="mobile-auth-section" id="mobileDriverSection">
+                <button class="mobile-auth-toggle" onclick="toggleMobileAuthSection('mobileDriverSection')">
+                    <div class="mobile-auth-toggle-left">
+                        <span class="mobile-auth-toggle-icon">🚗</span>
+                        <span>
+                            <span class="lang-content fr active">DRIVER</span>
+                            <span class="lang-content en">DRIVER</span>
+                        </span>
+                    </div>
+                    <span class="mobile-auth-toggle-arrow">▼</span>
+                </button>
+                <div class="mobile-auth-content">
+                    <div class="mobile-auth-inner">
+                        @if ($driverLoggedIn)
+                            @php
+                                $driver = Auth::guard('driver')->user();
+                                $driverName = trim(($driver->firstName ?? '').' '.($driver->lastName ?? '')) ?: ($driver->name ?? 'Driver');
+                                $driverAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($driverName) . '&background=random&color=fff&size=64';
+                            @endphp
+                            <div class="mobile-user-info">
+                                <img src="{{ $driverAvatar }}" alt="{{ $driverName }}">
+                                <div class="mobile-user-details">
+                                    <div class="mobile-user-name">{{ $driverName }}</div>
+                                    <div class="mobile-user-role">Driver Account</div>
+                                </div>
+                            </div>
+                            <ul class="mobile-auth-links">
+                                <li><a href="{{ url('driver/dashboard') }}" onclick="toggleMobileMenu()">📊 Dashboard</a></li>
+                                <li><a href="{{ url('driver/logout') }}" onclick="toggleMobileMenu()">🚪 Logout</a></li>
+                            </ul>
+                        @else
+                            <div class="mobile-auth-buttons">
+                                <a href="{{ url('driver/login') }}" class="btn btn-primary" onclick="toggleMobileMenu()">
+                                    <span class="lang-content fr active">Connexion</span>
+                                    <span class="lang-content en">Login</span>
+                                </a>
+                                <a href="{{ url('driver/signup') }}" class="btn btn-outline" onclick="toggleMobileMenu()">
+                                    <span class="lang-content fr active">Inscription</span>
+                                    <span class="lang-content en">Sign up</span>
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Language Switcher -->
         <div class="language-switcher" style="margin-top: 20px;">
             <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
             <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
@@ -1853,9 +1853,9 @@
                 <span class="lang-content fr active">Rentabilisez vos trajets,<br></span>
                 <span class="lang-content en">Monetize your trips,<br></span>
                 <span>
-                        <span class="lang-content fr active">Économisez vos envois</span>
-                        <span class="lang-content en">Save on shipping</span>
-                    </span>
+                    <span class="lang-content fr active">Économisez vos envois</span>
+                    <span class="lang-content en">Save on shipping</span>
+                </span>
             </h1>
 
             <p>
@@ -1867,9 +1867,9 @@
                 <div class="hero-stat">
                     <span class="hero-stat-value">-70%</span>
                     <span class="hero-stat-label">
-                            <span class="lang-content fr active">d'économies</span>
-                            <span class="lang-content en">savings</span>
-                        </span>
+                        <span class="lang-content fr active">d'économies</span>
+                        <span class="lang-content en">savings</span>
+                    </span>
                 </div>
                 <div class="hero-stat">
                     <span class="hero-stat-value">-85%</span>
@@ -1878,9 +1878,9 @@
                 <div class="hero-stat">
                     <span class="hero-stat-value">4.8/5</span>
                     <span class="hero-stat-label">
-                            <span class="lang-content fr active">Satisfaction</span>
-                            <span class="lang-content en">Rating</span>
-                        </span>
+                        <span class="lang-content fr active">Satisfaction</span>
+                        <span class="lang-content en">Rating</span>
+                    </span>
                 </div>
             </div>
 
@@ -1901,7 +1901,7 @@
         <div class="hero-visual">
             <div class="service-visual-card">
                 <div class="visual-image-container">
-                    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600" alt="Aéroport avec avion et passagers" class="visual-image">
+                    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600" alt="Airport" class="visual-image">
                     <div class="visual-overlay">
                         <div class="visual-tag">✈️ Service Réservation</div>
                     </div>
@@ -1916,22 +1916,10 @@
                         <span class="lang-content en">Travelers transport your packages in their luggage during their trips</span>
                     </p>
                     <div class="visual-features">
-                        <div class="visual-feature">
-                            ✈️
-                            Avion
-                        </div>
-                        <div class="visual-feature">
-                            🚄
-                            Train
-                        </div>
-                        <div class="visual-feature">
-                            🚌
-                            Bus
-                        </div>
-                        <div class="visual-feature">
-                            🚢
-                            Bateau
-                        </div>
+                        <div class="visual-feature">✈️ Avion</div>
+                        <div class="visual-feature">🚄 Train</div>
+                        <div class="visual-feature">🚌 Bus</div>
+                        <div class="visual-feature">🚢 Bateau</div>
                     </div>
                     <div class="visual-benefits">
                         <span class="benefit-tag">💰 -70% vs transporteurs</span>
@@ -1942,7 +1930,7 @@
 
             <div class="service-visual-card">
                 <div class="visual-image-container">
-                    <img src="{{ asset('assets/images/Transport-international-colis-entre-particulier-.jpeg') }}" alt="Chauffeur chargeant des bagages dans son van" class="visual-image">
+                    <img src="{{ asset('assets/images/Transport-international-colis-entre-particulier-.jpeg') }}" alt="Transport" class="visual-image">
                     <div class="visual-overlay">
                         <div class="visual-tag">🚗 Co-transport</div>
                     </div>
@@ -1957,18 +1945,9 @@
                         <span class="lang-content en">Drivers transport your large packages and furniture in their vehicle</span>
                     </p>
                     <div class="visual-features">
-                        <div class="visual-feature">
-                            🛋️
-                            Meubles
-                        </div>
-                        <div class="visual-feature">
-                            📺
-                            Électro
-                        </div>
-                        <div class="visual-feature">
-                            📦
-                            Déménagement
-                        </div>
+                        <div class="visual-feature">🛋️ Meubles</div>
+                        <div class="visual-feature">📺 Électro</div>
+                        <div class="visual-feature">📦 Déménagement</div>
                     </div>
                     <div class="visual-benefits">
                         <span class="benefit-tag">🚚 Gros volumes</span>
@@ -1980,14 +1959,14 @@
     </div>
 </section>
 
-<!-- How Concept Works Section -->
+<!-- Concept Section -->
 <section class="concept-section" id="concept">
     <div class="concept-container">
         <div class="section-header">
-                <span class="section-tag">
-                    <span class="lang-content fr active">💡 LE CONCEPT</span>
-                    <span class="lang-content en">💡 THE CONCEPT</span>
-                </span>
+            <span class="section-tag">
+                <span class="lang-content fr active">💡 LE CONCEPT</span>
+                <span class="lang-content en">💡 THE CONCEPT</span>
+            </span>
             <h2 class="section-title">
                 <span class="lang-content fr active">Comment ça fonctionne ?</span>
                 <span class="lang-content en">How does it work?</span>
@@ -2005,9 +1984,9 @@
                     <div class="concept-illustration">
                         <span class="concept-icon">🤝</span>
                         <span style="font-weight: 600; color: var(--dark);">
-                                <span class="lang-content fr active">Connexion</span>
-                                <span class="lang-content en">Connection</span>
-                            </span>
+                            <span class="lang-content fr active">Connexion</span>
+                            <span class="lang-content en">Connection</span>
+                        </span>
                     </div>
                 </div>
                 <h3 class="concept-title">
@@ -2026,9 +2005,9 @@
                     <div class="concept-illustration">
                         <span class="concept-icon">📦</span>
                         <span style="font-weight: 600; color: var(--dark);">
-                                <span class="lang-content fr active">Transport</span>
-                                <span class="lang-content en">Transport</span>
-                            </span>
+                            <span class="lang-content fr active">Transport</span>
+                            <span class="lang-content en">Transport</span>
+                        </span>
                     </div>
                 </div>
                 <h3 class="concept-title">
@@ -2047,9 +2026,9 @@
                     <div class="concept-illustration">
                         <span class="concept-icon">💚</span>
                         <span style="font-weight: 600; color: var(--dark);">
-                                <span class="lang-content fr active">Impact positif</span>
-                                <span class="lang-content en">Positive impact</span>
-                            </span>
+                            <span class="lang-content fr active">Impact positif</span>
+                            <span class="lang-content en">Positive impact</span>
+                        </span>
                     </div>
                 </div>
                 <h3 class="concept-title">
@@ -2069,10 +2048,10 @@
 <section class="service-types" id="services">
     <div class="service-types-container">
         <div class="section-header">
-                <span class="section-tag">
-                    <span class="lang-content fr active">🚀 NOS SERVICES</span>
-                    <span class="lang-content en">🚀 OUR SERVICES</span>
-                </span>
+            <span class="section-tag">
+                <span class="lang-content fr active">🚀 NOS SERVICES</span>
+                <span class="lang-content en">🚀 OUR SERVICES</span>
+            </span>
             <h2 class="section-title">
                 <span class="lang-content fr active">Deux solutions adaptées à vos besoins</span>
                 <span class="lang-content en">Two solutions adapted to your needs</span>
@@ -2082,7 +2061,7 @@
         <div class="service-cards">
             <div class="service-card">
                 <div class="service-real-image">
-                    <img src="{{ asset('assets/images/istockphoto-1559912061-612x612.jpg') }}" alt="Avion au décollage">
+                    <img src="{{ asset('assets/images/istockphoto-1559912061-612x612.jpg') }}" alt="Airplane">
                 </div>
                 <div class="service-card-icon">✈️</div>
                 <h3>
@@ -2129,7 +2108,7 @@
 
             <div class="service-card">
                 <div class="service-real-image">
-                    <img src="{{ asset('assets/images/courrier-anonyme-beaucoup-boites_23-2147767808.jpg') }}" alt="Chauffeur chargeant des bagages dans son van">
+                    <img src="{{ asset('assets/images/courrier-anonyme-beaucoup-boites_23-2147767808.jpg') }}" alt="Transport">
                 </div>
                 <div class="service-card-icon">🚛</div>
                 <h3>Co-transport</h3>
@@ -2171,7 +2150,7 @@
 </section>
 
 <!-- Promotional Banner -->
-<div class="promo-banner" style="max-width: 1280px; margin: 0 auto; padding: 0 20px;">
+<div class="promo-banner" style="padding: 0 20px;">
     <h3>🎉 <span class="lang-content fr active">Offre de lancement : -20% sur votre première expédition !</span>
         <span class="lang-content en">Launch offer: -20% off your first shipment!</span></h3>
     <p><span class="lang-content fr active">Utilisez le code JECONFIE20 lors de votre réservation</span>
@@ -2186,10 +2165,10 @@
 <section class="latest-offers" id="offers">
     <div class="offers-container">
         <div class="section-header">
-                <span class="section-tag">
-                    <span class="lang-content fr active">🔥 DERNIÈRES ANNONCES</span>
-                    <span class="lang-content en">🔥 LATEST OFFERS</span>
-                </span>
+            <span class="section-tag">
+                <span class="lang-content fr active">🔥 DERNIÈRES ANNONCES</span>
+                <span class="lang-content en">🔥 LATEST OFFERS</span>
+            </span>
             <h2 class="section-title">
                 <span class="lang-content fr active">Les 6 dernières offres publiées</span>
                 <span class="lang-content en">The 6 latest published offers</span>
@@ -2203,7 +2182,6 @@
         <div class="offers-grid">
             @foreach($userriderequests as $offer)
                 @php
-                    // Determine transport icon
                     $transportIcon = '🚛';
                     if($offer->transport_title) {
                         if(stripos($offer->transport_title, 'Avion') !== false) $transportIcon = '✈️';
@@ -2214,14 +2192,14 @@
                     }
 
                     $routeFrom = $offer->pickup_city ?? '-';
-                    $routeTo = $offer->destination_city ? $offer->destination_city ?? '-' : '-';
+                    $routeTo = $offer->destination_city ?? '-';
                     $packageTypes = json_decode($offer->type_of_package) ?? [];
                 @endphp
 
                 <div class="offer-card">
-            <span class="offer-type-badge {{ $offer->packages_json ? 'cotransport' : '' }}">
-                {{ $offer->packages_json ? 'Co-transport' : 'Réservation' }}
-            </span>
+                    <span class="offer-type-badge {{ $offer->packages_json ? 'cotransport' : '' }}">
+                        {{ $offer->packages_json ? 'Co-transport' : 'Réservation' }}
+                    </span>
                     <div class="offer-badges">
                         @if($offer->is_urgent)
                             <span class="offer-badge urgent">Urgent</span>
@@ -2231,30 +2209,25 @@
                         @endif
                     </div>
 
-
                     <div class="offer-header">
                         <div class="offer-route">
-                            <div class="route-point">
-                                📍 {{ $routeFrom }}
-                            </div>
+                            <div class="route-point">📍 {{ $routeFrom }}</div>
                             <span class="route-arrow">→</span>
-                            <div class="route-point">
-                                📍 {{ $routeTo }}
-                            </div>
+                            <div class="route-point">📍 {{ $routeTo }}</div>
                         </div>
                         <div class="offer-date">
-                    <span style="color: var(--dark); font-weight: 600;">
-                        📅 Départ : {{ $offer->pickup_date ?? '-' }}
-                    </span>
+                            <span style="color: var(--dark); font-weight: 600;">
+                                📅 Départ : {{ $offer->pickup_date ?? '-' }}
+                            </span>
                             <span style="color: var(--success); font-size: 12px; font-weight: 600;">
-                        ✅ Arrivée : {{ $offer->delivery_date ?? '-' }}
-                    </span>
+                                ✅ Arrivée : {{ $offer->delivery_date ?? '-' }}
+                            </span>
                             <span style="color: var(--primary); font-size: 12px; font-weight: 600;">
-                        {{ $transportIcon }} {{ $offer->vehicle_type_needed ?? '-' }}
-                    </span>
+                                {{ $transportIcon }} {{ $offer->vehicle_type_needed ?? '-' }}
+                            </span>
                             <span style="color: var(--danger); font-size: 11px; font-weight: 600;">
-                        ⏰ Fin réservation : {{ $offer->expiry_date ?? '-' }}
-                    </span>
+                                ⏰ Fin réservation : {{ $offer->expiry_date ?? '-' }}
+                            </span>
                         </div>
                     </div>
 
@@ -2290,17 +2263,18 @@
                             <div class="user-info">
                                 <span class="user-name">{{ $offer->user->firstName }}</span>
                                 <span class="user-rating">
-                            ⭐ {{ $offer->user->rating ?? 0 }} ({{ $offer->user->reviews ?? 0 }})
-                        </span>
+                                    ⭐ {{ $offer->user->rating ?? 0 }} ({{ $offer->user->reviews ?? 0 }})
+                                </span>
                                 @if($offer->user->verified)
-                                    <div class="profile-badges"><span class="profile-badge verified">✅ Vérifié</span></div>
+                                    <div class="profile-badges">
+                                        <span class="profile-badge verified">✅ Vérifié</span>
+                                    </div>
                                 @endif
                             </div>
                         </div>
                         <div class="offer-price">
                             <div class="price-value">{{ $offer->fare ?? 0 }}€</div>
                             <div class="price-unit">Total</div>
-                            <div class="price-eco">-</div>
                         </div>
                     </div>
 
@@ -2319,10 +2293,6 @@
             @endforeach
         </div>
 
-        <div class="offers-grid" id="offersGrid">
-
-        </div>
-
         <div style="text-align: center; margin-top: 40px;">
             <a href="{{ url('/search-listing') }}" class="btn btn-primary btn-large">
                 <span class="lang-content fr active">Voir toutes les annonces →</span>
@@ -2336,10 +2306,10 @@
 <section class="how-it-works" id="comment">
     <div class="steps-container">
         <div class="section-header">
-                <span class="section-tag">
-                    <span class="lang-content fr active">📋 GUIDE PRATIQUE</span>
-                    <span class="lang-content en">📋 PRACTICAL GUIDE</span>
-                </span>
+            <span class="section-tag">
+                <span class="lang-content fr active">📋 GUIDE PRATIQUE</span>
+                <span class="lang-content en">📋 PRACTICAL GUIDE</span>
+            </span>
             <h2 class="section-title">
                 <span class="lang-content fr active">Comment utiliser notre plateforme ?</span>
                 <span class="lang-content en">How to use our platform?</span>
@@ -2531,7 +2501,7 @@
                         <span class="lang-content en">Help center</span>
                     </a></li>
                 <li><a href="{{ url('/faq-jeconfie') }}">FAQ</a></li>
-                <li><a href="{{ url('/contact-jeconfie') }}">Contact Us</a></li>
+                <li><a href="{{ url('/contact-jeconfie') }}">Contact</a></li>
             </ul>
         </div>
 
@@ -2567,226 +2537,58 @@
 </footer>
 
 <!-- Scripts -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=geometry" async defer></script>
+
 <script>
-    // Sample offers data
-    // const offersData = [
-    //     {
-    //         type: 'reservation',
-    //         route: { from: 'Paris CDG', to: 'New York JFK' },
-    //         date: '28 janvier - 14h30',
-    //         arrival: '28 janvier - 16h30 (heure locale)',
-    //         transport: 'Air France - Vol AF022',
-    //         deadline: '26 janvier 23h59',
-    //         transportType: 'Avion',
-    //         capacity: '15 kg',
-    //         duration: '8h',
-    //         user: { name: 'Thomas M.', rating: 4.9, reviews: 127, verified: true },
-    //         price: { value: 12, unit: 'par kg', savings: '-65% vs DHL' }
-    //     },
-    //     {
-    //         type: 'reservation',
-    //         route: { from: 'Marseille', to: 'Alger' },
-    //         date: '2 février - 20h00',
-    //         arrival: '3 février - 16h00',
-    //         transport: 'Corsica Linea - Ferry Danielle Casanova',
-    //         deadline: '31 janvier 23h59',
-    //         transportType: 'Ferry',
-    //         capacity: '30 kg',
-    //         duration: '20h',
-    //         user: { name: 'Ahmed K.', rating: 4.9, reviews: 156, verified: true },
-    //         price: { value: 6, unit: 'par kg', savings: '-75% vs DHL' }
-    //     },
-    //     {
-    //         type: 'reservation',
-    //         route: { from: 'Paris Nord', to: 'Londres' },
-    //         date: '30 janvier - 09h15',
-    //         arrival: '30 janvier - 11h45',
-    //         transport: 'Eurostar - Train 9015',
-    //         deadline: '28 janvier 23h59',
-    //         transportType: 'Eurostar',
-    //         capacity: '10 kg',
-    //         duration: '2h30',
-    //         user: { name: 'Lucas B.', rating: 4.8, reviews: 203, verified: true },
-    //         price: { value: 8, unit: 'par kg', savings: '-60% vs Chronopost' }
-    //     },
-    //     {
-    //         type: 'reservation',
-    //         route: { from: 'Lyon', to: 'Barcelone' },
-    //         date: '5 février - 06h00',
-    //         arrival: '5 février - 13h30',
-    //         transport: 'FlixBus - Ligne 732',
-    //         deadline: '3 février 23h59',
-    //         transportType: 'FlixBus',
-    //         capacity: '20 kg',
-    //         duration: '7h30',
-    //         user: { name: 'Emma R.', rating: 4.7, reviews: 89, verified: true },
-    //         price: { value: 5, unit: 'par kg', savings: '-70% vs UPS' }
-    //     },
-    //     {
-    //         type: 'cotransport',
-    //         route: { from: 'Lyon', to: 'Marseille' },
-    //         date: 'Demain',
-    //         arrival: 'Demain soir (18h00)',
-    //         transport: 'Mercedes Vito - Van 9 places',
-    //         deadline: '8 heures',
-    //         transportType: 'Mercedes Vito',
-    //         capacity: 'Meuble',
-    //         duration: '4h',
-    //         user: { name: 'Marie D.', rating: 5.0, reviews: 89 },
-    //         price: { value: 65, unit: 'Total', savings: '-70% vs pro' },
-    //         urgent: true
-    //     },
-    //     {
-    //         type: 'cotransport',
-    //         route: { from: 'Paris', to: 'Lille' },
-    //         date: '8 février',
-    //         arrival: '8 février - 11h30',
-    //         transport: 'Renault Master - Fourgon L3H2',
-    //         deadline: '5 février 23h59',
-    //         transportType: 'Renault Master',
-    //         capacity: 'Électroménager',
-    //         duration: '2h30',
-    //         user: { name: 'Pierre L.', rating: 4.6, reviews: 45 },
-    //         price: { value: 85, unit: 'Total', savings: '-60% vs déménageur' }
-    //     }
-    // ];
-
-    // Populate offers grid
-    function populateOffers() {
-        const grid = document.getElementById('offersGrid');
-        if (!grid) return;
-
-        const offersHTML = offersData.map(offer => {
-            const transportIcon = offer.type === 'reservation' ?
-                (offer.transportType.includes('Avion') ? '✈️' :
-                    offer.transportType.includes('Train') || offer.transportType.includes('Eurostar') ? '🚄' :
-                        offer.transportType.includes('Bus') ? '🚌' : '🚢') :
-                (offer.transportType.includes('Vito') ? '🚐' : '🚛');
-
-            return `
-                    <div class="offer-card">
-                        <span class="offer-type-badge ${offer.type === 'cotransport' ? 'cotransport' : ''}">
-                            ${offer.type === 'reservation' ? 'Réservation' : 'Co-transport'}
-                        </span>
-                        ${offer.urgent ? '<span class="offer-badge urgent">Urgent</span>' : '<span class="offer-badge">🛡️ Assuré</span>'}
-
-                        <div class="offer-header">
-                            <div class="offer-route">
-                                <div class="route-point">
-                                    📍 ${offer.route.from}
-                                </div>
-                                <span class="route-arrow">→</span>
-                                <div class="route-point">
-                                    📍 ${offer.route.to}
-                                </div>
-                            </div>
-                            <div class="offer-date">
-                                <span style="color: var(--dark); font-weight: 600;">
-                                    📅 Départ : ${offer.date}
-                                </span>
-                                <span style="color: var(--success); font-size: 12px; font-weight: 600;">
-                                    ✅ Arrivée : ${offer.arrival}
-                                </span>
-                                <span style="color: var(--primary); font-size: 12px; font-weight: 600;">
-                                    ${transportIcon} ${offer.transport}
-                                </span>
-                                <span style="color: var(--danger); font-size: 11px; font-weight: 600;">
-                                    ⏰ Fin réservation : ${offer.deadline}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="offer-body">
-                            <div class="offer-details">
-                                <div class="offer-detail">
-                                    <div class="detail-icon">${transportIcon}</div>
-                                    <span class="detail-value">${offer.transportType.split(' ')[0]}</span>
-                                    <span class="detail-label">Transport</span>
-                                </div>
-                                <div class="offer-detail">
-                                    <div class="detail-icon">${offer.type === 'reservation' ? '💼' : '📦'}</div>
-                                    <span class="detail-value">${offer.capacity}</span>
-                                    <span class="detail-label">${offer.type === 'reservation' ? 'Capacité' : 'Type'}</span>
-                                </div>
-                                <div class="offer-detail" data-ride-id="${offer.id}">
-                                    <div class="detail-icon">⏱️</div>
-                                    <span class="detail-value duration">${offer.duration}</span>
-                                    <span class="detail-label">Durée</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="offer-footer">
-                            <div class="offer-user">
-                                <img src="https://ui-avatars.com/api/?name=${offer.user.name}" alt="${offer.user.name}" class="user-avatar">
-                                <div class="user-info">
-                                    <span class="user-name">${offer.user.name}</span>
-                                    <span class="user-rating">
-                                        ⭐ ${offer.user.rating} (${offer.user.reviews})
-                                    </span>
-                                    ${offer.user.verified ? '<div class="profile-badges"><span class="profile-badge verified">✅ Vérifié</span></div>' : ''}
-                                </div>
-                            </div>
-                            <div class="offer-price">
-                                <div class="price-value">${offer.price.value}€</div>
-                                <div class="price-unit">${offer.price.unit}</div>
-                                <div class="price-eco">${offer.price.savings}</div>
-                            </div>
-                        </div>
-
-                        <div class="offer-actions">
-                            <button class="btn btn-primary btn-sm">
-                                ${offer.type === 'reservation' ? '🎫 Réserver' : '🙋 Me proposer'}
-                            </button>
-                            <button class="btn btn-outline btn-sm">
-                                👁️ Détails
-                            </button>
-                            <button class="btn btn-outline btn-sm">
-                                💬 Chat
-                            </button>
-                        </div>
-                    </div>
-                `;
-        }).join('');
-
-        grid.innerHTML = offersHTML;
-    }
-
     // Language switcher
     function switchLanguage(lang) {
-        // Remove active class from all language buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.remove('active');
+            if (btn.textContent === lang.toUpperCase()) btn.classList.add('active');
         });
-
-        // Find and activate the correct language button
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            if (btn.textContent === lang.toUpperCase()) {
-                btn.classList.add('active');
-            }
-        });
-
-        // Hide all language content
-        document.querySelectorAll('.lang-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        // Show content for selected language
-        document.querySelectorAll('.lang-content.' + lang).forEach(content => {
-            content.classList.add('active');
-        });
-
-        // Save language preference
+        document.querySelectorAll('.lang-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.lang-content.' + lang).forEach(content => content.classList.add('active'));
         localStorage.setItem('preferredLanguage', lang);
     }
 
     // Mobile menu toggle
     function toggleMobileMenu() {
         const menu = document.getElementById('mobileMenu');
-        if (menu) {
-            menu.classList.toggle('active');
+        if (menu) menu.classList.toggle('active');
+    }
+
+    // Mobile auth section accordion toggle
+    function toggleMobileAuthSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            // Close other sections
+            document.querySelectorAll('.mobile-auth-section').forEach(s => {
+                if (s.id !== sectionId) {
+                    s.classList.remove('active');
+                }
+            });
+            // Toggle current section
+            section.classList.toggle('active');
         }
     }
+
+    // Dropdown toggle
+    function toggleDropdown(id) {
+        document.querySelectorAll('.dropdown').forEach(d => {
+            if (d.querySelector('.dropdown-menu').id !== id) {
+                d.classList.remove('active');
+            }
+        });
+        const dropdown = document.querySelector(`#${id}`).parentElement;
+        dropdown.classList.toggle('active');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+        }
+    });
 
     // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2794,8 +2596,7 @@
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-                // Close mobile menu if open
+                target.scrollIntoView({behavior: 'smooth'});
                 const mobileMenu = document.getElementById('mobileMenu');
                 if (mobileMenu && mobileMenu.classList.contains('active')) {
                     mobileMenu.classList.remove('active');
@@ -2804,97 +2605,47 @@
         });
     });
 
-    // Initialize on DOM load
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set language preference
-        const preferredLang = localStorage.getItem('preferredLanguage') || 'fr';
-        switchLanguage(preferredLang);
-
-        // Populate offers
-        // populateOffers();
-    });
-
-    function toggleDropdown(id) {
-        // Close all open dropdowns first
-        document.querySelectorAll('.dropdown').forEach(d => {
-            if (d.querySelector('.dropdown-menu').id !== id) {
-                d.classList.remove('active');
-            }
-        });
-
-        // Toggle current dropdown
-        const dropdown = document.querySelector(`#${id}`).parentElement;
-        dropdown.classList.toggle('active');
-    }
-
-    // Close when clicking outside
-    document.addEventListener('click', e => {
-        if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
-        }
-    });
-</script>
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=geometry&callback=initMap"
-    async defer></script>
-
-<script>
-    let directionsService;
-
+    // Google Maps distance calculation
     const userRideRequests = @json($userriderequests);
 
     function initMap() {
-        directionsService = new google.maps.DirectionsService();
-        calculateAllRides();
-    }
-
-    function calculateAllRides() {
+        const directionsService = new google.maps.DirectionsService();
         userRideRequests.forEach(ride => {
-            calculateRideDistanceDuration(
-                ride.pickup_location,
-                ride.destination_location,
-                ride.id
-            );
+            if (ride.pickup_location && ride.destination_location) {
+                directionsService.route(
+                    {
+                        origin: ride.pickup_location,
+                        destination: ride.destination_location,
+                        travelMode: google.maps.TravelMode.DRIVING
+                    },
+                    (result, status) => {
+                        if (status === "OK") {
+                            let totalSeconds = 0;
+                            result.routes[0].legs.forEach(leg => {
+                                totalSeconds += leg.duration.value;
+                            });
+                            const hours = Math.floor(totalSeconds / 3600);
+                            const minutes = Math.ceil((totalSeconds % 3600) / 60);
+                            const rideDiv = document.querySelector(`[data-ride-id="${ride.id}"]`);
+                            if (rideDiv) {
+                                rideDiv.querySelector('.duration').innerText = `${hours}h ${minutes}m`;
+                            }
+                        }
+                    }
+                );
+            }
         });
     }
 
-    function calculateRideDistanceDuration(origin, destination, rideId) {
-        directionsService.route(
-            {
-                origin: origin,
-                destination: destination,
-                travelMode: google.maps.TravelMode.DRIVING
-            },
-            (result, status) => {
-                if (status === "OK") {
-                    let totalMeters = 0;
-                    let totalSeconds = 0;
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+        const preferredLang = localStorage.getItem('preferredLanguage') || 'fr';
+        switchLanguage(preferredLang);
+    });
 
-                    result.routes[0].legs.forEach(leg => {
-                        totalMeters += leg.distance.value;
-                        totalSeconds += leg.duration.value;
-                    });
-
-                    const km = (totalMeters / 1000).toFixed(2);
-
-                    const hours = Math.floor(totalSeconds / 3600);
-                    const minutes = Math.ceil((totalSeconds % 3600) / 60);
-
-                    updateRideUI(rideId, km, hours, minutes);
-                } else {
-                    console.error("Route error:", status);
-                }
-            }
-        );
-    }
-
-    function updateRideUI(rideId, km, hours, minutes) {
-        const rideDiv = document.querySelector(`[data-ride-id="${rideId}"]`);
-
-        if (!rideDiv) return;
-
-        // rideDiv.querySelector('.distance').innerText = `${km} km`;
-        rideDiv.querySelector('.duration').innerText = `${hours}h ${minutes}m`;
+    // Load Google Maps if rides exist
+    if (userRideRequests.length > 0) {
+        window.initMap = initMap;
     }
 </script>
 
