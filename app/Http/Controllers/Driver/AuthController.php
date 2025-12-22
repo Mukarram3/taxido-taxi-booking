@@ -229,13 +229,12 @@ class AuthController extends Controller
             $verificationCode = rand(10000, 99999);
             $message = "Your verification code is: $verificationCode";
 
-
             $driver = new Driver();
             $driver->firstName       = $validated['firstName'];
             $driver->lastName        = $validated['lastName'];
-            $driver->profession      = $validated['profession'] ?? null;
-            $driver->birthDate       = $validated['birthDate'] ?? null;
-            $driver->address         = $validated['address'] ?? null;
+//            $driver->profession      = $validated['profession'] ?? null;
+//            $driver->birthDate       = $validated['birthDate'] ?? null;
+//            $driver->address         = $validated['address'] ?? null;
             $driver->email           = $validated['email'];
             $driver->phone           = $validated['phone'];
             $driver->password        = Hash::make($validated['password']);
@@ -275,7 +274,6 @@ class AuthController extends Controller
 
     public function verify_otp(Request $request)
     {
-
         $otp = Otp::where('user_id', $request->user_id)
             ->where('otp', $request->otp)
             ->where('expires_at', '>', Carbon::now())

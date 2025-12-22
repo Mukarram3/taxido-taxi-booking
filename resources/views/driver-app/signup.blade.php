@@ -1030,26 +1030,26 @@
                             </div>
                         </div>
 
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label" for="profession">
-                                    Profession <span class="required">*</span>
-                                </label>
-                                <input type="text" id="profession" name="profession" class="form-input" placeholder="Your job/profession" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="birth-date">
-                                    Date of Birth <span class="required">*</span>
-                                </label>
-                                <input type="date" id="birth-date" name="dob" class="form-input" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="address">
-                                    Address
-                                </label>
-                                <input type="text" id="address" name="address" class="form-input" placeholder="Your complete address">
-                            </div>
-                        </div>
+{{--                        <div class="form-grid">--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label class="form-label" for="profession">--}}
+{{--                                    Profession <span class="required">*</span>--}}
+{{--                                </label>--}}
+{{--                                <input type="text" id="profession" name="profession" class="form-input" placeholder="Your job/profession" required>--}}
+{{--                            </div>--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label class="form-label" for="birth-date">--}}
+{{--                                    Date of Birth <span class="required">*</span>--}}
+{{--                                </label>--}}
+{{--                                <input type="date" id="birth-date" name="dob" class="form-input" required>--}}
+{{--                            </div>--}}
+{{--                            <div class="form-group">--}}
+{{--                                <label class="form-label" for="address">--}}
+{{--                                    Address--}}
+{{--                                </label>--}}
+{{--                                <input type="text" id="address" name="address" class="form-input" placeholder="Your complete address">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
 
                     <div class="form-actions">
@@ -1548,10 +1548,10 @@
             case 2:
                 const firstName = document.getElementById('first-name').value.trim();
                 const lastName = document.getElementById('last-name').value.trim();
-                const profession = document.getElementById('profession').value.trim();
-                const birthDate = document.getElementById('birth-date').value;
+                // const profession = document.getElementById('profession').value.trim();
+                // const birthDate = document.getElementById('birth-date').value;
 
-                if (!firstName || !lastName || !profession || !birthDate) {
+                if (!firstName || !lastName) {
                     showAlert('error', 'Please fill in all required fields.');
                     return false;
                 }
@@ -1926,9 +1926,9 @@
             const fieldMap = {
                 'first-name': 'firstName',
                 'last-name': 'lastName',
-                'profession': 'profession',
-                'birth-date': 'dob',
-                'address': 'address',
+                // 'profession': 'profession',
+                // 'birth-date': 'dob',
+                // 'address': 'address',
                 'email': 'email',
                 'password': 'password',
                 'travel-frequency': 'travelFrequency',

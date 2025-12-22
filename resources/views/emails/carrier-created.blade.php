@@ -5,168 +5,344 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenue sur JeConfie - Compte Transporteur</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background-color: #f8fafc;">
-<div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-    <!-- Header avec gradient JeConfie -->
-    <div style="background: linear-gradient(135deg, #5046e5 0%, #059669 100%); padding: 40px 20px; text-align: center; position: relative; overflow: hidden;">
-        <!-- Cercle décoratif -->
-        <div style="position: absolute; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; top: -100px; right: -50px;"></div>
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f8fafc;">
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8fafc; padding: 20px 0;">
+    <tr>
+        <td align="center">
+            <!-- Main Container -->
+            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-        <!-- Logo -->
-        <div style="display: inline-block; background: white; border-radius: 12px; padding: 12px; margin-bottom: 20px;">
-            <span style="font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #5046e5, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">JC</span>
-        </div>
+                <!-- Header -->
+                <tr>
+                    <td align="center" bgcolor="#5046e5" style="background-color: #5046e5; padding: 40px 20px;">
+                        <!-- Logo -->
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td align="center" bgcolor="#ffffff" style="background-color: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 20px;">
+                                    <span style="font-size: 24px; font-weight: 800; color: #5046e5;">JC</span>
+                                </td>
+                            </tr>
+                        </table>
 
-        <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">Bienvenue chez JeConfie ! 🚚</h1>
-        <p style="color: rgba(255, 255, 255, 0.95); margin: 10px 0 0 0; font-size: 16px;">Votre compte Transporteur Professionnel est actif</p>
-    </div>
+                        <h1 style="color: #ffffff; margin: 20px 0 10px 0; font-size: 28px; font-weight: 700;">
+                            Bienvenue chez JeConfie ! 🚚
+                        </h1>
+                        <p style="color: #ffffff; margin: 0; font-size: 16px;">
+                            Votre compte Transporteur Professionnel est actif
+                        </p>
+                    </td>
+                </tr>
 
-    <!-- Content -->
-    <div style="padding: 40px 30px;">
-        <h2 style="color: #0f172a; font-size: 22px; margin-bottom: 20px;">Bonjour {{ $driver->firstName . ' ' . $driver->lastName }} !</h2>
+                <!-- Content -->
+                <tr>
+                    <td style="padding: 40px 30px 30px 30px;">
+                        <h2 style="color: #0f172a; font-size: 22px; margin: 0 0 20px 0;">
+                            Bonjour {{ $driver->firstName . ' ' . $driver->lastName }} !
+                        </h2>
 
-        <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
-            Félicitations ! Votre compte transporteur professionnel sur <strong style="color: #5046e5;">JeConfie</strong> est maintenant actif et vérifié.
-            Vous pouvez dès à présent accéder à des milliers d'opportunités de transport et développer votre activité.
-        </p>
+                        <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                            Félicitations ! Votre compte transporteur professionnel sur <strong style="color: #5046e5;">JeConfie</strong> est maintenant actif et vérifié.
+                            Vous pouvez dès à présent accéder à des milliers d'opportunités de transport et développer votre activité.
+                        </p>
+                    </td>
+                </tr>
 
-        <!-- Info Box avec bordure gradient -->
-        <div style="background: linear-gradient(135deg, #5046e515 0%, #05966915 100%); border-left: 4px solid #5046e5; padding: 20px; margin: 30px 0; border-radius: 8px;">
-            <h3 style="color: #5046e5; margin: 0 0 15px 0; font-size: 18px;">📋 Vos informations de connexion :</h3>
-            <p style="margin: 8px 0; color: #64748b;">
-                <strong>Email :</strong> {{$driver->email}}<br>
-                <strong>Identifiant :</strong> {{$driver->firstName . ' ' . $driver->lastName}}<br>
-                <strong>Type de compte :</strong> Transporteur Professionnel<br>
-                <strong>Statut :</strong> <span style="color: #10b981; font-weight: 600;">✓ Vérifié</span>
-            </p>
-        </div>
+                <!-- Info Box -->
+                <tr>
+                    <td style="padding: 0 30px 30px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="background-color: #e0e7ff; border-left: 4px solid #5046e5; padding: 20px; border-radius: 8px;">
+                                    <h3 style="color: #5046e5; margin: 0 0 15px 0; font-size: 18px;">
+                                        📋 Vos informations de connexion :
+                                    </h3>
+                                    <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.8;">
+                                        <strong>Email :</strong> {{$driver->email}}<br>
+                                        <strong>Identifiant :</strong> {{$driver->firstName . ' ' . $driver->lastName}}<br>
+                                        <strong>Type de compte :</strong> Transporteur Professionnel<br>
+                                        <strong>Statut :</strong> <span style="color: #10b981; font-weight: 600;">✓ Vérifié</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-        <!-- CTA Button avec gradient -->
-        <div style="text-align: center; margin: 35px 0;">
-            <a href="https://jeconfie.com/driver/dashboard" style="display: inline-block; background: linear-gradient(135deg, #5046e5 0%, #059669 100%); color: #ffffff; padding: 15px 40px; text-decoration: none; border-radius: 100px; font-weight: 600; font-size: 16px; box-shadow: 0 10px 25px rgba(80, 70, 229, 0.3);">
-                Accéder à mon tableau de bord →
-            </a>
-        </div>
+                <!-- CTA Button -->
+                <tr>
+                    <td align="center" style="padding: 0 30px 35px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td align="center" bgcolor="#5046e5" style="background-color: #5046e5; border-radius: 50px; padding: 15px 40px;">
+                                    <a href="https://jeconfie.com/driver/dashboard" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: block;">
+                                        Accéder à mon tableau de bord →
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-        <!-- Features Grid -->
-        <div style="background-color: #f8fafc; padding: 25px; border-radius: 16px; margin: 30px 0;">
-            <h3 style="color: #0f172a; margin: 0 0 20px 0; text-align: center;">🎯 Commencez dès maintenant</h3>
-            <div style="display: table; width: 100%;">
-                <div style="display: table-row;">
-                    <div style="display: table-cell; padding: 10px; text-align: center; width: 33%;">
-                        <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                            <span style="font-size: 30px;">📱</span>
-                            <p style="color: #64748b; margin: 10px 0 0 0; font-size: 13px; font-weight: 600;">Complétez votre profil</p>
-                        </div>
-                    </div>
-                    <div style="display: table-cell; padding: 10px; text-align: center; width: 33%;">
-                        <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                            <span style="font-size: 30px;">🚛</span>
-                            <p style="color: #64748b; margin: 10px 0 0 0; font-size: 13px; font-weight: 600;">Ajoutez vos véhicules</p>
-                        </div>
-                    </div>
-                    <div style="display: table-cell; padding: 10px; text-align: center; width: 33%;">
-                        <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                            <span style="font-size: 30px;">💰</span>
-                            <p style="color: #64748b; margin: 10px 0 0 0; font-size: 13px; font-weight: 600;">Consultez les offres</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <!-- Features Grid -->
+                <tr>
+                    <td style="padding: 0 30px 30px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td bgcolor="#f8fafc" style="background-color: #f8fafc; padding: 25px; border-radius: 16px;">
+                                    <h3 style="color: #0f172a; margin: 0 0 20px 0; text-align: center; font-size: 18px;">
+                                        🎯 Commencez dès maintenant
+                                    </h3>
 
-        <!-- Eco Banner -->
-        <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 25px; border-radius: 16px; margin: 30px 0; text-align: center;">
-            <h3 style="color: #ffffff; margin: 0 0 10px 0; font-size: 20px;">🌱 Transport Écologique</h3>
-            <p style="color: rgba(255, 255, 255, 0.95); margin: 0 0 15px 0; font-size: 15px;">
-                Rejoignez notre programme éco-responsable et bénéficiez d'avantages exclusifs
-            </p>
-            <a href="https://jeconfie.com/transporteur/eco-programme" style="display: inline-block; background: #ffffff; color: #059669; padding: 12px 30px; text-decoration: none; border-radius: 100px; font-weight: 600; font-size: 14px;">
-                En savoir plus →
-            </a>
-        </div>
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="33%" style="padding: 10px; vertical-align: top;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td bgcolor="#ffffff" style="background-color: #ffffff; padding: 15px; border-radius: 12px; text-align: center;">
+                                                            <p style="font-size: 30px; margin: 0;">📱</p>
+                                                            <p style="color: #64748b; margin: 10px 0 0 0; font-size: 13px; font-weight: 600;">
+                                                                Complétez votre profil
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
 
-        <!-- Promotional Offer -->
-        <div style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); padding: 25px; border-radius: 16px; margin: 30px 0; text-align: center;">
-            <h3 style="color: #ffffff; margin: 0 0 10px 0; font-size: 20px;">🎁 Offre de bienvenue exclusive</h3>
-            <p style="color: #ffffff; margin: 0 0 15px 0; font-size: 18px; font-weight: 700;">
-                -20% de commission sur vos 10 premières livraisons !
-            </p>
-            <p style="color: rgba(255, 255, 255, 0.95); margin: 0; font-size: 13px;">
-                Offre automatiquement appliquée à votre compte
-            </p>
-        </div>
+                                            <td width="33%" style="padding: 10px; vertical-align: top;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td bgcolor="#ffffff" style="background-color: #ffffff; padding: 15px; border-radius: 12px; text-align: center;">
+                                                            <p style="font-size: 30px; margin: 0;">🚛</p>
+                                                            <p style="color: #64748b; margin: 10px 0 0 0; font-size: 13px; font-weight: 600;">
+                                                                Ajoutez vos véhicules
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
 
-        <!-- Trust Section -->
-        <div style="background: #f8fafc; border: 2px solid #e2e8f0; padding: 20px; border-radius: 12px; margin: 30px 0;">
-            <h3 style="color: #0f172a; margin: 0 0 15px 0; font-size: 16px;">🛡️ Pourquoi les transporteurs choisissent JeConfie ?</h3>
-            <ul style="color: #64748b; font-size: 14px; line-height: 1.8; margin: 0; padding-left: 20px;">
-                <li><strong style="color: #5046e5;">Paiements garantis</strong> sous 48h</li>
-                <li><strong style="color: #5046e5;">Assurance incluse</strong> sur toutes les livraisons</li>
-                <li><strong style="color: #5046e5;">0 frais cachés</strong>, tarification transparente</li>
-                <li><strong style="color: #5046e5;">Support dédié</strong> disponible 7j/7</li>
-            </ul>
-        </div>
+                                            <td width="33%" style="padding: 10px; vertical-align: top;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td bgcolor="#ffffff" style="background-color: #ffffff; padding: 15px; border-radius: 12px; text-align: center;">
+                                                            <p style="font-size: 30px; margin: 0;">💰</p>
+                                                            <p style="color: #64748b; margin: 10px 0 0 0; font-size: 13px; font-weight: 600;">
+                                                                Consultez les offres
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-        <!-- Quick Stats -->
-        <div style="text-align: center; padding: 30px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin: 30px 0;">
-            <h3 style="color: #0f172a; margin: 0 0 20px 0; font-size: 18px;">📊 JeConfie en chiffres</h3>
-            <div style="display: table; width: 100%; max-width: 400px; margin: 0 auto;">
-                <div style="display: table-row;">
-                    <div style="display: table-cell; text-align: center; padding: 10px;">
-                        <p style="font-size: 28px; font-weight: 700; color: #5046e5; margin: 0;">15K+</p>
-                        <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Livraisons/mois</p>
-                    </div>
-                    <div style="display: table-cell; text-align: center; padding: 10px;">
-                        <p style="font-size: 28px; font-weight: 700; color: #059669; margin: 0;">98%</p>
-                        <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Satisfaction</p>
-                    </div>
-                    <div style="display: table-cell; text-align: center; padding: 10px;">
-                        <p style="font-size: 28px; font-weight: 700; color: #06b6d4; margin: 0;">24h</p>
-                        <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Paiement rapide</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <!-- Eco Banner -->
+                <tr>
+                    <td style="padding: 0 30px 30px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td bgcolor="#059669" style="background-color: #059669; padding: 25px; border-radius: 16px; text-align: center;">
+                                    <h3 style="color: #ffffff; margin: 0 0 10px 0; font-size: 20px;">
+                                        🌱 Transport Écologique
+                                    </h3>
+                                    <p style="color: #ffffff; margin: 0 0 15px 0; font-size: 15px;">
+                                        Rejoignez notre programme éco-responsable et bénéficiez d'avantages exclusifs
+                                    </p>
+                                    <table cellspacing="0" cellpadding="0" border="0" align="center">
+                                        <tr>
+                                            <td bgcolor="#ffffff" style="background-color: #ffffff; border-radius: 50px; padding: 12px 30px;">
+                                                <a href="https://jeconfie.com/transporteur/eco-programme" style="color: #059669; text-decoration: none; font-weight: 600; font-size: 14px; display: block;">
+                                                    En savoir plus →
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-        <!-- Help Section -->
-        <div style="margin-top: 40px; padding: 25px; background: linear-gradient(135deg, #5046e515 0%, #05966915 100%); border-radius: 12px;">
-            <h3 style="color: #0f172a; margin: 0 0 15px 0; font-size: 18px;">Besoin d'aide pour démarrer ?</h3>
-            <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-                Notre équipe support est là pour vous accompagner dans vos premiers pas sur la plateforme.
-            </p>
-            <div style="display: table; width: 100%;">
-                <div style="display: table-cell; vertical-align: middle;">
-                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">
-                        📧 <strong>Email :</strong> <a href="mailto:service@jeconfie.com" style="color: #5046e5; text-decoration: none;">service@jeconfie.com</a><br>
-                        📞 <strong>Téléphone :</strong> <a href="tel:+330755258023" style="color: #5046e5; text-decoration: none;">+33 07 55 25 80 23</a><br>
-                        💬 <strong>Chat :</strong> Disponible sur votre tableau de bord
-                    </p>
-                </div>
-                <div style="display: table-cell; text-align: right; vertical-align: middle;">
-                    <a href="https://jeconfie.com/transporteur/guide" style="display: inline-block; background: #5046e5; color: #ffffff; padding: 10px 25px; text-decoration: none; border-radius: 100px; font-weight: 600; font-size: 14px;">
-                        📚 Guide complet
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+                <!-- Promotional Offer -->
+                <tr>
+                    <td style="padding: 0 30px 30px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td bgcolor="#f59e0b" style="background-color: #f59e0b; padding: 25px; border-radius: 16px; text-align: center;">
+                                    <h3 style="color: #ffffff; margin: 0 0 10px 0; font-size: 20px;">
+                                        🎁 Offre de bienvenue exclusive
+                                    </h3>
+                                    <p style="color: #ffffff; margin: 0 0 15px 0; font-size: 18px; font-weight: 700;">
+                                        -20% de commission sur vos 10 premières livraisons !
+                                    </p>
+                                    <p style="color: #ffffff; margin: 0; font-size: 13px;">
+                                        Offre automatiquement appliquée à votre compte
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-    <!-- Footer -->
-    <div style="background-color: #0f172a; padding: 30px; text-align: center;">
-        <div style="margin-bottom: 20px;">
-            <a href="https://jeconfie.com" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Accueil</a>
-            <a href="https://jeconfie.com/transporteur/dashboard" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Dashboard</a>
-            <a href="https://jeconfie.com/transporteur/offres" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Offres</a>
-            <a href="https://jeconfie.com/help" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Centre d'aide</a>
-            <a href="https://jeconfie.com/terms" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">CGU</a>
-        </div>
-        <p style="color: #94a3b8; font-size: 12px; margin: 15px 0 0 0;">
-            © 2024 JeConfie - La marketplace du transport de confiance<br>
-            Cet email a été envoyé à {{$driver->email}}<br>
-            <a href="https://jeconfie.com/unsubscribe" style="color: #64748b; text-decoration: none; font-size: 11px;">Se désinscrire</a>
-        </p>
-    </div>
-</div>
+                <!-- Trust Section -->
+                <tr>
+                    <td style="padding: 0 30px 30px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 20px; border-radius: 12px;">
+                                    <h3 style="color: #0f172a; margin: 0 0 15px 0; font-size: 16px;">
+                                        🛡️ Pourquoi les transporteurs choisissent JeConfie ?
+                                    </h3>
+
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                        <tr>
+                                            <td width="20" valign="top" style="padding: 4px 0;">
+                                                <span style="color: #5046e5; font-size: 16px;">•</span>
+                                            </td>
+                                            <td style="color: #64748b; font-size: 14px; padding: 4px 0; line-height: 1.6;">
+                                                <strong style="color: #5046e5;">Paiements garantis</strong> sous 48h
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20" valign="top" style="padding: 4px 0;">
+                                                <span style="color: #5046e5; font-size: 16px;">•</span>
+                                            </td>
+                                            <td style="color: #64748b; font-size: 14px; padding: 4px 0; line-height: 1.6;">
+                                                <strong style="color: #5046e5;">Assurance incluse</strong> sur toutes les livraisons
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20" valign="top" style="padding: 4px 0;">
+                                                <span style="color: #5046e5; font-size: 16px;">•</span>
+                                            </td>
+                                            <td style="color: #64748b; font-size: 14px; padding: 4px 0; line-height: 1.6;">
+                                                <strong style="color: #5046e5;">0 frais cachés</strong>, tarification transparente
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20" valign="top" style="padding: 4px 0;">
+                                                <span style="color: #5046e5; font-size: 16px;">•</span>
+                                            </td>
+                                            <td style="color: #64748b; font-size: 14px; padding: 4px 0; line-height: 1.6;">
+                                                <strong style="color: #5046e5;">Support dédié</strong> disponible 7j/7
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Quick Stats -->
+                <tr>
+                    <td style="padding: 0 30px 30px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="text-align: center; padding: 30px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                                    <h3 style="color: #0f172a; margin: 0 0 20px 0; font-size: 18px;">
+                                        📊 JeConfie en chiffres
+                                    </h3>
+
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 400px; margin: 0 auto;">
+                                        <tr>
+                                            <td width="33%" style="text-align: center; padding: 10px;">
+                                                <p style="font-size: 28px; font-weight: 700; color: #5046e5; margin: 0;">15K+</p>
+                                                <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Livraisons/mois</p>
+                                            </td>
+                                            <td width="33%" style="text-align: center; padding: 10px;">
+                                                <p style="font-size: 28px; font-weight: 700; color: #059669; margin: 0;">98%</p>
+                                                <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Satisfaction</p>
+                                            </td>
+                                            <td width="33%" style="text-align: center; padding: 10px;">
+                                                <p style="font-size: 28px; font-weight: 700; color: #06b6d4; margin: 0;">24h</p>
+                                                <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Paiement rapide</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Help Section -->
+                <tr>
+                    <td style="padding: 0 30px 40px 30px;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td style="background-color: #e0e7ff; padding: 25px; border-radius: 12px;">
+                                    <h3 style="color: #0f172a; margin: 0 0 15px 0; font-size: 18px;">
+                                        Besoin d'aide pour démarrer ?
+                                    </h3>
+                                    <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+                                        Notre équipe support est là pour vous accompagner dans vos premiers pas sur la plateforme.
+                                    </p>
+
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                        <tr>
+                                            <td style="vertical-align: middle;">
+                                                <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.8;">
+                                                    📧 <strong>Email :</strong> <a href="mailto:service@jeconfie.com" style="color: #5046e5; text-decoration: none;">service@jeconfie.com</a><br>
+                                                    📞 <strong>Téléphone :</strong> <a href="tel:+330755258023" style="color: #5046e5; text-decoration: none;">+33 07 55 25 80 23</a><br>
+                                                    💬 <strong>Chat :</strong> Disponible sur votre tableau de bord
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0">
+                                                    <tr>
+                                                        <td bgcolor="#5046e5" style="background-color: #5046e5; border-radius: 50px; padding: 10px 25px;">
+                                                            <a href="https://jeconfie.com/transporteur/guide" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14px; display: block;">
+                                                                📚 Guide complet
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td bgcolor="#0f172a" style="background-color: #0f172a; padding: 30px; text-align: center;">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td align="center" style="padding-bottom: 20px;">
+                                    <a href="https://jeconfie.com" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Accueil</a>
+                                    <a href="https://jeconfie.com/transporteur/dashboard" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Dashboard</a>
+                                    <a href="https://jeconfie.com/transporteur/offres" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Offres</a>
+                                    <a href="https://jeconfie.com/help" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">Centre d'aide</a>
+                                    <a href="https://jeconfie.com/terms" style="color: #e2e8f0; text-decoration: none; margin: 0 10px; font-size: 14px;">CGU</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <p style="color: #94a3b8; font-size: 12px; margin: 0; line-height: 1.6;">
+                                        © 2024 JeConfie - La marketplace du transport de confiance<br>
+                                        Cet email a été envoyé à {{$driver->email}}<br>
+                                        <a href="https://jeconfie.com/unsubscribe" style="color: #64748b; text-decoration: none; font-size: 11px;">Se désinscrire</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

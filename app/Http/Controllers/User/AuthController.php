@@ -110,9 +110,9 @@ class AuthController extends Controller
             $user = new User();
             $user->firstName      = $validated['firstName'];
             $user->lastName       = $validated['lastName'];
-            $user->profession     = $validated['profession'] ?? null;
-            $user->birthDate      = $validated['birthDate'] ?? null;
-            $user->address        = $validated['address'] ?? null;
+//            $user->profession     = $validated['profession'] ?? null;
+//            $user->birthDate      = $validated['birthDate'] ?? null;
+//            $user->address        = $validated['address'] ?? null;
             $user->shipperType    = $validated['shipperType'] ?? null;
             $user->companyName    = $validated['companyName'] ?? null;
             $user->packageTypes   = $validated['packageTypes'] ?? null;
