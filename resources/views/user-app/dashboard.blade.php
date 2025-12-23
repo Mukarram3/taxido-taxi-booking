@@ -12,13 +12,6 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8fafc;
-            color: #1a1a1a;
-        }
-
-        /* Variables */
         :root {
             --primary: #5046e5;
             --primary-light: #6366f1;
@@ -35,7 +28,13 @@
             --border: #e2e8f0;
         }
 
-        /* Language Management */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        /* ==================== LANGUAGE MANAGEMENT ==================== */
         .lang-content {
             display: none;
         }
@@ -44,15 +43,7 @@
             display: inline-block;
         }
 
-        .lang-block {
-            display: none;
-        }
-
-        .lang-block.active {
-            display: block;
-        }
-
-        /* Sidebar */
+        /* ==================== SIDEBAR ==================== */
         .sidebar {
             position: fixed;
             left: 0;
@@ -62,7 +53,21 @@
             background: white;
             border-right: 1px solid var(--border);
             overflow-y: auto;
-            z-index: 900;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .sidebar-header {
@@ -96,7 +101,6 @@
             background: linear-gradient(135deg, var(--secondary), var(--eco-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .user-profile {
@@ -108,14 +112,8 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--secondary), var(--eco-green));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 20px;
             margin-bottom: 12px;
+            object-fit: cover;
         }
 
         .user-name {
@@ -134,6 +132,11 @@
             border-bottom: 1px solid var(--border);
         }
 
+        .service-mode a {
+            text-decoration: none;
+            display: block;
+        }
+
         .service-badge {
             display: inline-flex;
             align-items: center;
@@ -144,6 +147,8 @@
             border-radius: 12px;
             font-weight: 600;
             font-size: 14px;
+            width: 100%;
+            justify-content: center;
         }
 
         .nav-menu {
@@ -179,10 +184,11 @@
             margin: 16px 24px;
         }
 
-        /* Main Content */
+        /* ==================== MAIN CONTENT ==================== */
         .main-content {
             margin-left: 280px;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
 
         .top-bar {
@@ -197,6 +203,31 @@
             z-index: 800;
         }
 
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: var(--light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--border);
+        }
+
         .page-title {
             font-size: 24px;
             font-weight: 700;
@@ -209,7 +240,7 @@
             gap: 16px;
         }
 
-        /* Notification Bell */
+        /* ==================== NOTIFICATION BELL ==================== */
         .notification-bell {
             position: relative;
             cursor: pointer;
@@ -255,7 +286,6 @@
 
         .bell-icon {
             font-size: 22px;
-            animation: none;
             transition: transform 0.3s ease;
         }
 
@@ -269,7 +299,7 @@
             75% { transform: rotate(15deg); }
         }
 
-        /* Notification Dropdown */
+        /* ==================== NOTIFICATION DROPDOWN ==================== */
         .notification-dropdown {
             position: absolute;
             top: 70px;
@@ -313,6 +343,7 @@
         .dropdown-actions {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
         .dropdown-btn {
@@ -362,8 +393,6 @@
             border-bottom: 1px solid var(--border);
             transition: all 0.3s ease;
             cursor: pointer;
-            text-decoration: none;
-            color: inherit;
         }
 
         .notification-item:hover {
@@ -414,6 +443,21 @@
             color: var(--gray);
         }
 
+        .notification-actions {
+            margin-top: 8px;
+        }
+
+        .mark-as-read {
+            font-size: 12px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .mark-as-read:hover {
+            text-decoration: underline;
+        }
+
         .dropdown-footer {
             padding: 12px 20px;
             border-top: 1px solid var(--border);
@@ -448,6 +492,7 @@
             opacity: 0.5;
         }
 
+        /* ==================== LANGUAGE SWITCHER ==================== */
         .lang-switcher {
             display: flex;
             background: var(--light);
@@ -473,12 +518,12 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Dashboard Content */
+        /* ==================== DASHBOARD CONTENT ==================== */
         .dashboard-content {
             padding: 32px;
         }
 
-        /* Quick Actions */
+        /* ==================== QUICK ACTIONS ==================== */
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -494,6 +539,7 @@
             transition: all 0.3s;
             border: 1px solid var(--border);
             cursor: pointer;
+            display: block;
         }
 
         .action-card:hover {
@@ -523,19 +569,16 @@
             color: var(--gray);
         }
 
-        /* Stats Section */
+        /* ==================== STATS SECTION ==================== */
         .stats-section {
             margin-bottom: 32px;
-        }
-
-        .stats-header {
-            margin-bottom: 16px;
         }
 
         .stats-title {
             font-size: 20px;
             font-weight: 700;
             color: var(--dark);
+            margin-bottom: 16px;
         }
 
         .stats-grid {
@@ -593,7 +636,7 @@
             color: var(--danger);
         }
 
-        /* Activity Section */
+        /* ==================== ACTIVITY SECTION ==================== */
         .activity-section {
             margin-bottom: 32px;
         }
@@ -603,6 +646,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .section-title {
@@ -614,6 +659,7 @@
         .filter-tabs {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .filter-tab {
@@ -661,6 +707,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .activity-route {
@@ -670,6 +718,7 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--dark);
+            flex-wrap: wrap;
         }
 
         .activity-type {
@@ -678,6 +727,7 @@
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .type-cotransport {
@@ -699,19 +749,57 @@
             border-radius: 6px;
         }
 
-        /* Responsive */
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 1024px) {
+            .quick-actions {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
             }
 
             .sidebar.mobile-active {
                 transform: translateX(0);
             }
 
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+
             .main-content {
                 margin-left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .top-bar {
+                padding: 16px 20px;
+            }
+
+            .dashboard-content {
+                padding: 20px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
 
             .notification-dropdown {
@@ -719,39 +807,71 @@
                 right: 20px;
                 left: 20px;
             }
+
+            .activity-details {
+                grid-template-columns: 1fr;
+            }
+
+            .top-actions {
+                gap: 8px;
+            }
+
+            .lang-switcher {
+                padding: 2px;
+            }
+
+            .lang-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 18px;
+            }
+
+            .activity-route {
+                font-size: 13px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
-<!-- Sidebar -->
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <div class="logo">
-            <a href="{{ url('/') }}" style="text-decoration: none;text-decoration: none;display: flex;flex-direction: row;align-items: center;">
-                <div class="logo-icon">JC</div>
-                <div class="logo-text" style="margin-left: 10px">Je Confie</div>
-            </a>
-        </div>
+        <a href="{{ url('/') }}" class="logo">
+            <div class="logo-icon">JC</div>
+            <div class="logo-text">Je Confie</div>
+        </a>
     </div>
 
     <div class="user-profile">
-        <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('user')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('user')->user()->lastName) }}&background=random&color=fff" />
-        <div class="user-name">{{ urlencode(\Illuminate\Support\Facades\Auth::guard('user')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('user')->user()->lastName) }}</div>
+        <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('user')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('user')->user()->lastName) }}&background=random&color=fff" alt="User Avatar" />
+        <div class="user-name">{{ \Illuminate\Support\Facades\Auth::guard('user')->user()->firstName }} {{ \Illuminate\Support\Facades\Auth::guard('user')->user()->lastName }}</div>
         <div class="user-role">
-            <span class="lang-content fr active">Membre depuis {{\Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year}}</span>
-            <span class="lang-content en">Member since {{\Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year}}</span>
+            <span class="lang-content fr active">Membre depuis {{ \Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year }}</span>
+            <span class="lang-content en">Member since {{ \Illuminate\Support\Facades\Auth::guard('user')->user()->created_at->year }}</span>
         </div>
     </div>
 
-    <a href="{{ url('driver/dashboard') }}">
-        <div class="service-mode">
+    <div class="service-mode">
+        <a href="{{ url('driver/dashboard') }}">
             <div class="service-badge">
                 🚛 <span class="lang-content fr active">MODE CO-TRANSPORT</span>
                 <span class="lang-content en">CO-TRANSPORT MODE</span>
             </div>
-        </div>
-    </a>
+        </a>
+    </div>
 
     <nav class="nav-menu">
         <a href="{{ url('user/dashboard') }}" class="nav-item active">
@@ -779,17 +899,17 @@
             <span class="lang-content fr active">Mon profil</span>
             <span class="lang-content en">My profile</span>
         </a>
-        <a href="jeconfie-messaging-page.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>💬</span>
             <span class="lang-content fr active">Messages</span>
             <span class="lang-content en">Messages</span>
         </a>
-        <a href="jeconfie-payment.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>💳</span>
             <span class="lang-content fr active">Paiements</span>
             <span class="lang-content en">Payments</span>
         </a>
-        <a href="jeconfie-invoices.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>📄</span>
             <span class="lang-content fr active">Factures</span>
             <span class="lang-content en">Invoices</span>
@@ -807,19 +927,19 @@
             <span class="lang-content fr active">Offres disponibles</span>
             <span class="lang-content en">Available offers</span>
         </a>
-        <a href="jeconfie_tracking_page__1_.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>📍</span>
             <span class="lang-content fr active">Suivi des colis</span>
             <span class="lang-content en">Package tracking</span>
         </a>
-        <a href="dashboard-reservation.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>🔄</span>
             <span class="lang-content fr active">Mode Réservation</span>
             <span class="lang-content en">Booking Mode</span>
         </a>
-        <a href="{{url('user/logout')}}" class="nav-item">
-            <span>🔄</span>
-            <span class="lang-content fr active">Logout</span>
+        <a href="{{ url('user/logout') }}" class="nav-item">
+            <span>🚪</span>
+            <span class="lang-content fr active">Déconnexion</span>
             <span class="lang-content en">Logout</span>
         </a>
     </nav>
@@ -830,12 +950,17 @@
     $unreadCount = $notifications->count();
 @endphp
 
-<!-- Main Content -->
+    <!-- Main Content -->
 <div class="main-content">
     <div class="top-bar">
-        <div class="page-title">
-            <span class="lang-content fr active">Dashboard Co-transport</span>
-            <span class="lang-content en">Co-transport Dashboard</span>
+        <div class="top-bar-left">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleSidebar()">
+                ☰
+            </button>
+            <div class="page-title">
+                <span class="lang-content fr active">Dashboard Co-transport</span>
+                <span class="lang-content en">Co-transport Dashboard</span>
+            </div>
         </div>
         <div class="top-actions">
             <!-- Notification Bell -->
@@ -877,22 +1002,14 @@
             @forelse($notifications as $notification)
                 <div class="notification-item unread" data-id="{{ $notification->id }}">
                     <div class="notification-icon" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(8, 145, 178, 0.9)); color: white;">
-                        <i class="iconsax" data-icon="ticket-discount">🎫</i>
+                        🎫
                     </div>
                     <div class="notification-body">
                         <div class="notification-title">
-                            @if(isset($notification->data['name']))
-                                {{ $notification->data['name'] }}
-                            @else
-                                New Notification
-                            @endif
+                            {{ $notification->data['name'] ?? 'New Notification' }}
                         </div>
                         <div class="notification-message">
-                            @if(isset($notification->data['message']))
-                                {{ $notification->data['message'] }}
-                            @else
-                                Carrier {{ $notification->data['name'] ?? 'Unknown' }} ({{ $notification->data['email'] ?? '' }}) wants to complete ride with you.
-                            @endif
+                            {{ $notification->data['message'] ?? 'Carrier wants to complete ride with you.' }}
                         </div>
                         <div class="notification-time">
                             {{ $notification->created_at->diffForHumans() }}
@@ -930,17 +1047,15 @@
     <div class="dashboard-content">
         <!-- Quick Actions -->
         <div class="quick-actions">
-            <a href="{{ url('/create-offer') }}">
-                <div class="action-card">
-                    <div class="action-icon" style="background: rgba(6,182,212,0.1); color: var(--secondary);">📤</div>
-                    <div class="action-title">
-                        <span class="lang-content fr active">Envoyer un colis</span>
-                        <span class="lang-content en">Send a package</span>
-                    </div>
-                    <div class="action-desc">
-                        <span class="lang-content fr active">Trouvez un transporteur</span>
-                        <span class="lang-content en">Find a carrier</span>
-                    </div>
+            <a href="{{ url('/create-offer') }}" class="action-card">
+                <div class="action-icon" style="background: rgba(6,182,212,0.1); color: var(--secondary);">📤</div>
+                <div class="action-title">
+                    <span class="lang-content fr active">Envoyer un colis</span>
+                    <span class="lang-content en">Send a package</span>
+                </div>
+                <div class="action-desc">
+                    <span class="lang-content fr active">Trouvez un transporteur</span>
+                    <span class="lang-content en">Find a carrier</span>
                 </div>
             </a>
 
@@ -983,12 +1098,10 @@
 
         <!-- Stats Section -->
         <div class="stats-section">
-            <div class="stats-header">
-                <h2 class="stats-title">
-                    <span class="lang-content fr active">Statistiques du mois</span>
-                    <span class="lang-content en">Monthly statistics</span>
-                </h2>
-            </div>
+            <h2 class="stats-title">
+                <span class="lang-content fr active">Statistiques du mois</span>
+                <span class="lang-content en">Monthly statistics</span>
+            </h2>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -1008,7 +1121,7 @@
                         <span class="lang-content fr active">Économies réalisées</span>
                         <span class="lang-content en">Savings made</span>
                     </div>
-                    <div class="stat-trend down">↘ -{{ $stats['savings_percent'] ?? 60 }}% vs transporteurs classiques</div>
+                    <div class="stat-trend down">↘ -{{ $stats['savings_percent'] ?? 60 }}% vs transporteurs</div>
                 </div>
 
                 <div class="stat-card">
@@ -1114,7 +1227,16 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    window._token = $('meta[name="csrf-token"]').attr('content')
+    window._token = $('meta[name="csrf-token"]').attr('content');
+
+    // Toggle sidebar for mobile
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('mobile-active');
+        overlay.classList.toggle('active');
+    }
+
     // Language switcher
     function switchLanguage(lang) {
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1140,7 +1262,6 @@
 
         dropdown.classList.toggle('show');
 
-        // Ring bell when opening
         if (dropdown.classList.contains('show')) {
             bell.classList.add('ringing');
             setTimeout(() => {
@@ -1169,9 +1290,8 @@
         });
     }
 
-    // Mark single notification as read
+    // Mark notifications as read
     document.addEventListener('DOMContentLoaded', function() {
-        // Mark single as read
         $('.mark-as-read').click(function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1181,94 +1301,56 @@
             let request = sendMarkRequest(notificationId);
 
             request.done(() => {
-                // Remove the notification item
                 $this.closest('.notification-item').remove();
-
-                // Update badge count
                 updateBadgeCount();
 
-                // Check if no more notifications
                 const remainingNotifs = $('.notification-item').length;
                 if (remainingNotifs === 0) {
-                    const $dropdownContent = $('.dropdown-content');
-                    const $markAllBtn = $('#mark-all');
-                    const $footer = $('.dropdown-footer');
-
-                    if ($dropdownContent.length) {
-                        $dropdownContent.html(`
-                            <div class="empty-notifications">
-                                <div class="empty-icon">🔕</div>
-                                <div>
-                                    <span class="lang-content fr active">Aucune notification</span>
-                                    <span class="lang-content en">No notifications</span>
-                                </div>
+                    $('.dropdown-content').html(`
+                        <div class="empty-notifications">
+                            <div class="empty-icon">🔕</div>
+                            <div>
+                                <span class="lang-content fr active">Aucune notification</span>
+                                <span class="lang-content en">No notifications</span>
                             </div>
-                        `);
-                    }
-                    if ($markAllBtn.length) $markAllBtn.hide();
-                    if ($footer.length) $footer.hide();
+                        </div>
+                    `);
+                    $('#mark-all').hide();
+                    $('.dropdown-footer').hide();
                 }
-            });
-
-            request.fail((xhr) => {
-                console.error('Error marking notification as read:', xhr.responseText);
             });
         });
 
-        // Mark all as read
-        const markAllBtn = document.getElementById('mark-all');
-        if (markAllBtn) {
-            $('#mark-all').click(function(e) {
-                e.preventDefault();
+        $('#mark-all').click(function(e) {
+            e.preventDefault();
 
-                const $this = $(this);
-
-                $.ajax({
-                    method: 'POST',
-                    url: '{{ route('user.markAllNotifications') }}',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    }
-                })
-                    .done((data) => {
-                        if (data.success) {
-                            // Remove all notification items
-                            $('.notification-item.unread').remove();
-
-                            // Update badge
-                            const $bell = $('#notificationBell');
-                            if ($bell.length) {
-                                $bell.removeClass('has-notifications');
-                                $bell.removeAttr('data-count');
-                            }
-
-                            // Update content
-                            const $dropdownContent = $('.dropdown-content');
-                            if ($dropdownContent.length) {
-                                $dropdownContent.html(`
-                            <div class="empty-notifications">
-                                <div class="empty-icon">🔕</div>
-                                <div>
-                                    <span class="lang-content fr active">Aucune notification</span>
-                                    <span class="lang-content en">No notifications</span>
-                                </div>
+            $.ajax({
+                method: 'POST',
+                url: '{{ route('user.markAllNotifications') }}',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                }
+            })
+                .done((data) => {
+                    if (data.success) {
+                        $('.notification-item.unread').remove();
+                        $('#notificationBell').removeClass('has-notifications').removeAttr('data-count');
+                        $('.dropdown-content').html(`
+                        <div class="empty-notifications">
+                            <div class="empty-icon">🔕</div>
+                            <div>
+                                <span class="lang-content fr active">Aucune notification</span>
+                                <span class="lang-content en">No notifications</span>
                             </div>
-                        `);
-                            }
-
-                            // Hide mark all button and footer
-                            $this.hide();
-                            $('.dropdown-footer').hide();
-                        }
-                    })
-                    .fail((xhr) => {
-                        console.error('Error marking all notifications as read:', xhr.responseText);
-                    });
-            });
-        }
+                        </div>
+                    `);
+                        $('#mark-all').hide();
+                        $('.dropdown-footer').hide();
+                    }
+                });
+        });
     });
 
-    // Update badge count
     function updateBadgeCount() {
         const unreadCount = document.querySelectorAll('.notification-item.unread').length;
         const bell = document.getElementById('notificationBell');
@@ -1282,31 +1364,12 @@
         }
     }
 
-    // Ring bell for new notification (call this when receiving real-time notification)
-    function ringBell() {
-        const bell = document.getElementById('notificationBell');
-        bell.classList.add('has-notifications');
-        bell.classList.add('ringing');
-
-        setTimeout(() => {
-            bell.classList.remove('ringing');
-        }, 1500);
-
-        updateBadgeCount();
-    }
-
     // Initialize language preference
     document.addEventListener('DOMContentLoaded', function() {
         const preferredLang = localStorage.getItem('preferredLanguage');
         if (preferredLang === 'en') {
             document.querySelector('.lang-btn[onclick*="en"]').click();
         }
-
-        // Listen for real-time notifications (integrate with your WebSocket/Pusher)
-        // Example: Echo.private('notifications.' + userId).listen('NotificationSent', (e) => {
-        //     ringBell();
-        //     // Add notification to dropdown
-        // });
     });
 </script>
 </body>

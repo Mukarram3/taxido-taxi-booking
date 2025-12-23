@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Réservation - Je confie | Transport collaboratif</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -13,14 +16,6 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8fafc;
-            color: #1a1a1a;
-            line-height: 1.6;
-        }
-
-        /* Variables */
         :root {
             --primary: #5046e5;
             --primary-light: #6366f1;
@@ -35,16 +30,16 @@
             --light: #f8fafc;
             --white: #ffffff;
             --border: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            --radius: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 24px;
         }
 
-        /* Language Management */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* ==================== LANGUAGE MANAGEMENT ==================== */
         .lang-content {
             display: none;
         }
@@ -53,46 +48,31 @@
             display: inline-block;
         }
 
-        .lang-block {
-            display: none;
-        }
-
-        .lang-block.active {
-            display: block;
-        }
-
-        /* Navigation Bar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .nav-container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 72px;
-        }
-
-        /* Sidebar */
+        /* ==================== SIDEBAR ==================== */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
             width: 280px;
-            height: calc(100vh - 72px);
+            height: 100vh;
             background: white;
             border-right: 1px solid var(--border);
             overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .sidebar-header {
@@ -137,14 +117,8 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 20px;
             margin-bottom: 12px;
+            object-fit: cover;
         }
 
         .user-name {
@@ -173,6 +147,8 @@
             border-radius: 12px;
             font-weight: 600;
             font-size: 14px;
+            width: 100%;
+            justify-content: center;
         }
 
         .nav-menu {
@@ -208,10 +184,11 @@
             margin: 16px 24px;
         }
 
-        /* Main Content */
+        /* ==================== MAIN CONTENT ==================== */
         .main-content {
             margin-left: 280px;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
 
         .top-bar {
@@ -221,6 +198,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 800;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: var(--light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--border);
         }
 
         .page-title {
@@ -235,7 +240,7 @@
             gap: 16px;
         }
 
-        /* Notification Bell */
+        /* ==================== NOTIFICATION BELL ==================== */
         .notification-bell {
             position: relative;
             cursor: pointer;
@@ -281,7 +286,6 @@
 
         .bell-icon {
             font-size: 22px;
-            animation: none;
             transition: transform 0.3s ease;
         }
 
@@ -295,7 +299,7 @@
             75% { transform: rotate(15deg); }
         }
 
-        /* Notification Dropdown */
+        /* ==================== NOTIFICATION DROPDOWN ==================== */
         .notification-dropdown {
             position: absolute;
             top: 70px;
@@ -339,6 +343,7 @@
         .dropdown-actions {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
         .dropdown-btn {
@@ -388,8 +393,6 @@
             border-bottom: 1px solid var(--border);
             transition: all 0.3s ease;
             cursor: pointer;
-            text-decoration: none;
-            color: inherit;
         }
 
         .notification-item:hover {
@@ -440,6 +443,21 @@
             color: var(--gray);
         }
 
+        .notification-actions {
+            margin-top: 8px;
+        }
+
+        .mark-as-read {
+            font-size: 12px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .mark-as-read:hover {
+            text-decoration: underline;
+        }
+
         .dropdown-footer {
             padding: 12px 20px;
             border-top: 1px solid var(--border);
@@ -474,6 +492,7 @@
             opacity: 0.5;
         }
 
+        /* ==================== LANGUAGE SWITCHER ==================== */
         .lang-switcher {
             display: flex;
             background: var(--light);
@@ -499,12 +518,12 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Dashboard Content */
+        /* ==================== DASHBOARD CONTENT ==================== */
         .dashboard-content {
             padding: 32px;
         }
 
-        /* Quick Actions */
+        /* ==================== QUICK ACTIONS ==================== */
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -523,15 +542,15 @@
         }
 
         .action-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
             border-color: var(--primary);
         }
 
         .action-icon {
             width: 48px;
             height: 48px;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -550,48 +569,46 @@
             color: var(--gray);
         }
 
-        /* Stats Section */
+        /* ==================== STATS SECTION ==================== */
         .stats-section {
             background: white;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 32px;
+            border: 1px solid var(--border);
         }
 
         .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 24px;
         }
 
         .stats-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 700;
             color: var(--dark);
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            gap: 16px;
         }
 
         .stat-card {
-            padding: 16px;
+            padding: 20px;
             background: var(--light);
-            border-radius: 10px;
+            border-radius: 12px;
             text-align: center;
         }
 
         .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             margin: 0 auto 12px;
         }
 
@@ -605,23 +622,28 @@
         .stat-label {
             font-size: 13px;
             color: var(--gray);
+            margin-bottom: 8px;
         }
 
         .stat-trend {
-            margin-top: 8px;
             font-size: 12px;
             font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
         }
 
         .stat-trend.up {
+            background: rgba(16,185,129,0.1);
             color: var(--success);
         }
 
-        /* Activity Section */
+        /* ==================== ACTIVITY SECTION ==================== */
         .activity-section {
             background: white;
             border-radius: 12px;
             padding: 24px;
+            border: 1px solid var(--border);
         }
 
         .section-header {
@@ -629,17 +651,20 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .section-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 700;
             color: var(--dark);
         }
 
         .filter-tabs {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .filter-tab {
@@ -660,6 +685,10 @@
             border-color: var(--primary);
         }
 
+        .filter-tab:hover {
+            border-color: var(--primary);
+        }
+
         .activity-list {
             display: flex;
             flex-direction: column;
@@ -669,7 +698,7 @@
         .activity-card {
             padding: 16px;
             background: var(--light);
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid var(--border);
             transition: all 0.3s;
         }
@@ -684,6 +713,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .activity-route {
@@ -692,15 +723,17 @@
             gap: 8px;
             font-weight: 600;
             color: var(--dark);
+            font-size: 14px;
+            flex-wrap: wrap;
         }
 
         .activity-type {
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-weight: 700;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .type-reservation {
@@ -709,29 +742,42 @@
         }
 
         .activity-details {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
         }
 
         .activity-detail {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--gray);
+            padding: 6px 10px;
+            background: white;
+            border-radius: 6px;
         }
 
-        /* Responsive Design */
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 1024px) {
+            .quick-actions {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                z-index: 1000;
-                transition: transform 0.3s;
             }
 
             .sidebar.mobile-active {
                 transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
             }
 
             .main-content {
@@ -739,57 +785,93 @@
             }
 
             .mobile-menu-toggle {
-                display: block;
+                display: flex;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .top-bar {
+                padding: 16px 20px;
+            }
+
+            .dashboard-content {
+                padding: 20px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .quick-actions {
+            .notification-dropdown {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+            }
+
+            .activity-details {
                 grid-template-columns: 1fr;
+            }
+
+            .top-actions {
+                gap: 8px;
+            }
+
+            .lang-switcher {
+                padding: 2px;
+            }
+
+            .lang-btn {
+                padding: 6px 12px;
+                font-size: 12px;
             }
         }
 
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-        }
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 18px;
+            }
 
-        .mobile-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-        }
+            .activity-route {
+                font-size: 13px;
+            }
 
-        .mobile-overlay.active {
-            display: block;
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .stats-title,
+            .section-title {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
 <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <div class="logo">
-            <a href="{{ url('/') }}" style="text-decoration: none;text-decoration: none;display: flex;flex-direction: row;align-items: center;">
-                <div class="logo-icon">JC</div>
-                <div class="logo-text" style="margin-left: 10px">Je Confie</div>
-            </a>
-        </div>
+        <a href="{{ url('/') }}" class="logo">
+            <div class="logo-icon">JC</div>
+            <div class="logo-text">Je Confie</div>
+        </a>
     </div>
 
     <div class="user-profile">
-        <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}&background=random&color=fff" />
-        <div class="user-name">{{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}</div>
+        <img class="user-avatar" src="https://ui-avatars.com/api/?name={{ urlencode(\Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName . ' ' . \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName) }}&background=random&color=fff" alt="Driver Avatar" />
+        <div class="user-name">{{ \Illuminate\Support\Facades\Auth::guard('driver')->user()->firstName }} {{ \Illuminate\Support\Facades\Auth::guard('driver')->user()->lastName }}</div>
         <div class="user-role">
-            <span class="lang-content fr active">Membre depuis {{\Illuminate\Support\Facades\Auth::guard('driver')->user()->created_at->year}}</span>
-            <span class="lang-content en">Member since {{\Illuminate\Support\Facades\Auth::guard('driver')->user()->created_at->year}}</span>
+            <span class="lang-content fr active">Membre depuis {{ \Illuminate\Support\Facades\Auth::guard('driver')->user()->created_at->year }}</span>
+            <span class="lang-content en">Member since {{ \Illuminate\Support\Facades\Auth::guard('driver')->user()->created_at->year }}</span>
         </div>
     </div>
 
@@ -826,17 +908,17 @@
             <span class="lang-content fr active">Mon profil</span>
             <span class="lang-content en">My profile</span>
         </a>
-        <a href="jeconfie-messaging-page.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>💬</span>
             <span class="lang-content fr active">Messages</span>
             <span class="lang-content en">Messages</span>
         </a>
-        <a href="jeconfie-payment.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>💳</span>
             <span class="lang-content fr active">Paiements</span>
             <span class="lang-content en">Payments</span>
         </a>
-        <a href="jeconfie-invoices.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>📄</span>
             <span class="lang-content fr active">Factures</span>
             <span class="lang-content en">Invoices</span>
@@ -854,42 +936,42 @@
             <span class="lang-content fr active">Offres disponibles</span>
             <span class="lang-content en">Available offers</span>
         </a>
-        <a href="jeconfie_tracking_page__1_.html" class="nav-item">
+        <a href="#" class="nav-item">
             <span>📍</span>
             <span class="lang-content fr active">Suivi des colis</span>
             <span class="lang-content en">Package tracking</span>
         </a>
-        <a href="dashboard-cotransport.html" class="nav-item">
+        <a href="{{ url('user/dashboard') }}" class="nav-item">
             <span>🔄</span>
             <span class="lang-content fr active">Mode Co-transport</span>
             <span class="lang-content en">Co-transport Mode</span>
         </a>
-        <a href="{{url('driver/logout')}}" class="nav-item">
-            <span>🔄</span>
-            <span class="lang-content fr active">Logout</span>
+        <a href="{{ url('driver/logout') }}" class="nav-item">
+            <span>🚪</span>
+            <span class="lang-content fr active">Déconnexion</span>
             <span class="lang-content en">Logout</span>
         </a>
     </nav>
-</div>
-
-<!-- Mobile Overlay -->
-<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+</aside>
 
 @php
     $notifications = \Illuminate\Support\Facades\Auth::guard('driver')->user()->unreadNotifications;
     $unreadCount = $notifications->count();
 @endphp
 
-<!-- Main Content -->
+    <!-- Main Content -->
 <div class="main-content">
     <div class="top-bar">
-        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-        <div class="page-title">
-            <span class="lang-content fr active">Dashboard Réservation</span>
-            <span class="lang-content en">Booking Dashboard</span>
+        <div class="top-bar-left">
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleSidebar()">
+                ☰
+            </button>
+            <div class="page-title">
+                <span class="lang-content fr active">Dashboard Réservation</span>
+                <span class="lang-content en">Booking Dashboard</span>
+            </div>
         </div>
         <div class="top-actions">
-
             <!-- Notification Bell -->
             <div class="notification-bell {{ $unreadCount > 0 ? 'has-notifications' : '' }}"
                  id="notificationBell"
@@ -898,6 +980,7 @@
                 <span class="bell-icon">🔔</span>
             </div>
 
+            <!-- Language Switcher -->
             <div class="lang-switcher">
                 <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
                 <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
@@ -928,22 +1011,14 @@
             @forelse($notifications as $notification)
                 <div class="notification-item unread" data-id="{{ $notification->id }}">
                     <div class="notification-icon" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(8, 145, 178, 0.9)); color: white;">
-                        <i class="iconsax" data-icon="ticket-discount">🎫</i>
+                        🎫
                     </div>
                     <div class="notification-body">
                         <div class="notification-title">
-                            @if(isset($notification->data['name']))
-                                {{ $notification->data['name'] }}
-                            @else
-                                New Notification
-                            @endif
+                            {{ $notification->data['name'] ?? 'New Notification' }}
                         </div>
                         <div class="notification-message">
-                            @if(isset($notification->data['message']))
-                                {{ $notification->data['message'] }}
-                            @else
-                                Carrier {{ $notification->data['name'] ?? 'Unknown' }} ({{ $notification->data['email'] ?? '' }}) wants to complete ride with you.
-                            @endif
+                            {{ $notification->data['message'] ?? 'Carrier wants to complete ride with you.' }}
                         </div>
                         <div class="notification-time">
                             {{ $notification->created_at->diffForHumans() }}
@@ -1081,7 +1156,7 @@
             </div>
         </div>
 
-        <!-- Activités récentes -->
+        <!-- Recent Activity -->
         <div class="activity-section">
             <div class="section-header">
                 <h2 class="section-title">
@@ -1115,18 +1190,10 @@
                         <span class="activity-type type-reservation">✈️ RÉSERVATION</span>
                     </div>
                     <div class="activity-details">
-                        <div class="activity-detail">
-                            📦 2.5kg
-                        </div>
-                        <div class="activity-detail">
-                            💰 €30
-                        </div>
-                        <div class="activity-detail">
-                            📅 28 janvier
-                        </div>
-                        <div class="activity-detail">
-                            👤 Thomas M.
-                        </div>
+                        <div class="activity-detail">📦 2.5kg</div>
+                        <div class="activity-detail">💰 €30</div>
+                        <div class="activity-detail">📅 28 janvier</div>
+                        <div class="activity-detail">👤 Thomas M.</div>
                     </div>
                 </div>
 
@@ -1140,18 +1207,10 @@
                         <span class="activity-type type-reservation">🚢 RÉSERVATION</span>
                     </div>
                     <div class="activity-details">
-                        <div class="activity-detail">
-                            📦 5kg
-                        </div>
-                        <div class="activity-detail">
-                            💰 €30
-                        </div>
-                        <div class="activity-detail">
-                            📅 2 février
-                        </div>
-                        <div class="activity-detail">
-                            👤 Ahmed K.
-                        </div>
+                        <div class="activity-detail">📦 5kg</div>
+                        <div class="activity-detail">💰 €30</div>
+                        <div class="activity-detail">📅 2 février</div>
+                        <div class="activity-detail">👤 Ahmed K.</div>
                     </div>
                 </div>
             </div>
@@ -1161,7 +1220,16 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    window._token = $('meta[name="csrf-token"]').attr('content')
+    window._token = $('meta[name="csrf-token"]').attr('content');
+
+    // Toggle sidebar for mobile
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('mobile-active');
+        overlay.classList.toggle('active');
+    }
+
     // Language switcher
     function switchLanguage(lang) {
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1187,7 +1255,6 @@
 
         dropdown.classList.toggle('show');
 
-        // Ring bell when opening
         if (dropdown.classList.contains('show')) {
             bell.classList.add('ringing');
             setTimeout(() => {
@@ -1216,9 +1283,8 @@
         });
     }
 
-    // Mark single notification as read
+    // Mark notifications as read
     document.addEventListener('DOMContentLoaded', function() {
-        // Mark single as read
         $('.mark-as-read').click(function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1228,94 +1294,56 @@
             let request = sendMarkRequest(notificationId);
 
             request.done(() => {
-                // Remove the notification item
                 $this.closest('.notification-item').remove();
-
-                // Update badge count
                 updateBadgeCount();
 
-                // Check if no more notifications
                 const remainingNotifs = $('.notification-item').length;
                 if (remainingNotifs === 0) {
-                    const $dropdownContent = $('.dropdown-content');
-                    const $markAllBtn = $('#mark-all');
-                    const $footer = $('.dropdown-footer');
-
-                    if ($dropdownContent.length) {
-                        $dropdownContent.html(`
-                            <div class="empty-notifications">
-                                <div class="empty-icon">🔕</div>
-                                <div>
-                                    <span class="lang-content fr active">Aucune notification</span>
-                                    <span class="lang-content en">No notifications</span>
-                                </div>
+                    $('.dropdown-content').html(`
+                        <div class="empty-notifications">
+                            <div class="empty-icon">🔕</div>
+                            <div>
+                                <span class="lang-content fr active">Aucune notification</span>
+                                <span class="lang-content en">No notifications</span>
                             </div>
-                        `);
-                    }
-                    if ($markAllBtn.length) $markAllBtn.hide();
-                    if ($footer.length) $footer.hide();
+                        </div>
+                    `);
+                    $('#mark-all').hide();
+                    $('.dropdown-footer').hide();
                 }
-            });
-
-            request.fail((xhr) => {
-                console.error('Error marking notification as read:', xhr.responseText);
             });
         });
 
-        // Mark all as read
-        const markAllBtn = document.getElementById('mark-all');
-        if (markAllBtn) {
-            $('#mark-all').click(function(e) {
-                e.preventDefault();
+        $('#mark-all').click(function(e) {
+            e.preventDefault();
 
-                const $this = $(this);
-
-                $.ajax({
-                    method: 'POST',
-                    url: '{{ route('driver.markDriverAllNotification') }}',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    }
-                })
-                    .done((data) => {
-                        if (data.success) {
-                            // Remove all notification items
-                            $('.notification-item.unread').remove();
-
-                            // Update badge
-                            const $bell = $('#notificationBell');
-                            if ($bell.length) {
-                                $bell.removeClass('has-notifications');
-                                $bell.removeAttr('data-count');
-                            }
-
-                            // Update content
-                            const $dropdownContent = $('.dropdown-content');
-                            if ($dropdownContent.length) {
-                                $dropdownContent.html(`
-                            <div class="empty-notifications">
-                                <div class="empty-icon">🔕</div>
-                                <div>
-                                    <span class="lang-content fr active">Aucune notification</span>
-                                    <span class="lang-content en">No notifications</span>
-                                </div>
+            $.ajax({
+                method: 'POST',
+                url: '{{ route('driver.markDriverAllNotification') }}',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                }
+            })
+                .done((data) => {
+                    if (data.success) {
+                        $('.notification-item.unread').remove();
+                        $('#notificationBell').removeClass('has-notifications').removeAttr('data-count');
+                        $('.dropdown-content').html(`
+                        <div class="empty-notifications">
+                            <div class="empty-icon">🔕</div>
+                            <div>
+                                <span class="lang-content fr active">Aucune notification</span>
+                                <span class="lang-content en">No notifications</span>
                             </div>
-                        `);
-                            }
-
-                            // Hide mark all button and footer
-                            $this.hide();
-                            $('.dropdown-footer').hide();
-                        }
-                    })
-                    .fail((xhr) => {
-                        console.error('Error marking all notifications as read:', xhr.responseText);
-                    });
-            });
-        }
+                        </div>
+                    `);
+                        $('#mark-all').hide();
+                        $('.dropdown-footer').hide();
+                    }
+                });
+        });
     });
 
-    // Update badge count
     function updateBadgeCount() {
         const unreadCount = document.querySelectorAll('.notification-item.unread').length;
         const bell = document.getElementById('notificationBell');
@@ -1329,29 +1357,7 @@
         }
     }
 
-    // Ring bell for new notification (call this when receiving real-time notification)
-    function ringBell() {
-        const bell = document.getElementById('notificationBell');
-        bell.classList.add('has-notifications');
-        bell.classList.add('ringing');
-
-        setTimeout(() => {
-            bell.classList.remove('ringing');
-        }, 1500);
-
-        updateBadgeCount();
-    }
-
-    // Mobile menu toggle
-    function toggleMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('mobileOverlay');
-
-        sidebar.classList.toggle('mobile-active');
-        overlay.classList.toggle('active');
-    }
-
-    // Initialize preferences
+    // Initialize language preference
     document.addEventListener('DOMContentLoaded', function() {
         const preferredLang = localStorage.getItem('preferredLanguage');
         if (preferredLang === 'en') {
