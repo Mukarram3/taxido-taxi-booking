@@ -1067,18 +1067,25 @@
                     <span class="lang-content en">Create a new listing</span>
                 </div>
             </div>
-
-            <div class="action-card">
-                <div class="action-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">🔔</div>
-                <div class="action-title">
-                    <span class="lang-content fr active">3 demandes en attente</span>
-                    <span class="lang-content en">3 pending requests</span>
+            @php
+            $user_ride_requests = \App\Models\Userriderequest::where('status', 'waiting')
+            ->where('expiry_date', '>', \Carbon\Carbon::now())
+            ->whereNull('is_targetted')
+            ->count();
+            @endphp
+            <a href="{{ url('/search-listing') }}">
+                <div class="action-card">
+                    <div class="action-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">🔔</div>
+                    <div class="action-title">
+                        <span class="lang-content fr active">3 demandes en attente</span>
+                        <span class="lang-content en">{{ $user_ride_requests }} pending requests</span>
+                    </div>
+                    <div class="action-desc">
+                        <span class="lang-content fr active">À traiter rapidement</span>
+                        <span class="lang-content en">Process quickly</span>
+                    </div>
                 </div>
-                <div class="action-desc">
-                    <span class="lang-content fr active">À traiter rapidement</span>
-                    <span class="lang-content en">Process quickly</span>
-                </div>
-            </div>
+            </a>
 
             <div class="action-card">
                 <div class="action-icon" style="background: rgba(6,182,212,0.1); color: var(--secondary);">📍</div>

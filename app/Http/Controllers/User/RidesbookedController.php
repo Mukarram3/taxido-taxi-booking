@@ -30,7 +30,7 @@ class RidesbookedController extends Controller
 
         $ridesbooked = Ridesbooked::where('userriderequest_id','=',$userriderequest_id)->first();
         if ($ridesbooked) {
-            return redirect()->route('user.home')->with(['success' => 'Ride booked by a driver']);
+            return redirect()->back()->with(['success' => 'Ride booked by a another driver']);
         }
 
         $packages = json_decode($userriderequest->packages_json, true);

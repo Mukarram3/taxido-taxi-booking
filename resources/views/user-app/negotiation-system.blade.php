@@ -996,28 +996,89 @@
         <!-- Accepted Tab -->
         <div id="acceptedTab" class="tab-content">
             @foreach($accepteddriverFareRequests as $accepteddriverFareRequest)
-            <div class="negotiation-card">
-                <div class="negotiation-header">
-                    <div class="negotiation-status">
-                        <span class="status-badge accepted">
-                            ✅ <span data-lang="fr" class="active">Négociation acceptée</span>
-                            <span data-lang="en">Negotiation accepted</span>
-                        </span>
-                        <span style="color: var(--gray); font-size: 14px;">
-                            #{{ $accepteddriverFareRequest->request_id }}
-                        </span>
+
+                @php
+                    $sender = $accepteddriverFareRequest->userriderequest->user;
+                    $carrier = $accepteddriverFareRequest->driver;
+                    $ride = $accepteddriverFareRequest->userriderequest;
+                @endphp
+
+                <div class="negotiation-card">
+
+                    {{-- HEADER --}}
+                    <div class="negotiation-header">
+                        <div class="negotiation-status">
+            <span class="status-badge accepted">
+                ✅ <span data-lang="fr" class="active">Négociation acceptée</span>
+                <span data-lang="en">Negotiation accepted</span>
+            </span>
+                            <span class="reference">
+                #{{ $accepteddriverFareRequest->request_id }}
+            </span>
+                        </div>
+
+                        <div class="final-price">
+                            <span data-lang="fr" class="active">Prix final :</span>
+                            <span data-lang="en">Final price :</span>
+                            <strong>{{ $accepteddriverFareRequest->requested_fare }}€</strong>
+                        </div>
                     </div>
-                    <div>
-                        <span data-lang="fr" class="active">Prix final:</span>
-                        <span data-lang="en">Final price:</span>
-                        <strong style="color: var(--success); font-size: 1.25rem;">55€</strong>
+
+                    {{-- SENDER / RECEIVER --}}
+                    <div class="negotiation-parties">
+                        <p>
+                            <strong data-lang="fr" class="active">Demande envoyée par :</strong>
+                            <strong data-lang="en">Request sent by:</strong>
+                            {{ $sender->firstName }}
+                        </p>
+
+                        <p>
+                            <strong data-lang="fr" class="active">Transporteur :</strong>
+                            <strong data-lang="en">Carrier:</strong>
+                            {{ $carrier->firstName }}
+                        </p>
                     </div>
+
+                    {{-- ANNOUNCEMENT TRACE --}}
+                    <div class="negotiation-trace">
+                        <p>
+                            <strong data-lang="fr" class="active">Annonce :</strong>
+                            <strong data-lang="en">Announcement:</strong>
+                            {{ $ride->departure_city }} → {{ $ride->arrival_city }}
+                        </p>
+
+                        <p class="date">
+                            <span data-lang="fr" class="active">Date :</span>
+                            <span data-lang="en">Date:</span>
+                            {{ $ride->created_at->format('d/m/Y') }}
+                        </p>
+                    </div>
+
+                    {{-- ACTION --}}
+                    <div class="negotiation-actions">
+{{--                        <form method="POST" action="{{ route('driver.fare.counter') }}">--}}
+{{--                            @csrf--}}
+                            <input type="hidden" name="fare_request_id" value="{{ $accepteddriverFareRequest->id }}">
+
+                            <button type="submit" class="btn btn-outline">
+                                💬 <span data-lang="fr" class="active">Envoyer une contre-proposition</span>
+                                <span data-lang="en">Send counter proposal</span>
+                            </button>
+{{--                        </form>--}}
+                    </div>
+
+                    {{-- FOOTER --}}
+                    <p class="negotiation-footer">
+        <span data-lang="fr" class="active">
+            Transport effectué avec succès le {{ $accepteddriverFareRequest->updated_at->format('d/m/Y') }}
+        </span>
+                        <span data-lang="en">
+            Transport completed successfully on {{ $accepteddriverFareRequest->updated_at->format('m/d/Y') }}
+        </span>
+                    </p>
+
                 </div>
-                <p style="color: var(--gray); margin-top: 12px;">
-                    <span data-lang="fr" class="active">Transport effectué avec succès le 15/10/2025</span>
-                    <span data-lang="en">Transport completed successfully on 10/15/2025</span>
-                </p>
-            </div>
+
             @endforeach
         </div>
 

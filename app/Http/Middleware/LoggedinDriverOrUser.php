@@ -16,11 +16,12 @@ class LoggedinDriverOrUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guard('driver')->check()) {
-            return $next($request);
-        }
         if (Auth::guard('user')->check()) {
-            return $next($request);
+            return redirect()->intended('/user/dashboard');
+        }
+
+        if (Auth::guard('driver')->check()) {
+            return redirect()->intended('/driver/dashboard');
         }
 
         return redirect('/user/login');

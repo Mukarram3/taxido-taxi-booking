@@ -547,14 +547,14 @@
                 @endif
                 @if(trim($ride->message) === 'delivery in progress')
                     <div class="shipment-actions">
-                        <a href="{{ url('driver/track-ride/'. $active_ride->id) }}" class="action-btn"
+                        <a href="{{ url('driver/track-ride/'. $ride->id) }}" class="action-btn"
                            style="color: black">
                             <span class="lang-content fr active">GPS navigation for Parcel
                         Delivery</span>
                             <span class="lang-content en">GPS navigation for Parcel
                         Delivery</span>
                         </a>
-                        <a href="{{url('driver/ride-complete-request/'.$active_ride->id)}}" class="action-btn"
+                        <a href="{{url('driver/ride-complete-request/'.$ride->id)}}" class="action-btn"
                            style="color: black">
                             <span class="lang-content fr active">Complete delivery</span>
                             <span class="lang-content en">Complete delivery</span>
