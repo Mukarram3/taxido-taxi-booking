@@ -66,7 +66,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
 
     Route::get('/login', function (){
         return view('user-app.login');
-    })->middleware(\App\Http\Middleware\RedirectIfAuthenticatedUser::class);
+    })->middleware(\App\Http\Middleware\LoggedinDriverOrUser::class);
 
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/otp', [\App\Http\Controllers\User\AuthController::class,'sendotp'])->name('otplogin');
@@ -88,7 +88,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
 
     Route::get('/signup', function (){
         return view('user-app.signup');
-    })->middleware(\App\Http\Middleware\RedirectIfAuthenticatedUser::class);
+    })->middleware(\App\Http\Middleware\LoggedinDriverOrUser::class);
 
     Route::post('/verify-otp', [AuthController::class, 'verify_otp'])->name('verify_otp');
     Route::post('/signup', [AuthController::class, 'register'])->name('register');

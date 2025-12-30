@@ -1613,70 +1613,71 @@
                 </a></li>
         </ul>
 
+        @php
+            use Illuminate\Support\Facades\Auth;
+
+            $user = Auth::guard('user')->user();
+            $driver = Auth::guard('driver')->user();
+        @endphp
+
         <div class="nav-actions">
+
             <div class="language-switcher">
                 <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
                 <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
             </div>
 
-            @php
-                use Illuminate\Support\Facades\Auth;
-                $userLoggedIn = Auth::guard('user')->check();
-                $driverLoggedIn = Auth::guard('driver')->check();
-            @endphp
-
-            @if ($userLoggedIn)
+            @if ($user)
                 @php
-                    $user = Auth::guard('user')->user();
-                    $userName = trim(($user->firstName ?? '').' '.($user->lastName ?? '')) ?: ($user->name ?? 'User');
-                    $userAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($userName) . '&background=random&color=fff&size=64';
+                    $name = trim(($user->firstName ?? '').' '.($user->lastName ?? '')) ?: 'User';
+                    $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=4f46e5&color=fff&size=64';
                 @endphp
+
                 <div class="dropdown">
-                    <button class="btn btn-primary" style="display: flex; align-items: center; padding: 0.4rem 1rem;" onclick="toggleDropdown('userDropdown')">
-                        <img src="{{ $userAvatar }}" style="border-radius: 50%; margin-right: 10px;" width="32" height="32" alt="{{ $userName }}">
-                        {{ $userName }}
+                    <button class="btn btn-user" onclick="toggleDropdown('userDropdown')">
+                        <img src="{{ $avatar }}">
+                        {{ $name }}
                     </button>
+
                     <div id="userDropdown" class="dropdown-menu">
                         <a href="{{ url('user/dashboard') }}">Dashboard</a>
+
+                        <hr>
+
                         <a href="{{ url('user/logout') }}">Logout</a>
                     </div>
                 </div>
-            @else
-                <div class="dropdown">
-                    <button class="btn btn-ghost" onclick="toggleDropdown('userLoginDropdown')">
-                        👤 User
-                    </button>
-                    <div id="userLoginDropdown" class="dropdown-menu">
-                        <a href="{{ url('user/login') }}">Login</a>
-                        <a href="{{ url('user/signup') }}">Signup</a>
-                    </div>
-                </div>
-            @endif
 
-            @if ($driverLoggedIn)
+            @elseif ($driver)
                 @php
-                    $driver = Auth::guard('driver')->user();
-                    $driverName = trim(($driver->firstName ?? '').' '.($driver->lastName ?? '')) ?: ($driver->name ?? 'Driver');
-                    $driverAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($driverName) . '&background=random&color=fff&size=64';
+                    $name = trim(($driver->firstName ?? '').' '.($driver->lastName ?? '')) ?: 'Driver';
+                    $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=059669&color=fff&size=64';
                 @endphp
+
                 <div class="dropdown">
-                    <button class="btn btn-primary" style="display: flex; align-items: center; padding: 0.4rem 1rem;" onclick="toggleDropdown('driverDropdown')">
-                        <img src="{{ $driverAvatar }}" style="border-radius: 50%; margin-right: 10px;" width="32" height="32" alt="{{ $driverName }}">
-                        {{ $driverName }}
+                    <button class="btn btn-driver" onclick="toggleDropdown('driverDropdown')">
+                        <img src="{{ $avatar }}">
+                        {{ $name }}
                     </button>
+
                     <div id="driverDropdown" class="dropdown-menu">
                         <a href="{{ url('driver/dashboard') }}">Dashboard</a>
+
+                        <hr>
+
                         <a href="{{ url('driver/logout') }}">Logout</a>
                     </div>
                 </div>
+
             @else
                 <div class="dropdown">
-                    <button class="btn btn-ghost" onclick="toggleDropdown('driverLoginDropdown')">
-                        🚗 Driver
+                    <button class="btn btn-ghost" onclick="toggleDropdown('loginDropdown')">
+                        👤 Login
                     </button>
-                    <div id="driverLoginDropdown" class="dropdown-menu">
-                        <a href="{{ url('driver/login') }}">Login</a>
-                        <a href="{{ url('driver/signup') }}">Signup</a>
+
+                    <div id="loginDropdown" class="dropdown-menu">
+                        <a href="{{ url('user/login') }}">User Login</a>
+                        <a href="{{ url('driver/login') }}">Driver Login</a>
                     </div>
                 </div>
             @endif
