@@ -1656,7 +1656,7 @@
 
                 <div class="dropdown">
                     <button class="btn btn-driver" onclick="toggleDropdown('driverDropdown')">
-                        <img src="{{ $avatar }}">
+                        <img src="{{ $avatar }}" style="width: 50px; border-radius: 50%;">
                         {{ $name }}
                     </button>
 
