@@ -24,6 +24,6 @@ class LoggedinDriverOrUser
             return redirect()->intended('/driver/dashboard');
         }
 
-        return redirect('/user/login');
+        return $next($request);
     }
 }
