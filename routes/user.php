@@ -234,7 +234,7 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
 
 });
 
-Route::middleware([\App\Http\Middleware\LoggedinDriverOrUser::class])->group(function () {
+Route::middleware([\App\Http\Middleware\LoggedinUser::class])->group(function () {
     Route::get('/create-offer', function (){
         return view('user-app.create-offer');
     });
