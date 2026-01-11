@@ -913,22 +913,22 @@
             <button class="tab-btn active" onclick="switchTab('active')">
                 🔥 <span data-lang="fr" class="active">Négociations actives</span>
                 <span data-lang="en">Active negotiations</span>
-                <span class="badge" id="activeCount">{{ count($driverFareRequests) }}</span>
+                <span class="badge" id="activeCount">{{ count($Farerequests) }}</span>
             </button>
             <button class="tab-btn" onclick="switchTab('accepted')">
                 ✅ <span data-lang="fr" class="active">Acceptées</span>
                 <span data-lang="en">Accepted</span>
-                <span class="badge" id="acceptedCount">{{ count($accepteddriverFareRequests) }}</span>
+                <span class="badge" id="acceptedCount">{{ count($acceptedFarerequests) }}</span>
             </button>
             <button class="tab-btn" onclick="switchTab('rejected')">
                 ❌ <span data-lang="fr" class="active">Refusées</span>
                 <span data-lang="en">Rejected</span>
-                <span class="badge" id="rejectedCount">{{ count($rejecteddriverFareRequests) }}</span>
+                <span class="badge" id="rejectedCount">{{ count($rejectedFarerequests) }}</span>
             </button>
             <button class="tab-btn" onclick="switchTab('expired')">
                 ⏰ <span data-lang="fr" class="active">Expirées</span>
                 <span data-lang="en">Expired</span>
-                <span class="badge" id="expiredCount">{{ count($expiredddriverFareRequests) }}</span>
+                <span class="badge" id="expiredCount">{{ count($expireddFarerequests) }}</span>
             </button>
         </div>
 
@@ -936,7 +936,7 @@
         <div id="activeTab" class="tab-content active">
 
             <!-- Active Negotiation -->
-            @foreach($driverFareRequests as $driverFareRequest)
+            @foreach($Farerequests as $driverFareRequest)
             <div class="negotiation-card">
                 <div class="negotiation-header">
                     <div class="negotiation-status">
@@ -983,6 +983,10 @@
                             <span data-lang="fr" class="active">Accepter {{ $driverFareRequest->requested_fare }}€</span>
                             <span data-lang="en">Accept €{{ $driverFareRequest->requested_fare }}</span>
                         </a>
+                        <a href="{{ url('user/fare-request/'. $driverFareRequest->riderequest_id.'/driver/' . $driverFareRequest->driver_id) }}?driver_request_id={{ $driverFareRequest->id }}" class="btn btn-warning" style="width: 50%;">
+                            💬 <span data-lang="fr" class="active">Negotiate</span>
+                            <span data-lang="en">Negotiate</span>
+                        </a>
                         <a href="{{ url('user/reject-ride-details') }}?driver_request_id={{ $driverFareRequest->id }}" class="btn btn-danger" style="width: 50%;">
                             ❌ <span data-lang="fr" class="active">Refuser</span>
                             <span data-lang="en">Reject</span>
@@ -995,7 +999,7 @@
 
         <!-- Accepted Tab -->
         <div id="acceptedTab" class="tab-content">
-            @foreach($accepteddriverFareRequests as $accepteddriverFareRequest)
+            @foreach($rejectedFarerequests as $accepteddriverFareRequest)
 
                 @php
                     $sender = $accepteddriverFareRequest->userriderequest->user;
@@ -1084,7 +1088,7 @@
 
         <!-- Rejected Tab -->
         <div id="rejectedTab" class="tab-content">
-            @foreach($rejecteddriverFareRequests as $rejecteddriverFareRequest)
+            @foreach($rejectedFarerequests as $rejecteddriverFareRequest)
             <div class="negotiation-card">
                 <div class="negotiation-header">
                     <div class="negotiation-status">
@@ -1107,7 +1111,7 @@
 
         <!-- Expired Tab -->
         <div id="expiredTab" class="tab-content">
-            @foreach($expiredddriverFareRequests as $expiredddriverFareRequest)
+            @foreach($expireddFarerequests as $expiredddriverFareRequest)
             <div class="negotiation-card">
                 <div class="negotiation-header">
                     <div class="negotiation-status">

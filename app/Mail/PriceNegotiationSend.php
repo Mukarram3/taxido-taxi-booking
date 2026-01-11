@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Driverfarerequest;
+use App\Models\Farerequest;
 use App\Models\Ridesbooked;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,11 +15,11 @@ class PriceNegotiationSend extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $driverfarerequest;
+    public $Farerequest;
 
-    public function __construct(Driverfarerequest $driverfarerequest)
+    public function __construct(Farerequest $Farerequest)
     {
-        $this->driverfarerequest = $driverfarerequest;
+        $this->Farerequest = $Farerequest;
     }
 
     public function build(): PriceNegotiationSend

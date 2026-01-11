@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Driver;
 
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
-use App\Models\Driverfarerequest;
+use App\Models\Farerequest;
 use App\Models\Ridesbooked;
 use App\Models\User;
 use App\Models\Userriderequest;
@@ -61,33 +61,70 @@ class DriverfarerequestController extends Controller
         if ($userriderrequest->status == 'accepted') {
             return redirect()->route('driver.home')->with('success', 'Ride accepted by another driver');
         }
-        $driver_fare_requests = Driverfarerequest::where('userriderequest_id', $id)->get();
-        return view('driver-app.negotiation',['userriderequest'=>$userriderrequest,'driver_fare_requests' => $driver_fare_requests]);
+        $driver_fare_requests = Farerequest::where('riderequest_id', $id)->get();
+        $lastUserFareRequest = $driver_fare_requests
+            ->whereNotNull('user_id')
+            ->sortBy('created_at')
+            ->last();
+        return view('driver-app.negotiation',
+            compact('lastUserFareRequest'),
+            [
+                'userriderequest'=>$userriderrequest,
+                'driver_fare_requests' => $driver_fare_requests
+            ]);
+    }
+
+    public function user_negotiation($ride_request_id,$driver_id){
+
+        $userriderrequest = Userriderequest::findorfail($ride_request_id)->with('user')->first();
+        if ($userriderrequest->status == 'accepted') {
+            return redirect()->route('user.dashboard')->with('success', 'Ride accepted by driver');
+        }
+        $driver_fare_requests = Farerequest::where('riderequest_id', $ride_request_id)
+            ->where(function ($query) use ($driver_id){
+                $query->where('driver_id', $driver_id)
+                    ->orwhere('user_id', Auth::guard('user')->user()->id);
+            })
+            ->with('user')
+            ->get();
+        $lastUserFareRequest = $driver_fare_requests
+            ->whereNotNull('driver_id')
+            ->sortBy('created_at')
+            ->last();
+
+        return view('user-app.negotiation',
+            compact('lastUserFareRequest'),
+            ['userriderequest'=>$userriderrequest,
+                'driver_fare_requests' => $driver_fare_requests,
+                'driver_id' => $driver_id,
+                'ride_request_id' => $ride_request_id
+            ]);
 //        return view('driver-app.accept-ride',['userriderequest'=>$userriderrequest]);
     }
+
     public function request_fare(Request $request)
     {
         $driverId = Auth::guard('driver')->id();
 
-        $driverfarerequest = Driverfarerequest::where('driver_id', $driverId)
-            ->where('userriderequest_id', $request->userriderequest_id)
-            ->where('status', 'waiting')
-            ->orderBy('id', 'desc')
-            ->first();
+//        $Farerequest = Farerequest::where('driver_id', $driverId)
+//            ->where('riderequest_id', $request->userriderequest_id)
+//            ->where('status', 'waiting')
+//            ->orderBy('id', 'desc')
+//            ->first();
 
-        if (!$driverfarerequest) {
-            $driverfarerequest = new Driverfarerequest();
-            $driverfarerequest->driver_id = $driverId;
-        }
-        $driverfarerequest->request_id = 'CT' . now()->year . '-' . str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
-        $driverfarerequest->userriderequest_id = $request->userriderequest_id;
-        $driverfarerequest->requested_fare = $request->requested_fare;
-        $driverfarerequest->means_of_transport = $request->means_of_transport;
-        $driverfarerequest->driver_location_latitude = $request->driver_location_latitude;
-        $driverfarerequest->driver_location_longitude = $request->driver_location_longitude;
-        $driverfarerequest->expiry = Carbon::now()->addMinutes(10);
-        $driverfarerequest->status = 'waiting'; // Optional: set explicitly if required
-        $driverfarerequest->save();
+//        if (!$Farerequest) {
+            $Farerequest = new Farerequest();
+            $Farerequest->driver_id = $driverId;
+//        }
+        $Farerequest->request_id = 'CT' . now()->year . '-' . str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
+        $Farerequest->riderequest_id = $request->userriderequest_id;
+        $Farerequest->requested_fare = $request->requested_fare;
+//        $Farerequest->means_of_transport = $request->means_of_transport;
+        $Farerequest->driver_location_latitude = $request->driver_location_latitude;
+        $Farerequest->driver_location_longitude = $request->driver_location_longitude;
+        $Farerequest->expiry = Carbon::now()->addMinutes(10);
+        $Farerequest->status = 'waiting'; // Optional: set explicitly if required
+        $Farerequest->save();
 
         $userriderequest = Userriderequest::find($request->userriderequest_id);
         $user = User::find($userriderequest->user_id);
@@ -97,8 +134,8 @@ class DriverfarerequestController extends Controller
         try {
             Notification::send($user, new RideBooked($message));
             Notification::send($driver, new RideBooked($message));
-            Mail::to($user->email)->send(new \App\Mail\PriceNegotiationSend($driverfarerequest));
-            Mail::to($driver->email)->send(new \App\Mail\PriceNegotiationSend($driverfarerequest));
+            Mail::to($user->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
+            Mail::to($driver->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
         }
         catch (\Exception $e) {
             Log::info($e->getMessage());

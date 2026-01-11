@@ -6,7 +6,7 @@ use App\Events\MessageSent;
 use App\Events\RideBooked;
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
-use App\Models\Driverfarerequest;
+use App\Models\Farerequest;
 use App\Models\Message;
 use App\Models\ReservedKiloRidebooked;
 use App\Models\Ridesbooked;
@@ -24,8 +24,8 @@ class RidesbookedController extends Controller
 {
     public function accept_ride_details(Request $request)
     {
-        $driverfarerequest = Driverfarerequest::where('id', $request->input('driverfarerequest_id'))->first();
-        $userriderequest_id = $driverfarerequest->userriderequest_id;
+        $Farerequest = Farerequest::where('id', $request->input('driverfarerequest_id'))->first();
+        $userriderequest_id = $Farerequest->riderequest_id;
         $userriderequest = Userriderequest::find($userriderequest_id);
 
         $ridesbooked = Ridesbooked::where('userriderequest_id','=',$userriderequest_id)->first();
@@ -55,12 +55,12 @@ class RidesbookedController extends Controller
         $ridesbooked->type_of_package   = $userriderequest->type_of_package;
         $ridesbooked->sub_type_of_package   = $userriderequest->sub_type_of_package;
         $ridesbooked->quantity_of_package = $packageCount;
-        $ridesbooked->fare                = $driverfarerequest->requested_fare;
-        $ridesbooked->means_of_transport                = $driverfarerequest->means_of_transport;
+        $ridesbooked->fare                = $Farerequest->requested_fare;
+        $ridesbooked->means_of_transport                = $Farerequest->means_of_transport;
         $ridesbooked->payment_method      = $userriderequest->payment_method;
         $ridesbooked->expiry = $userriderequest->expiry_date;
-        $ridesbooked->driver_lat = $driverfarerequest->driver_location_latitude;
-        $ridesbooked->driver_lng = $driverfarerequest->driver_location_longitude;
+        $ridesbooked->driver_lat = $Farerequest->driver_location_latitude;
+        $ridesbooked->driver_lng = $Farerequest->driver_location_longitude;
         $ridesbooked->date_and_time_of_followup = Carbon::now();
         $ridesbooked->parcel_pictures = $userriderequest->parcel_pictures;
         $ridesbooked->status = 'active';
@@ -84,10 +84,10 @@ class RidesbookedController extends Controller
 
         $ridesbooked->save();
 
-        $driverfarerequest->status = 'accepted';
-        $driverfarerequest->save();
+        $Farerequest->status = 'accepted';
+        $Farerequest->save();
         $userriderequest->status = 'accepted';
-        $userriderequest->fare = $driverfarerequest->requested_fare;
+        $userriderequest->fare = $Farerequest->requested_fare;
         $userriderequest->save();
 
         $user = User::find($ridesbooked->user_id);
@@ -137,22 +137,22 @@ class RidesbookedController extends Controller
 
     public function reject_ride_details(Request $request)
     {
-        $driverfarerequest = Driverfarerequest::where('id', $request->input('driver_request_id'))->with('userriderequest')->first();
-        $driverfarerequest->status = 'rejected';
-        $driverfarerequest->save();
+        $Farerequest = Farerequest::where('id', $request->input('driver_request_id'))->with('userriderequest')->first();
+        $Farerequest->status = 'rejected';
+        $Farerequest->save();
 
-        $driverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $Farerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
 //            ->where('expiry', '>', Carbon::now())
             ->orderBy('id', 'desc')
             ->where('status','!=','rejected')
             ->get();
-        $user = User::find($driverfarerequest->userriderequest->user_id);
-        $driver = Driver::find($driverfarerequest->driver->id);
-        $message = Carbon::now() . ' Sender '.$user->name.  ' rejected the requested price '. $driverfarerequest->requested_fare .' of Carrier ' .$driver->name;
+        $user = User::find($Farerequest->userriderequest->user_id);
+        $driver = Driver::find($Farerequest->driver->id);
+        $message = Carbon::now() . ' Sender '.$user->name.  ' rejected the requested price '. $Farerequest->requested_fare .' of Carrier ' .$driver->name;
         try {
             Notification::send($driver, new \App\Notifications\RideBooked($message));
-            Mail::to($driver->email)->send(new \App\Mail\FareRejected($driverfarerequest));
+            Mail::to($driver->email)->send(new \App\Mail\FareRejected($Farerequest));
         }
         catch (\Exception $e) {
             Log::info($e->getMessage());
@@ -161,7 +161,7 @@ class RidesbookedController extends Controller
             'status' => 'success',
             'message' => 'Driver Fare request rejected successfully.'
         ]);
-        return response()->json($driverFareRequests);
+        return response()->json($Farerequests);
     }
 
     public function chat(Request $request)

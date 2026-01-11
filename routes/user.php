@@ -19,6 +19,8 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function (){
         Route::get('/dashboard', [\App\Http\Controllers\User\UserriderequestController::class, 'dashboard'])->name('dashboard');
 
         Route::get('/accept-ride-details', [\App\Http\Controllers\User\RidesbookedController::class, 'accept_ride_details'])->name('accept_ride_details');
+        Route::get('/fare-request/{ride_request_id}/driver/{driver_id}', [\App\Http\Controllers\Driver\DriverfarerequestController::class, 'user_negotiation'])->name('accept_ride');
+        Route::post('/user-request-fare', [\App\Http\Controllers\User\UserfarerequestController::class, 'user_request_fare'])->name('user_request_fare');
         Route::get('/reject-ride-details', [\App\Http\Controllers\User\RidesbookedController::class, 'reject_ride_details'])->name('reject_ride_details');
 
         Route::get('/bank-details', function (){

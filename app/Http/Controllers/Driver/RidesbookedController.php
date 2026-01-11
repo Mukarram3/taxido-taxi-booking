@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Driver;
 
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
-use App\Models\Driverfarerequest;
+use App\Models\Farerequest;
 use App\Models\Driverriderequest;
 use App\Models\Otp;
 use App\Models\ReservedKiloRidebooked;
@@ -33,47 +33,62 @@ class RidesbookedController extends Controller
         return view('driver-app.accept-ride-confirmed',['userriderequest' => $userriderequest])->with(['success' => 'Ride booked successfully']);
     }
 
-    public function ride_verification($userriderequest_id)
+    public function ride_verification(Request $request, $userriderequest_id)
     {
         $userriderequest = Userriderequest::find($userriderequest_id);
 
+        $fare_request = Farerequest::where('riderequest_id', $userriderequest_id)
+            ->whereNotNull('driver_id')
+            ->latest() // ORDER BY created_at DESC
+            ->first();
+
+        $driver_location_latitude = $request->driver_location_latitude ? : $fare_request->driver_location_latitude;
+        $driver_location_longitude = $request->driver_location_longitude ? : $fare_request->driver_location_longitude;
+        $userId = Auth::guard('user')->check() // default user guard is 'web'
+            ? Auth::guard('user')->id()
+            : $userriderequest->user_id;
+        $driverId = Auth::guard('driver')->check()
+            ? Auth::guard('driver')->id()
+            : $fare_request->driver_id;
+
         if ($userriderequest->status == 'accepted') {
-            return redirect()->route('driver.home')->with(['success' => 'Ride booked by another driver']);
+            return redirect()->route('driver.dashboard')->with(['success' => 'Ride booked by another driver']);
         }
         $ridesbooked = Ridesbooked::where('userriderequest_id','=',$userriderequest_id)->first();
         if ($ridesbooked) {
-            return redirect()->route('driver.home')->with(['success' => 'Ride booked by another driver']);
+            return redirect()->route('driver.dashboard')->with(['success' => 'Ride booked by another driver']);
         }
 
+        $packages = json_decode($userriderequest->packages_json, true);
+        $packageCount = count($packages);
+
         $ridesbooked = new Ridesbooked();
+        $ridesbooked->reference_id = 'RSV-' . now()->year . '-' . str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
         $ridesbooked->userriderequest_id = $userriderequest->id;
-        $ridesbooked->user_id = $userriderequest->user_id;
-        $ridesbooked->driver_id = Auth::guard('driver')->id();
+        $ridesbooked->user_id = $userId;
+        $ridesbooked->driver_id = $driverId;
         $ridesbooked->receiver_name = $userriderequest->receiver_name;
         $ridesbooked->receiver_email = $userriderequest->receiver_email;
         $ridesbooked->receiver_phone = $userriderequest->receiver_phone;
         $ridesbooked->pickup_location = $userriderequest->pickup_location;
         $ridesbooked->destination_location = $userriderequest->destination_location;
-        $ridesbooked->departure_date      = $userriderequest->departure_date; // assuming current time as departure
+        $ridesbooked->departure_date      = $userriderequest->pickup_date; // assuming current time as departure
         $ridesbooked->transport_title      = $userriderequest->transport_title; // assuming current time as departure
         $ridesbooked->pick_up_time      = $userriderequest->pick_up_time; // assuming current time as departure
         $ridesbooked->delivery_time      = $userriderequest->delivery_time; // assuming current time as departure
-        $ridesbooked->arrival_date        = $userriderequest->arrival_date;
+        $ridesbooked->arrival_date        = $userriderequest->delivery_date;
         $ridesbooked->distance            = $userriderequest->distance ?? 0;
         $ridesbooked->type_of_package   = $userriderequest->type_of_package;
         $ridesbooked->sub_type_of_package   = $userriderequest->sub_type_of_package;
-        $ridesbooked->length_of_package   = $userriderequest->length_of_package;
-        $ridesbooked->width_of_package    = $userriderequest->width_of_package;
-        $ridesbooked->weight_of_package    = $userriderequest->weight_of_package;
-        $ridesbooked->quantity_of_package = $userriderequest->quantity_of_package;
-        $ridesbooked->fare                = $userriderequest->fare;
-        $ridesbooked->fare_currency                = $userriderequest->fare_currency;
+        $ridesbooked->quantity_of_package = $packageCount;
+        $ridesbooked->fare                = $request->fare;
         $ridesbooked->means_of_transport                = $userriderequest->means_of_transport;
-        $ridesbooked->comments            = $userriderequest->comments;
         $ridesbooked->payment_method      = $userriderequest->payment_method;
-        $ridesbooked->expiry = $userriderequest->expiry;
-        $ridesbooked->parcel_pictures = $userriderequest->parcel_pictures;
+        $ridesbooked->expiry = $userriderequest->expiry_date;
+        $ridesbooked->driver_lat = $driver_location_latitude;
+        $ridesbooked->driver_lng = $driver_location_longitude;
         $ridesbooked->date_and_time_of_followup = Carbon::now();
+        $ridesbooked->parcel_pictures = $userriderequest->parcel_pictures;
         $ridesbooked->status = 'active';
         $ridesbooked->message = 'Accepted, waiting for support';
         $ridesbooked->is_urgent = $userriderequest->is_urgent;
@@ -98,9 +113,9 @@ class RidesbookedController extends Controller
         $userriderequest->status = 'accepted';
         $userriderequest->save();
 
-        $user = User::find($ridesbooked->user_id);
-        $driver = Driver::find(Auth::guard('driver')->id());
-        $message = Carbon::now() . ' A ride has been booked with carrier '.$driver->name. ' and Sender ' .$user->name;
+        $user = User::find($userId);
+        $driver = Driver::find($driverId);
+        $message = Carbon::now() . ' A ride has been booked with carrier '.$driver->firstName. ' and Sender ' .$user->firstName;
         if ($user && $user->email) {
             try {
                 Notification::send($driver, new \App\Notifications\RideBooked($message));
@@ -111,7 +126,7 @@ class RidesbookedController extends Controller
             }
         }
 
-        return redirect()->route('driver.home')->with(['success' => 'Ride booked Successfully']);
+        return redirect()->route('driver.dashboard')->with(['success' => 'Ride booked Successfully']);
     }
 
     private function isJson($string)

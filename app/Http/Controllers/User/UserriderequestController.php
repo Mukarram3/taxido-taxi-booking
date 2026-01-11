@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Driverfarerequest;
+use App\Models\Farerequest;
 use App\Models\Driverriderequest;
 use App\Models\Ridesbooked;
 use App\Models\Userriderequest;
@@ -415,8 +415,8 @@ class UserriderequestController extends Controller
         }
 
         Log::info($request->input('userriderequest_id'));
-        $driverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $Farerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
 //            ->where('expiry', '>', Carbon::now())
             ->where('status','!=','rejected')
             ->orderBy('id', 'desc')
@@ -425,40 +425,40 @@ class UserriderequestController extends Controller
         $userLng = $userriderequest->pickup_location_longitude;
 
 // Add user lat/lng to each item
-        $driverFareRequests->transform(function ($item) use ($userLat, $userLng) {
+        $Farerequests->transform(function ($item) use ($userLat, $userLng) {
             $item->user_lat = $userLat;
             $item->user_lng = $userLng;
             return $item;
         });
-        return response()->json($driverFareRequests);
+        return response()->json($Farerequests);
     }
     public function get_pending_driver_fare_request(Request $request)
     {
 
         $userriderequest = Userriderequest::where('id',$request->input('userriderequest_id'))->first();
 
-        $driverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $Farerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
             ->where('expiry', '>', Carbon::now())
             ->where('status','!=','rejected')
             ->where('status','!=','accepted')
             ->orderBy('id', 'desc')
             ->get();
 
-        $accepteddriverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $acceptedFarerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
             ->where('status','accepted')
             ->orderBy('id', 'desc')
             ->get();
 
-        $rejecteddriverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $rejectedFarerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
             ->where('status','rejected')
             ->orderBy('id', 'desc')
             ->get();
 
-        $expiredddriverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $expireddFarerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
             ->where('expiry', '<', Carbon::now())
             ->where('status', '!=','rejected')
             ->orderBy('id', 'desc')
@@ -467,13 +467,13 @@ class UserriderequestController extends Controller
         $userLat = $userriderequest->pickup_location_latitude;
         $userLng = $userriderequest->pickup_location_longitude;
 
-        $driverFareRequests->transform(function ($item) use ($userLat, $userLng) {
+        $Farerequests->transform(function ($item) use ($userLat, $userLng) {
             $item->user_lat = $userLat;
             $item->user_lng = $userLng;
             return $item;
         });
-//        return view('user-app.pending-driver-fare-request', compact('driverFareRequests'),['userriderequest_id' => $userriderequest->id]);
-        return view('user-app.negotiation-system', compact('driverFareRequests','accepteddriverFareRequests','rejecteddriverFareRequests','expiredddriverFareRequests'),['userriderequest_id' => $userriderequest->id]);
+//        return view('user-app.pending-driver-fare-request', compact('Farerequests'),['userriderequest_id' => $userriderequest->id]);
+        return view('user-app.negotiation-system', compact('Farerequests','acceptedFarerequests','rejectedFarerequests','expireddFarerequests'),['userriderequest_id' => $userriderequest->id]);
     }
     public function get_targetted_driver_fare_request(Request $request)
     {
@@ -494,8 +494,8 @@ class UserriderequestController extends Controller
         }
 
         Log::info($request->input('userriderequest_id'));
-        $driverFareRequests = Driverfarerequest::with('driver', 'userriderequest') // if you have these relationships
-        ->where('userriderequest_id', $request->input('userriderequest_id'))
+        $Farerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
+        ->where('riderequest_id', $request->input('userriderequest_id'))
 //            ->where('expiry', '>', Carbon::now())
             ->where('status','!=','rejected')
             ->orderBy('id', 'desc')
@@ -504,12 +504,12 @@ class UserriderequestController extends Controller
         $userLng = $userriderequest->pickup_location_longitude;
 
 // Add user lat/lng to each item
-        $driverFareRequests->transform(function ($item) use ($userLat, $userLng) {
+        $Farerequests->transform(function ($item) use ($userLat, $userLng) {
             $item->user_lat = $userLat;
             $item->user_lng = $userLng;
             return $item;
         });
-        return response()->json($driverFareRequests);
+        return response()->json($Farerequests);
     }
 
     public function cancel_offer(Request $request)

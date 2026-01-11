@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Driverfarerequest;
+use App\Models\Farerequest;
 use App\Models\Ridesbooked;
 use App\Models\Userfarerequest;
 use Illuminate\Bus\Queueable;

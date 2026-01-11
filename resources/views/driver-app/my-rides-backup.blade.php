@@ -1094,8 +1094,8 @@
                                        class="btn theme-btn w-100 auth-btn mt-3">View details and negotiate</a>
                                     @php
                                         if (\Illuminate\Support\Facades\Auth::guard('driver')->check()){
-                                            $driver_request = \App\Models\Driverfarerequest::where('driver_id',\Illuminate\Support\Facades\Auth::guard('driver')->user()->id)->where('userriderequest_id', $personal_offer->id)->orderby('id','desc')->first();
-                                            if ($driver_request && $driver_request->status == 'waiting' && $personal_offer->id == $driver_request->userriderequest_id){
+                                            $driver_request = \App\Models\Driverfarerequest::where('driver_id',\Illuminate\Support\Facades\Auth::guard('driver')->user()->id)->where('riderequest_id', $personal_offer->id)->orderby('id','desc')->first();
+                                            if ($driver_request && $driver_request->status == 'waiting' && $personal_offer->id == $driver_request->riderequest_id){
                                                 $text = 'Transport Request Sent';
                                             }
                                             else{
