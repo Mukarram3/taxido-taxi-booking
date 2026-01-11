@@ -1464,7 +1464,7 @@
                 <div class="quick-actions">
                     <form action="{{ url('driver/ride-verification/' . $userriderequest->id) }}" method="post">
                         @csrf
-                        <input type="hidden" name="fare" value="{{ $lastUserFareRequest->requested_fare }}">
+                        <input type="hidden" name="fare" value="{{ $lastUserFareRequest->requested_fare ?? $userriderequest->fare }}">
                         <input type="hidden" name="driver_location_latitude" class="driver_location_latitude" id="driver_location_latitude">
                         <input type="hidden" name="driver_location_longitude" class="driver_location_longitude" id="driver_location_longitude">
                         <button type="submit" class="btn btn-success btn-block">
