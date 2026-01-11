@@ -1469,7 +1469,7 @@
                         <input type="hidden" name="driver_location_longitude" class="driver_location_longitude" id="driver_location_longitude">
                         <button type="submit" class="btn btn-success btn-block">
                             ✅ <span data-lang="fr" class="active">Accepter l'offre actuelle</span>
-                            <span data-lang="en">Accept current offer</span> Accept current offer ({{ $lastUserFareRequest->requested_fare }}€)
+                            <span data-lang="en">Accept current offer</span> Accept current offer ({{ $lastUserFareRequest->requested_fare ?? $userriderequest->fare }}€)
                         </button>
                     </form>
                     <button type="button" class="btn btn-outline btn-block" onclick="openChat()">
