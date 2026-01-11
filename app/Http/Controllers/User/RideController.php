@@ -264,25 +264,25 @@ class RideController extends Controller
             $query->where('is_professional', 1);
         }
 
-        $driverFareRequests = $query->orderBy('id', 'desc')
+        $Farerequests = $query->orderBy('id', 'desc')
             ->get();
 //            ->filter(function ($request) use ($driverTransports) {
 //                $requestTransports = json_decode($request->means_of_transport ?? '[]', true);
 //                return !empty(array_intersect($driverTransports, $requestTransports));
 //            });
-        return response()->json($driverFareRequests);
+        return response()->json($Farerequests);
     }
 
     public function get_personal_ride_request()
     {
-        $driverFareRequests = Userriderequest::with('user','packagetype','packagesubtype') // if you have these relationships
+        $Farerequests = Userriderequest::with('user','packagetype','packagesubtype') // if you have these relationships
         ->where('status', 'waiting')
             ->where('targetted_driver_id', Auth::guard('driver')->user()->id)
             ->where('is_targetted','1')
 //            ->where('expiry', '>', Carbon::now())
             ->orderBy('id', 'desc')
             ->get();
-        return response()->json($driverFareRequests);
+        return response()->json($Farerequests);
     }
 
     public function markRidecomplete($ride_id)

@@ -53,6 +53,23 @@
             border-radius: 100px;
         }
 
+        .offer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .offer-status-badge.current {
+            color: #1aa34a;
+            font-weight: 600;
+        }
+
+        .offer-status-badge.rejected {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+
         .lang-btn {
             padding: 8px 16px;
             border: none;
@@ -447,20 +464,9 @@
             background: var(--border);
         }
 
-        .offer-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .offer-status-badge.current {
-            color: #1aa34a;
-            font-weight: 600;
-        }
-
-        .offer-status-badge.rejected {
-            color: #d32f2f;
-            font-weight: 600;
+        .price-item {
+            position: relative;
+            padding: 12px 0;
         }
 
         .timeline-item {
@@ -541,12 +547,6 @@
         .status.success {
             background: #10b981;
             color: white;
-        }
-
-
-        .price-item {
-            position: relative;
-            padding: 12px 0;
         }
 
         .price-item::before {
@@ -1158,7 +1158,7 @@
         </button>
 
         <div class="nav-links" id="navLinks">
-            <a href="{{ url('driver/my-rides') }}" class="nav-link">
+            <a href="{{ url('user/my-rides') }}" class="nav-link">
                 <span data-lang="fr" class="active">Mes annonces</span>
                 <span data-lang="en">My offers</span>
             </a>
@@ -1166,11 +1166,11 @@
                 <span data-lang="fr" class="active">Messages</span>
                 <span data-lang="en">Messages</span>
             </a>
-            <a href="{{ url('driver/dashboard') }}" class="nav-link">
+            <a href="{{ url('user/dashboard') }}" class="nav-link">
                 <span data-lang="fr" class="active">Tableau de bord</span>
                 <span data-lang="en">Dashboard</span>
             </a>
-            <a href="{{ url('driver/profile-setting') }}" class="nav-link">
+            <a href="{{ url('user/profile-setting') }}" class="nav-link">
                 <span data-lang="fr" class="active">Profil</span>
                 <span data-lang="en">Profile</span>
             </a>
@@ -1415,16 +1415,15 @@
                             </div>
 
                         @endforeach
+
                     </div>
                 </div>
 
 
-                <form action="{{ route('driver.request_fare') }}" method="post">
+                <form action="{{ route('user.user_request_fare') }}" method="post">
                     @csrf
-                    <input type="hidden" name="userriderequest_id" value="{{ $userriderequest->id }}">
-                    <input type="hidden" name="driver_location_latitude" class="driver_location_latitude" id="driver_location_latitude">
-                    <input type="hidden" name="driver_location_longitude" class="driver_location_longitude" id="driver_location_longitude">
-
+                    <input type="hidden" name="userriderequest_id" value="{{ $ride_request_id }}">
+                    <input type="hidden" name="driver_id" value="{{ $driver_id }}">
                     <!-- New Offer Form -->
                     <div class="new-offer-form">
                         <div class="form-header">
@@ -1465,8 +1464,6 @@
                     <form action="{{ url('driver/ride-verification/' . $userriderequest->id) }}" method="post">
                         @csrf
                         <input type="hidden" name="fare" value="{{ $lastUserFareRequest->requested_fare }}">
-                        <input type="hidden" name="driver_location_latitude" class="driver_location_latitude" id="driver_location_latitude">
-                        <input type="hidden" name="driver_location_longitude" class="driver_location_longitude" id="driver_location_longitude">
                         <button type="submit" class="btn btn-success btn-block">
                             ✅ <span data-lang="fr" class="active">Accepter l'offre actuelle</span>
                             <span data-lang="en">Accept current offer</span> Accept current offer ({{ $lastUserFareRequest->requested_fare }}€)
@@ -1521,14 +1518,14 @@
                 <span data-lang="en">TRANSPORTER</span>
             </div>
             <div class="user-card-header">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('driver')->user()->firstName . ' ' . Auth::guard('driver')->user()->lastName) }}&background=random&color=fff" alt="Driver" class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('user')->user()->firstName . ' ' . Auth::guard('user')->user()->lastName) }}&background=random&color=fff" alt="Driver" class="user-avatar">
                 <div class="user-info">
-                    <div class="user-name">{{ Auth::guard('driver')->user()->firstName }} {{ Auth::guard('driver')->user()->lastName }}</div>
+                    <div class="user-name">{{ Auth::guard('user')->user()->firstName }} {{ Auth::guard('user')->user()->lastName }}</div>
                     <div style="font-size: 13px; color: var(--gray);">⭐ 4.6 (89)</div>
                 </div>
             </div>
             @php
-                $driver_completed = \App\Models\Ridesbooked::where('driver_id', Auth::guard('driver')->user()->id)->where('status','completed')->count() + \App\Models\ReservedKiloRidebooked::where('driver_id', Auth::guard('driver')->user()->id)->where('status','completed')->count();
+                $driver_completed = \App\Models\Ridesbooked::where('user_id', Auth::guard('user')->user()->id)->where('status','completed')->count() + \App\Models\ReservedKiloRidebooked::where('driver_id', Auth::guard('user')->user()->id)->where('status','completed')->count();
             @endphp
             <div class="user-stats">
                 <div class="stat-item">
@@ -1595,50 +1592,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGCQvcXUsXwCdYArPXo72dLZ31WS3WQRw"></script>
-<script>
-
-    // $('#driver_location_latitude').val('32.1030');
-    // $('#driver_location_longitude').val('72.6598');
-
-    if ("geolocation" in navigator) {
-        navigator.geolocation.watchPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                console.log(`Location updated: ${lat}, ${lng}`);
-
-                $('.driver_location_latitude').val(lat);
-                $('.driver_location_longitude').val(lng);
-            },
-            (error) => {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        console.error("User denied the request for Geolocation.");
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        console.error("Location information is unavailable.");
-                        break;
-                    case error.TIMEOUT:
-                        console.error("The request to get user location timed out.");
-                        break;
-                    case error.UNKNOWN_ERROR:
-                        console.error("An unknown error occurred.");
-                        break;
-                }
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 5000,
-            }
-        );
-    } else {
-        console.error("Geolocation is not supported by this browser.");
-    }
-
-
-</script>
 <script>
     let currentLang = localStorage.getItem('preferredLanguage') || 'fr';
 

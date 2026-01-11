@@ -169,11 +169,11 @@
                 // Start polling driver fare requests every 2 seconds
                 fareRequestInterval = setInterval(() => {
                     console.log("Timeout triggered");  // Debug
-                    getDriverFareRequest();
+                    getFarerequest();
                 }, 2000);
 
                 // Your existing AJAX function, unchanged except for logging improvements
-                function getDriverFareRequest() {
+                function getFarerequest() {
                     $.ajax({
                         url: `/user/get-driver-fare-request?userriderequest_id=${userRequestId}`,
                         method: 'GET',
@@ -224,8 +224,8 @@
                                     <h6 class="fw-normal content-color">${distanceKm} km</h6>
                                 </div>
                                 <div class="grid-btn mt-2">
-                                    <a href="#" id="reject_request" data-driver_id="${item.driver_id}" data-driverfarerequest_id="${item.id}" class="btn gray-btn w-100 m-0">Skip</a>
-                                    <a href="/user/accept-ride-details?driverfarerequest_id=${item.id}&driver_id=${item.driver_id}" class="btn theme-btn w-100 m-0">Accept</a>
+                                    <a href="#" id="reject_request" data-driver_id="${item.driver_id}" data-Farerequest_id="${item.id}" class="btn gray-btn w-100 m-0">Skip</a>
+                                    <a href="/user/accept-ride-details?Farerequest_id=${item.id}&driver_id=${item.driver_id}" class="btn theme-btn w-100 m-0">Accept</a>
                                 </div>
                                 <div class="progress mt-2" role="progressbar">
                                     <div class="progress-bar w-0"></div>
@@ -272,7 +272,7 @@
 
             $(document).on('click', '#reject_request', function (e) {
                 e.preventDefault();
-                var driver_request_id = $(this).data('driverfarerequest_id');
+                var driver_request_id = $(this).data('Farerequest_id');
 
                 $.ajax({
                     url: `/user/reject-ride-details?driver_request_id=${driver_request_id}`,
@@ -306,8 +306,8 @@
                                     <h6 class="fw-normal content-color">4 km</h6>
                                 </div>
                                 <div class="grid-btn mt-2">
-                                    <a href="#" id="reject_request" data-deriver_id="${item.driver_id}" data-driverfarerequest_id="${item.id}" class="btn gray-btn w-100 m-0">Skip</a>
-                                    <a href="/user/accept-ride-details?driverfarerequest_id=${item.id}&driver_id=${item.driver_id}" class="btn theme-btn w-100 m-0">Accept</a>
+                                    <a href="#" id="reject_request" data-deriver_id="${item.driver_id}" data-Farerequest_id="${item.id}" class="btn gray-btn w-100 m-0">Skip</a>
+                                    <a href="/user/accept-ride-details?Farerequest_id=${item.id}&driver_id=${item.driver_id}" class="btn theme-btn w-100 m-0">Accept</a>
                                 </div>
                                 <div class="progress mt-2" role="progressbar">
                                     <div class="progress-bar w-0"></div>

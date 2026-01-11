@@ -28,12 +28,12 @@
                         </h2>
 
                         <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                            Bonjour <strong>{{ $driverfarerequest->driver->firstName ?? 'Transporteur' }}</strong>,
+                            Bonjour <strong>{{ $Farerequest->driver->firstName ?? 'Transporteur' }}</strong>,
                         </p>
 
                         <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
                             Votre proposition de prix pour le trajet de
-                            <strong>{{ $driverfarerequest->userriderequest->pickup_location }}</strong> à
+                            <strong>{{ $Farerequest->userriderequest->pickup_location }}</strong> à
                             <strong>{{ $driverfarerequest->userriderequest->destination_location }}</strong>
                             a été <strong>rejetée</strong> par l'expéditeur <strong>{{ $driverfarerequest->userriderequest->user->firstName ?? 'Expéditeur' }}</strong>.
                         </p>

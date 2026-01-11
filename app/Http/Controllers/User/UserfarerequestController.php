@@ -5,9 +5,11 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
 use App\Models\Driverriderequest;
+use App\Models\Farerequest;
 use App\Models\ReservedKiloRidebooked;
 use App\Models\User;
 use App\Models\Userfarerequest;
+use App\Models\Userriderequest;
 use App\Notifications\RideBooked;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -32,6 +34,38 @@ class UserfarerequestController extends Controller
             return redirect()->route('user.home')->with('success', 'Your Ride is Accepted');
         }
         return view('user-app.accept-ride',['driverriderrequest'=>$driverriderrequest]);
+    }
+
+    public function user_request_fare(Request $request)
+    {
+        $userId = Auth::guard('user')->id();
+
+        $Farerequest = new Farerequest();
+        $Farerequest->user_id = $userId;
+
+        $Farerequest->request_id = 'CT' . now()->year . '-' . str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
+        $Farerequest->riderequest_id = $request->userriderequest_id;
+        $Farerequest->requested_fare = $request->requested_fare;
+        $Farerequest->expiry = Carbon::now()->addMinutes(10);
+        $Farerequest->status = 'waiting'; // Optional: set explicitly if required
+        $Farerequest->save();
+
+        $userriderequest = Userriderequest::find($request->userriderequest_id);
+        $user = User::find($userriderequest->user_id);
+        $driver = Driver::find($request->driver_id);
+        $message = \Illuminate\Support\Carbon::now() . ' Carrier '.$driver->name. ' send a Price negotiation for the offer from '. $userriderequest->pickup_location .' to '. $userriderequest->destination_location;
+
+//        try {
+//            Notification::send($user, new RideBooked($message));
+//            Notification::send($driver, new RideBooked($message));
+//            Mail::to($user->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
+//            Mail::to($driver->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
+//        }
+//        catch (\Exception $e) {
+//            Log::info($e->getMessage());
+//        }
+
+        return redirect()->back()->with(['success' => 'Requested the Fare Successfully']);
     }
 
     public function home()
