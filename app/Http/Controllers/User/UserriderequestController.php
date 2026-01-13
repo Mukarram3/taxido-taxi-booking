@@ -241,6 +241,21 @@ class UserriderequestController extends Controller
             $userriderequest->is_homeDelivery = $request->has('is_homeDelivery') ? 1 : 0;
             $userriderequest->is_needHelp    = $request->has('is_needHelp') ? 1 : 0;
 
+            // Sender Requirements
+
+            $userriderequest->requirement_transport_license = $request->requirement_transport_license ? '1' : '0';
+            $userriderequest->requirement_transport_license_level = $request->requirement_transport_license ? $request->requirement_transport_license_level : '';
+            $userriderequest->requirement_insurance = $request->requirement_insurance ? '1' : '0';
+            $userriderequest->requirement_insurance_level = $request->requirement_insurance ? $request->requirement_insurance_level : '';
+            $userriderequest->requirement_identity = $request->requirement_identity ? '1' : '0';
+            $userriderequest->requirement_identity_level = $request->requirement_identity ? $request->requirement_identity_level : '';
+            $userriderequest->requirement_vehicle = $request->requirement_vehicle ? '1' : '0';
+            $userriderequest->requirement_vehicle_level = $request->requirement_vehicle ? $request->requirement_vehicle_level : '';
+            $userriderequest->requirement_equipment = $request->requirement_equipment ? '1' : '0';
+            $userriderequest->requirement_equipment_level = $request->requirement_equipment ? $request->requirement_equipment_level : '';
+            $userriderequest->requirement_loading_help = $request->requirement_loading_help ? '1' : '0';
+            $userriderequest->requirement_loading_help_level = $request->requirement_loading_help ? $request->requirement_loading_help_level : '';
+
             // Misc
             $userriderequest->message          = 'Carrier search in progress';
             $userriderequest->payment_method   = $request->payment_method ?? 'online';
@@ -251,9 +266,9 @@ class UserriderequestController extends Controller
             $userriderequest->sub_type_of_package = $request->subcategories;
 
             // Parcel images
-            if ($request->hasFile('parcel_pictures')) {
+            if ($request->hasFile('images')) {
                 $imagePaths = [];
-                $files = $request->file('parcel_pictures');
+                $files = $request->file('images');
                 if (!is_array($files)) $files = [$files];
                 foreach ($files as $image) {
                     try {

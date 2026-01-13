@@ -213,6 +213,64 @@
             display: block;
         }
 
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-bell:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .notification-bell.has-notifications::after {
+            content: attr(data-count);
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--danger);
+            border-radius: 10px;
+            border: 2px solid white;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+        }
+
+        .bell-icon {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-bell.ringing .bell-icon {
+            animation: ring 0.5s ease-in-out 3;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
         .mobile-menu-content {
             padding: 20px;
         }
@@ -476,6 +534,7 @@
         .dropdown-menu {
             position: absolute;
             top: 110%;
+            left: 1px;
             right: 0;
             background: white;
             border-radius: var(--radius);
@@ -491,7 +550,7 @@
             display: flex;
         }
 
-        .dropdown-menu a {
+        .dropdown-menu a, .dropdown button {
             padding: 0.75rem 1rem;
             color: var(--dark);
             text-decoration: none;
@@ -1038,7 +1097,7 @@
         .offer-card {
             background: white;
             border-radius: var(--radius-lg);
-            overflow: hidden;
+            overflow: visible;
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
             position: relative;
@@ -1634,8 +1693,8 @@
                 @endphp
 
                 <div class="dropdown">
-                    <button class="btn btn-user" onclick="toggleDropdown('userDropdown')">
-                        <img src="{{ $avatar }}">
+                    <button class="btn btn-user" onclick="toggleDropdown('userDropdown')" style="padding: 0px !important">
+                        <img src="{{ $avatar }}" width="50" style="width: 50px; border-radius: 50%;">
                         {{ $name }}
                     </button>
 
@@ -1655,7 +1714,7 @@
                 @endphp
 
                 <div class="dropdown">
-                    <button class="btn btn-driver" onclick="toggleDropdown('driverDropdown')">
+                    <button class="btn btn-driver" onclick="toggleDropdown('driverDropdown')" style="padding: 0px !important">
                         <img src="{{ $avatar }}" style="width: 50px; border-radius: 50%;">
                         {{ $name }}
                     </button>
@@ -2201,13 +2260,24 @@
                     <span class="offer-type-badge {{ $offer->packages_json ? 'cotransport' : '' }}">
                         {{ $offer->packages_json ? 'Co-transport' : 'Réservation' }}
                     </span>
+                    @if($offer->is_urgent)
+                        <span class="offer-badge urgent">Urgent</span>
+                    @endif
+                    @if($offer->is_professional)
+                        <span class="offer-badge professional">🛡️ Professionnel</span>
+                    @endif
+                    @php
+                    $farerequests = \App\Models\Farerequest::where('riderequest_id', $offer->id)
+                    ->whereNull('user_id')
+                    ->groupby('driver_id')
+                    ->count();
+                    @endphp
                     <div class="offer-badges">
-                        @if($offer->is_urgent)
-                            <span class="offer-badge urgent">Urgent</span>
-                        @endif
-                        @if($offer->is_professional)
-                            <span class="offer-badge professional">🛡️ Professionnel</span>
-                        @endif
+                        <div class="notification-bell has-notifications"
+                             id="notificationBell"
+                             data-count="{{ $farerequests }}">
+                            <span class="bell-icon">🔔</span>
+                        </div>
                     </div>
 
                     <div class="offer-header">
@@ -2280,16 +2350,41 @@
                     </div>
 
                     <div class="offer-actions">
-                        <button class="btn btn-primary btn-sm">
-                            {{ $offer->packages_json ? '🙋 Me proposer' : '🎫 Réserver' }}
-                        </button>
-                        <a href="{{ url('driver/accept-ride/' . $offer->id) }}" style="text-decoration: none" class="btn btn-outline btn-sm">
+
+                        <div class="dropdown">
+
+                            <button class="btn btn-primary btn-sm"
+                                    onclick="toggleDropdown('offerDropdown{{ $offer->id }}')">
+                                🙋 Propose Me
+                            </button>
+
+                            <div class="dropdown-menu" id="offerDropdown{{ $offer->id }}">
+
+                                <form action="{{ url('driver/ride-verification/' . $offer->id) }}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="fare" value="{{ $offer->fare }}">
+                                    <input type="hidden" name="driver_location_latitude" class="driver_location_latitude" id="driver_location_latitude">
+                                    <input type="hidden" name="driver_location_longitude" class="driver_location_longitude" id="driver_location_longitude">
+                                    <button type="submit" class="btn btn-success dropdown-item" style="background: none;">
+                                        ✅ Accept Offer ({{ $offer->fare }}€)
+                                    </button>
+                                </form>
+                                <a href="{{ url('driver/accept-ride/' . $offer->id) }}" class="dropdown-item">
+                                    🤝 Negotiate
+                                </a>
+                            </div>
+                        </div>
+
+                        <a href="{{ url('offer-details/' . $offer->id) }}" class="btn btn-outline btn-sm">
                             👁️ Détails
                         </a>
+
                         <button class="btn btn-outline btn-sm">
                             💬 Chat
                         </button>
+
                     </div>
+
                 </div>
             @endforeach
         </div>
@@ -2580,6 +2675,7 @@
                 d.classList.remove('active');
             }
         });
+
         const dropdown = document.querySelector(`#${id}`).parentElement;
         dropdown.classList.toggle('active');
     }
@@ -2587,7 +2683,9 @@
     // Close dropdown when clicking outside
     document.addEventListener('click', e => {
         if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.dropdown').forEach(d => {
+                d.classList.remove('active');
+            });
         }
     });
 
@@ -2636,6 +2734,43 @@
                 );
             }
         });
+    }
+
+    if ("geolocation" in navigator) {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                console.log(`Location updated: ${lat}, ${lng}`);
+
+                $('.driver_location_latitude').val(lat);
+                $('.driver_location_longitude').val(lng);
+            },
+            (error) => {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        console.error("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        console.error("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        console.error("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        console.error("An unknown error occurred.");
+                        break;
+                }
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 5000,
+            }
+        );
+    } else {
+        console.error("Geolocation is not supported by this browser.");
     }
 
     // Initialize

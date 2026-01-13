@@ -149,7 +149,7 @@ Route::group(['prefix' => 'driver', 'as' => 'driver.'], function (){
         return view('driver-app.ride-on-way');
     });
 
-    Route::post('/ride-verification/{userriderequest_id}', [\App\Http\Controllers\Driver\RidesbookedController::class, 'ride_verification'])->name('ride_verification');
+    Route::post('/ride-verification/{userriderequest_id}', [\App\Http\Controllers\Driver\RidesbookedController::class, 'ride_verification'])->name('ride_verification')->middleware(\App\Http\Middleware\LoggedinDriverOrUser::class);
     Route::get('/start-ride/{ride_id}', [\App\Http\Controllers\Driver\RidesbookedController::class, 'start_ride'])->name('start_ride');
     Route::get('/start-delivery/{ride_id}', [\App\Http\Controllers\Driver\RidesbookedController::class, 'start_delivery'])->name('start_delivery');
     Route::post('/cancel-ride', [\App\Http\Controllers\Driver\RidesbookedController::class, 'cancel_ride'])->name('cancel_ride');

@@ -73,4 +73,11 @@ class HomeController extends Controller
             return trim($parts[count($parts) - 2] ?? $address);
         });
     }
+
+    public function offer_details($id){
+        $user_ride_request = Userriderequest::with('user')->find($id);
+        $user_ride_request->pickup_city = $this->getCityFromAddress($user_ride_request->pickup_location);
+        $user_ride_request->destination_city = $this->getCityFromAddress($user_ride_request->destination_location);
+        return view('user-app.cotransport_detail', compact('user_ride_request'));
+    }
 }
