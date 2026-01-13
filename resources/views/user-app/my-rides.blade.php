@@ -43,6 +43,64 @@
             display: inline-block;
         }
 
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-bell:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .notification-bell.has-notifications::after {
+            content: attr(data-count);
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: var(--danger);
+            border-radius: 10px;
+            border: 2px solid white;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+        }
+
+        .bell-icon {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-bell.ringing .bell-icon {
+            animation: ring 0.5s ease-in-out 3;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
         /* Container */
         .container {
             max-width: 1200px;
@@ -673,11 +731,26 @@
 
         <!-- Shipment Card 4 - Searching -->
         @foreach($pending_offers as $offer)
+            @php
+                $farerequests = \App\Models\Farerequest::where('riderequest_id', $offer->id)
+                ->whereNull('user_id')
+                ->groupby('driver_id')
+                ->count();
+            @endphp
             <div class="shipment-card" data-status="on_hold">
-                <span class="shipment-status status-searching">
-                    <span class="lang-content fr active">🔍 En recherche</span>
-                    <span class="lang-content en">🔍 Searching</span>
-                </span>
+                <div style="display: flex; justify-content: space-between">
+                    <span class="shipment-status status-searching">
+                        <span class="lang-content fr active">🔍 En recherche</span>
+                        <span class="lang-content en">🔍 Searching</span>
+                    </span>
+                    <div class="offer-badges">
+                        <div class="notification-bell has-notifications"
+                             id="notificationBell"
+                             data-count="{{ $farerequests }}">
+                            <span class="bell-icon">🔔</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="shipment-route">
                     <span class="shipment-location">{{ $offer->pickup_city }}</span>
                     <span class="shipment-arrow">→</span>
@@ -685,11 +758,14 @@
                 </div>
                 @php
                     $packages = json_decode($offer->packages_json, true);
+                    $totalLength = collect($packages)->sum('length');
+                    $totalWidth = collect($packages)->sum('width');
+                    $totalHeight= collect($packages)->sum('height');
                     $totalWeight = collect($packages)->sum('weight');
                 @endphp
                 <div class="shipment-details">
                     <div class="shipment-detail">📦 Cartons déménagement</div>
-                    <div class="shipment-detail">⚖️ {{ $totalWeight }}kg</div>
+                    <div class="shipment-detail">⚖️ {{ $totalLength }}*{{ $totalWidth }}*{{ $totalHeight }}*{{ $totalWeight }}</div>
                     <div class="shipment-detail">
                         📅 {{ \Carbon\Carbon::parse($offer->date_and_time_of_followup)->translatedFormat('d F Y') }}</div>
                     <div class="shipment-detail">💰 Budget: €{{ $offer->fare }}</div>
@@ -704,7 +780,7 @@
                         <a href="{{ url('user/get-pending-driver-fare-request?userriderequest_id='.$offer->id) }}"
                            class="action-btn" style="color: black;">
                             <span class="lang-content fr active">Voir offres</span>
-                            <span class="lang-content en">View offers</span>
+                            <span class="lang-content en">View transport requests</span>
                         </a>
                         <button type="submit" class="action-btn primary">
                             <span class="lang-content fr active">Cancel the Offer</span>
@@ -744,7 +820,7 @@
                 <div class="shipment-actions">
                     <a href="{{ url('user/ride-details?ride_id='.$offer->id) }}" class="action-btn">
                         <span class="lang-content fr active">Voir offres</span>
-                        <span class="lang-content en">View offers</span>
+                        <span class="lang-content en">View transport requests</span>
                     </a>
                 </div>
             </div>

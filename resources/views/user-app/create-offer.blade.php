@@ -988,92 +988,320 @@
             background: #1d3557;
             color: #fff;
         }
+
+        /* Sender Requirements Styles */
+        .requirements-section {
+            margin-bottom: 32px;
+            padding: 24px;
+            background: #f9fafb;
+            border-radius: var(--radius-lg);
+        }
+
+        .requirements-section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .requirements-section-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .requirements-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .requirement-item {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .requirement-item:hover {
+            border-color: var(--secondary);
+            transform: translateX(4px);
+        }
+
+        .requirement-item.selected {
+            border-color: var(--secondary);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .requirement-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-top: 2px;
+        }
+
+        .requirement-item.selected .requirement-checkbox {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .requirement-item.selected .requirement-checkbox::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .requirement-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .requirement-content {
+            flex: 1;
+        }
+
+        .requirement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .requirement-title {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 15px;
+        }
+
+        .requirement-description {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .requirement-level {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .level-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .level-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            background: white;
+        }
+
+        .level-select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Image Upload Styles */
+        .image-upload-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: #f9fafb;
+            border-radius: var(--radius-lg);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .upload-area:hover {
+            border-color: var(--secondary);
+            background: rgba(6, 182, 212, 0.02);
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--secondary);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .image-previews {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .image-preview {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: white;
+            border: 2px solid var(--border);
+            aspect-ratio: 1;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-image:hover {
+            background: var(--danger);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{{ url('/') }}" class="logo">
-                <div class="logo-icon">JC</div>
-                <span class="logo-text">Je confie</span>
-            </a>
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{{ url('/') }}" class="logo">
+            <div class="logo-icon">JC</div>
+            <span class="logo-text">Je confie</span>
+        </a>
 
-            <div class="nav-actions">
-                <div class="language-switcher">
-                    <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
-                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
-                </div>
+        <div class="nav-actions">
+            <div class="language-switcher">
+                <button class="lang-btn active" onclick="switchLanguage('fr')">FR</button>
+                <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Main Container -->
-    <div class="main-container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>
-                📦 <span class="lang-content fr active">J'expédie - Recherche de transporteur</span>
-                <span class="lang-content en">I'm shipping - Looking for carrier</span>
-            </h1>
-            <p>
+<!-- Main Container -->
+<div class="main-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            📦 <span class="lang-content fr active">J'expédie - Recherche de transporteur</span>
+            <span class="lang-content en">I'm shipping - Looking for carrier</span>
+        </h1>
+        <p>
                 <span class="lang-content fr active">
                     Trouvez un transporteur fiable pour vos colis. Économisez jusqu'à 70% sur vos envois !
                 </span>
-                <span class="lang-content en">
+            <span class="lang-content en">
                     Find a reliable carrier for your packages. Save up to 70% on your shipments!
                 </span>
-            </p>
-        </div>
+        </p>
+    </div>
 
-        <!-- Form Container -->
-        <div class="form-container">
-            <!-- Progress Steps -->
-            <div class="progress-container">
-                <div class="progress-steps">
-                    <div class="progress-line" id="progressLine" style="width: 0%"></div>
-                    <div class="step active" data-step="1">
-                        <div class="step-circle">1</div>
-                        <div class="step-title">Colis</div>
-                    </div>
-                    <div class="step" data-step="2">
-                        <div class="step-circle">2</div>
-                        <div class="step-title">Trajet</div>
-                    </div>
-                    <div class="step" data-step="3">
-                        <div class="step-circle">3</div>
-                        <div class="step-title">Destinataire</div>
-                    </div>
-                    <div class="step" data-step="4">
-                        <div class="step-circle">4</div>
-                        <div class="step-title">Simulateur</div>
-                    </div>
-                    <div class="step" data-step="5">
-                        <div class="step-circle">5</div>
-                        <div class="step-title">Budget</div>
-                    </div>
-                    <div class="step" data-step="6">
-                        <div class="step-circle">6</div>
-                        <div class="step-title">Confirmation</div>
-                    </div>
+    <!-- Form Container -->
+    <div class="form-container">
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-line" id="progressLine" style="width: 0%"></div>
+                <div class="step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-title">Colis</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-title">Trajet</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-title">Destinataire</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-title">Exigences</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-circle">5</div>
+                    <div class="step-title">Simulateur</div>
+                </div>
+                <div class="step" data-step="6">
+                    <div class="step-circle">6</div>
+                    <div class="step-title">Budget</div>
+                </div>
+                <div class="step" data-step="7">
+                    <div class="step-circle">7</div>
+                    <div class="step-title">Confirmation</div>
                 </div>
             </div>
+        </div>
 
-            <form class="mt-0" id="create_offer_form" method="post" action="{{ route('user.driver_fare_request') }}" enctype="multipart/form-data">
+        <form class="mt-0" id="create_offer_form" method="post" action="{{ route('user.driver_fare_request') }}" enctype="multipart/form-data">
 
-                @csrf
+            @csrf
 
-                <input type="hidden" name="badges" id="selectedBadges">
-                <input type="hidden" name="distance" id="distance">
-                <input type="hidden" name="budget_option" id="budget_option">
-                <input type="hidden" name="suggested_fare" id="suggested_fare">
-                <input type="hidden" name="packages_json" id="packages_json">
-                <input type="hidden" name="categories" id="selectedCategories">
-                <input type="hidden" name="subcategories" id="selectedSubcategories">
-                <input type="hidden" name="vehicle_type_needed" id="vehicle_type_needed">
-                <input type="hidden" name="payment_method" id="payment_method">
-                <input type="hidden" name="pickup_location_latitude" id="pickup_location_latitude">
-                <input type="hidden" name="pickup_location_longitude" id="pickup_location_longitude">
+            <input type="hidden" name="badges" id="selectedBadges">
+            <input type="hidden" name="distance" id="distance">
+            <input type="hidden" name="budget_option" id="budget_option">
+            <input type="hidden" name="suggested_fare" id="suggested_fare">
+            <input type="hidden" name="packages_json" id="packages_json">
+            <input type="hidden" name="categories" id="selectedCategories">
+            <input type="hidden" name="subcategories" id="selectedSubcategories">
+            <input type="hidden" name="vehicle_type_needed" id="vehicle_type_needed">
+            <input type="hidden" name="payment_method" id="payment_method">
+            <input type="hidden" name="pickup_location_latitude" id="pickup_location_latitude">
+            <input type="hidden" name="pickup_location_longitude" id="pickup_location_longitude">
 
             <!-- Step 1: Package Details -->
             <div class="form-section active" id="step1">
@@ -1406,8 +1634,277 @@
                 </div>
             </div>
 
-            <!-- Step 4: Price Simulator -->
+            <!-- Step 4: Sender Requirements & Images -->
             <div class="form-section" id="step4">
+                <h2 style="margin-bottom: 24px;">
+                    <span class="lang-content fr active">✓ Exigences du transporteur & Photos</span>
+                    <span class="lang-content en">✓ Carrier Requirements & Photos</span>
+                </h2>
+
+                <!-- Professional Certifications Section -->
+                <div class="requirements-section">
+                    <h2 class="requirements-section-title">
+                        🎓 <span class="lang-content fr active">Certifications professionnelles</span>
+                        <span class="lang-content en">Professional certifications</span>
+                    </h2>
+                    <p class="requirements-section-description">
+                        <span class="lang-content fr active">Sélectionnez les certifications requises pour votre transport</span>
+                        <span class="lang-content en">Select the certifications required for your transport</span>
+                    </p>
+
+                    <div class="requirements-grid">
+                        <div class="requirement-item" data-id="transport-license" onclick="toggleRequirement(this, event)">
+                            <div class="requirement-checkbox"></div>
+                            <div class="requirement-icon">🚛</div>
+                            <div class="requirement-content">
+                                <div class="requirement-header">
+                                    <div class="requirement-title">
+                                        <span class="lang-content fr active">Licence de transport</span>
+                                        <span class="lang-content en">Transport license</span>
+                                    </div>
+                                </div>
+                                <div class="requirement-description">
+                                    <span class="lang-content fr active">
+                                        Licence de transport valide délivrée par les autorités compétentes
+                                    </span>
+                                    <span class="lang-content en">
+                                        Valid transport license issued by competent authorities
+                                    </span>
+                                </div>
+                                <div class="requirement-level" style="display: none;">
+                                    <div class="level-label">
+                                        <span class="lang-content fr active">Niveau d'exigence :</span>
+                                        <span class="lang-content en">Requirement level:</span>
+                                    </div>
+                                    <select class="level-select" name="requirement_transport_license_level" onclick="event.stopPropagation()">
+                                        <option value="optional">Optionnel / Optional</option>
+                                        <option value="mandatory">Obligatoire / Mandatory</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="requirement_transport_license" value="0">
+                        </div>
+
+                        <div class="requirement-item" data-id="insurance" onclick="toggleRequirement(this, event)">
+                            <div class="requirement-checkbox"></div>
+                            <div class="requirement-icon">🛡️</div>
+                            <div class="requirement-content">
+                                <div class="requirement-header">
+                                    <div class="requirement-title">
+                                        <span class="lang-content fr active">Assurance professionnelle</span>
+                                        <span class="lang-content en">Professional insurance</span>
+                                    </div>
+                                </div>
+                                <div class="requirement-description">
+                                    <span class="lang-content fr active">
+                                        Attestation d'assurance couvrant le transport de marchandises (minimum 5000€)
+                                    </span>
+                                    <span class="lang-content en">
+                                        Insurance certificate covering goods transport (minimum €5000)
+                                    </span>
+                                </div>
+                                <div class="requirement-level" style="display: none;">
+                                    <div class="level-label">
+                                        <span class="lang-content fr active">Niveau d'exigence :</span>
+                                        <span class="lang-content en">Requirement level:</span>
+                                    </div>
+                                    <select class="level-select" name="requirement_insurance_level" onclick="event.stopPropagation()">
+                                        <option value="optional">Optionnel / Optional</option>
+                                        <option value="mandatory">Obligatoire / Mandatory</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="requirement_insurance" value="0">
+                        </div>
+
+                        <div class="requirement-item" data-id="identity" onclick="toggleRequirement(this, event)">
+                            <div class="requirement-checkbox"></div>
+                            <div class="requirement-icon">🆔</div>
+                            <div class="requirement-content">
+                                <div class="requirement-header">
+                                    <div class="requirement-title">
+                                        <span class="lang-content fr active">Pièce d'identité vérifiée</span>
+                                        <span class="lang-content en">Verified ID</span>
+                                    </div>
+                                </div>
+                                <div class="requirement-description">
+                                    <span class="lang-content fr active">
+                                        Le transporteur doit avoir validé son identité sur la plateforme
+                                    </span>
+                                    <span class="lang-content en">
+                                        Carrier must have validated their identity on the platform
+                                    </span>
+                                </div>
+                                <div class="requirement-level" style="display: none;">
+                                    <div class="level-label">
+                                        <span class="lang-content fr active">Niveau d'exigence :</span>
+                                        <span class="lang-content en">Requirement level:</span>
+                                    </div>
+                                    <select class="level-select" name="requirement_identity_level" onclick="event.stopPropagation()">
+                                        <option value="optional">Optionnel / Optional</option>
+                                        <option value="mandatory">Obligatoire / Mandatory</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="requirement_identity" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Section -->
+                <div class="requirements-section">
+                    <h2 class="requirements-section-title">
+                        🚛 <span class="lang-content fr active">Véhicule et équipement</span>
+                        <span class="lang-content en">Vehicle and equipment</span>
+                    </h2>
+                    <p class="requirements-section-description">
+                        <span class="lang-content fr active">Définissez les critères liés au véhicule</span>
+                        <span class="lang-content en">Define vehicle-related criteria</span>
+                    </p>
+
+                    <div class="requirements-grid">
+                        <div class="requirement-item" data-id="vehicle" onclick="toggleRequirement(this, event)">
+                            <div class="requirement-checkbox"></div>
+                            <div class="requirement-icon">🚛</div>
+                            <div class="requirement-content">
+                                <div class="requirement-header">
+                                    <div class="requirement-title">
+                                        <span class="lang-content fr active">Véhicule utilitaire adapté</span>
+                                        <span class="lang-content en">Suitable utility vehicle</span>
+                                    </div>
+                                </div>
+                                <div class="requirement-description">
+                                    <span class="lang-content fr active">
+                                        Véhicule avec minimum 12m³ de volume de chargement
+                                    </span>
+                                    <span class="lang-content en">
+                                        Vehicle with minimum 12m³ loading volume
+                                    </span>
+                                </div>
+                                <div class="requirement-level" style="display: none;">
+                                    <div class="level-label">
+                                        <span class="lang-content fr active">Niveau d'exigence :</span>
+                                        <span class="lang-content en">Requirement level:</span>
+                                    </div>
+                                    <select class="level-select" name="requirement_vehicle_level" onclick="event.stopPropagation()">
+                                        <option value="optional">Optionnel / Optional</option>
+                                        <option value="mandatory">Obligatoire / Mandatory</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="requirement_vehicle" value="0">
+                        </div>
+
+                        <div class="requirement-item" data-id="equipment" onclick="toggleRequirement(this, event)">
+                            <div class="requirement-checkbox"></div>
+                            <div class="requirement-icon">🧰</div>
+                            <div class="requirement-content">
+                                <div class="requirement-header">
+                                    <div class="requirement-title">
+                                        <span class="lang-content fr active">Équipement de protection</span>
+                                        <span class="lang-content en">Protection equipment</span>
+                                    </div>
+                                </div>
+                                <div class="requirement-description">
+                                    <span class="lang-content fr active">
+                                        Couvertures, sangles et matériel de protection pour le transport
+                                    </span>
+                                    <span class="lang-content en">
+                                        Blankets, straps and protection material for transport
+                                    </span>
+                                </div>
+                                <div class="requirement-level" style="display: none;">
+                                    <div class="level-label">
+                                        <span class="lang-content fr active">Niveau d'exigence :</span>
+                                        <span class="lang-content en">Requirement level:</span>
+                                    </div>
+                                    <select class="level-select" name="requirement_equipment_level" onclick="event.stopPropagation()">
+                                        <option value="optional">Optionnel / Optional</option>
+                                        <option value="mandatory">Obligatoire / Mandatory</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="requirement_equipment" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Section -->
+                <div class="requirements-section">
+                    <h2 class="requirements-section-title">
+                        💪 <span class="lang-content fr active">Services et assistance</span>
+                        <span class="lang-content en">Services and assistance</span>
+                    </h2>
+                    <p class="requirements-section-description">
+                        <span class="lang-content fr active">Sélectionnez les services requis</span>
+                        <span class="lang-content en">Select required services</span>
+                    </p>
+
+                    <div class="requirements-grid">
+                        <div class="requirement-item" data-id="loading-help" onclick="toggleRequirement(this, event)">
+                            <div class="requirement-checkbox"></div>
+                            <div class="requirement-icon">💪</div>
+                            <div class="requirement-content">
+                                <div class="requirement-header">
+                                    <div class="requirement-title">
+                                        <span class="lang-content fr active">Aide au chargement/déchargement</span>
+                                        <span class="lang-content en">Loading/unloading assistance</span>
+                                    </div>
+                                </div>
+                                <div class="requirement-description">
+                                    <span class="lang-content fr active">
+                                        Le transporteur doit participer activement au chargement et déchargement des articles
+                                    </span>
+                                    <span class="lang-content en">
+                                        Carrier must actively participate in loading and unloading items
+                                    </span>
+                                </div>
+                                <div class="requirement-level" style="display: none;">
+                                    <div class="level-label">
+                                        <span class="lang-content fr active">Niveau d'exigence :</span>
+                                        <span class="lang-content en">Requirement level:</span>
+                                    </div>
+                                    <select class="level-select" name="requirement_loading_help_level" onclick="event.stopPropagation()">
+                                        <option value="optional">Optionnel / Optional</option>
+                                        <option value="mandatory">Obligatoire / Mandatory</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="requirement_loading_help" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Upload Section -->
+                <div class="image-upload-section">
+                    <h2 class="requirements-section-title" style="margin-bottom: 16px;">
+                        📸 <span class="lang-content fr active">Photos du colis</span>
+                        <span class="lang-content en">Package Photos</span>
+                    </h2>
+                    <p class="requirements-section-description">
+                        <span class="lang-content fr active">Ajoutez des photos pour aider les transporteurs à mieux évaluer votre demande</span>
+                        <span class="lang-content en">Add photos to help carriers better evaluate your request</span>
+                    </p>
+
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">
+                            <span class="lang-content fr active">Cliquez ou glissez-déposez vos images ici</span>
+                            <span class="lang-content en">Click or drag and drop your images here</span>
+                        </div>
+                        <div class="upload-hint">
+                            <span class="lang-content fr active">PNG, JPG ou JPEG jusqu'à 10MB chacune</span>
+                            <span class="lang-content en">PNG, JPG or JPEG up to 10MB each</span>
+                        </div>
+                        <input type="file" id="imageInput" name="images[]" multiple accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="image-previews" id="imagePreviews"></div>
+                </div>
+            </div>
+
+            <!-- Step 5: Price Simulator -->
+            <div class="form-section" id="step5">
                 <div class="simulator-section">
                     <div class="simulator-header">
                         <h2 class="simulator-title">
@@ -1618,8 +2115,8 @@
                 </div>
             </div>
 
-            <!-- Step 5: Budget & Options -->
-            <div class="form-section" id="step5">
+            <!-- Step 6: Budget & Options -->
+            <div class="form-section" id="step6">
                 <h2 style="margin-bottom: 24px;">
                     <span class="lang-content fr active">Budget et options</span>
                     <span class="lang-content en">Budget and options</span>
@@ -1724,8 +2221,8 @@
                 </div>
             </div>
 
-            <!-- Step 6: Payment & Confirmation -->
-            <div class="form-section" id="step6">
+            <!-- Step 7: Payment & Confirmation -->
+            <div class="form-section" id="step7">
                 <h2 style="margin-bottom: 24px;">
                     <span class="lang-content fr active">Paiement et confirmation</span>
                     <span class="lang-content en">Payment and confirmation</span>
@@ -1978,129 +2475,129 @@
                 </button>
             </div>
 
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <script>
-        // Global state
-        let currentStep = 1;
-        const totalSteps = 6;
-        let selectedBadges = [];
-        let selectedCategories = [];
-        let selectedSubcategories = {};
-        let selectedBudgetOption = null;
-        let selectedVehicle = null;
-        let selectedPaymentMethod = null;
-        let suggestedBudget = 85;
-        let packageCount = 1;
+<script>
+    // Global state
+    let currentStep = 1;
+    const totalSteps = 7;
+    let selectedBadges = [];
+    let selectedCategories = [];
+    let selectedSubcategories = {};
+    let selectedBudgetOption = null;
+    let selectedVehicle = null;
+    let selectedPaymentMethod = null;
+    let suggestedBudget = 85;
+    let packageCount = 1;
 
-        // Subcategories data for cotransport
-        const subcategoriesData = {
-            'documents': {
-                'fr': ['Passeports', 'Diplômes', 'Contrats', 'Factures', 'Documents administratifs', 'Livres', 'Magazines', 'Archives'],
-                'en': ['Passports', 'Diplomas', 'Contracts', 'Invoices', 'Administrative documents', 'Books', 'Magazines', 'Archives']
-            },
-            'furniture': {
-                'fr': ['Canapés', 'Tables', 'Chaises', 'Armoires', 'Lits', 'Bureaux', 'Étagères', 'Commodes', 'Matelas'],
-                'en': ['Sofas', 'Tables', 'Chairs', 'Wardrobes', 'Beds', 'Desks', 'Shelves', 'Dressers', 'Mattresses']
-            },
-            'appliances': {
-                'fr': ['Réfrigérateur', 'Lave-linge', 'Lave-vaisselle', 'Four', 'Micro-ondes', 'Télévision', 'Aspirateur', 'Climatiseur'],
-                'en': ['Refrigerator', 'Washing machine', 'Dishwasher', 'Oven', 'Microwave', 'Television', 'Vacuum cleaner', 'Air conditioner']
-            },
-            'boxes': {
-                'fr': ['Cartons standards', 'Cartons livre', 'Cartons vaisselle', 'Cartons vêtements', 'Cartons fragile', 'Valises'],
-                'en': ['Standard boxes', 'Book boxes', 'Dish boxes', 'Clothing boxes', 'Fragile boxes', 'Suitcases']
-            },
-            'sports': {
-                'fr': ['Vélos', 'Skis', 'Planches de surf', 'Équipement de gym', 'Trottinettes', 'Matériel de camping', 'Kayak'],
-                'en': ['Bikes', 'Skis', 'Surfboards', 'Gym equipment', 'Scooters', 'Camping gear', 'Kayak']
-            },
-            'other': {
-                'fr': ['Outils', 'Matériaux de construction', 'Pièces détachées', 'Instruments de musique', 'Œuvres d\'art', 'Plantes'],
-                'en': ['Tools', 'Building materials', 'Spare parts', 'Musical instruments', 'Artworks', 'Plants']
-            }
-        };
-
-        // Language switcher
-        function switchLanguage(lang) {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            event.currentTarget.classList.add('active');
-
-            document.querySelectorAll('.lang-content').forEach(content => {
-                content.classList.remove('active');
-                if (content.classList.contains(lang)) {
-                    content.classList.add('active');
-                }
-            });
-
-            localStorage.setItem('preferredLanguage', lang);
+    // Subcategories data for cotransport
+    const subcategoriesData = {
+        'documents': {
+            'fr': ['Passeports', 'Diplômes', 'Contrats', 'Factures', 'Documents administratifs', 'Livres', 'Magazines', 'Archives'],
+            'en': ['Passports', 'Diplomas', 'Contracts', 'Invoices', 'Administrative documents', 'Books', 'Magazines', 'Archives']
+        },
+        'furniture': {
+            'fr': ['Canapés', 'Tables', 'Chaises', 'Armoires', 'Lits', 'Bureaux', 'Étagères', 'Commodes', 'Matelas'],
+            'en': ['Sofas', 'Tables', 'Chairs', 'Wardrobes', 'Beds', 'Desks', 'Shelves', 'Dressers', 'Mattresses']
+        },
+        'appliances': {
+            'fr': ['Réfrigérateur', 'Lave-linge', 'Lave-vaisselle', 'Four', 'Micro-ondes', 'Télévision', 'Aspirateur', 'Climatiseur'],
+            'en': ['Refrigerator', 'Washing machine', 'Dishwasher', 'Oven', 'Microwave', 'Television', 'Vacuum cleaner', 'Air conditioner']
+        },
+        'boxes': {
+            'fr': ['Cartons standards', 'Cartons livre', 'Cartons vaisselle', 'Cartons vêtements', 'Cartons fragile', 'Valises'],
+            'en': ['Standard boxes', 'Book boxes', 'Dish boxes', 'Clothing boxes', 'Fragile boxes', 'Suitcases']
+        },
+        'sports': {
+            'fr': ['Vélos', 'Skis', 'Planches de surf', 'Équipement de gym', 'Trottinettes', 'Matériel de camping', 'Kayak'],
+            'en': ['Bikes', 'Skis', 'Surfboards', 'Gym equipment', 'Scooters', 'Camping gear', 'Kayak']
+        },
+        'other': {
+            'fr': ['Outils', 'Matériaux de construction', 'Pièces détachées', 'Instruments de musique', 'Œuvres d\'art', 'Plantes'],
+            'en': ['Tools', 'Building materials', 'Spare parts', 'Musical instruments', 'Artworks', 'Plants']
         }
+    };
 
-        // Initialize language
-        document.addEventListener('DOMContentLoaded', function() {
-            const preferredLang = localStorage.getItem('preferredLanguage') || 'fr';
-            const langBtn = document.querySelector(`.lang-btn[onclick="switchLanguage('${preferredLang}')"]`);
-            if (langBtn) {
-                langBtn.click();
-            }
-            calculateShippingPrice();
+    // Language switcher
+    function switchLanguage(lang) {
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
         });
 
-        // Toggle badge
-        function toggleBadge(element, badge) {
-            element.classList.toggle('selected');
-            if (element.classList.contains('selected')) {
-                if (!selectedBadges.includes(badge)) {
-                    selectedBadges.push(badge);
-                }
-            } else {
-                selectedBadges = selectedBadges.filter(b => b !== badge);
-            }
+        event.currentTarget.classList.add('active');
 
-            // Update hidden input
-            document.getElementById("selectedBadges").value = JSON.stringify(selectedBadges);
+        document.querySelectorAll('.lang-content').forEach(content => {
+            content.classList.remove('active');
+            if (content.classList.contains(lang)) {
+                content.classList.add('active');
+            }
+        });
+
+        localStorage.setItem('preferredLanguage', lang);
+    }
+
+    // Initialize language
+    document.addEventListener('DOMContentLoaded', function() {
+        const preferredLang = localStorage.getItem('preferredLanguage') || 'fr';
+        const langBtn = document.querySelector(`.lang-btn[onclick="switchLanguage('${preferredLang}')"]`);
+        if (langBtn) {
+            langBtn.click();
+        }
+        calculateShippingPrice();
+    });
+
+    // Toggle badge
+    function toggleBadge(element, badge) {
+        element.classList.toggle('selected');
+        if (element.classList.contains('selected')) {
+            if (!selectedBadges.includes(badge)) {
+                selectedBadges.push(badge);
+            }
+        } else {
+            selectedBadges = selectedBadges.filter(b => b !== badge);
         }
 
-        // Toggle category
-        function toggleCategory(element, categoryId) {
-            element.classList.toggle('selected');
-            const categoryName = element.querySelector('.category-name .lang-content.active').textContent.trim();
+        // Update hidden input
+        document.getElementById("selectedBadges").value = JSON.stringify(selectedBadges);
+    }
 
-            if (element.classList.contains('selected')) {
-                selectedCategories.push(categoryName);
-                showSubcategories(categoryId);
-            } else {
-                selectedCategories = selectedCategories.filter(c => c !== categoryId);
-                hideSubcategories(categoryId);
-            }
-            document.getElementById("selectedCategories").value = JSON.stringify(selectedCategories);
+    // Toggle category
+    function toggleCategory(element, categoryId) {
+        element.classList.toggle('selected');
+        const categoryName = element.querySelector('.category-name .lang-content.active').textContent.trim();
 
+        if (element.classList.contains('selected')) {
+            selectedCategories.push(categoryName);
+            showSubcategories(categoryId);
+        } else {
+            selectedCategories = selectedCategories.filter(c => c !== categoryId);
+            hideSubcategories(categoryId);
+        }
+        document.getElementById("selectedCategories").value = JSON.stringify(selectedCategories);
+
+    }
+
+    // Show subcategories
+    function showSubcategories(categoryId) {
+        const container = document.getElementById('subcategoriesContainer');
+        if (!container || !subcategoriesData[categoryId]) return;
+
+        const lang = localStorage.getItem('preferredLanguage') || 'fr';
+        const subcategories = subcategoriesData[categoryId][lang] || subcategoriesData[categoryId]['fr'];
+
+        const existingPanel = document.getElementById(`sub-${categoryId}`);
+        if (existingPanel) {
+            existingPanel.remove();
+            return;
         }
 
-        // Show subcategories
-        function showSubcategories(categoryId) {
-            const container = document.getElementById('subcategoriesContainer');
-            if (!container || !subcategoriesData[categoryId]) return;
-
-            const lang = localStorage.getItem('preferredLanguage') || 'fr';
-            const subcategories = subcategoriesData[categoryId][lang] || subcategoriesData[categoryId]['fr'];
-
-            const existingPanel = document.getElementById(`sub-${categoryId}`);
-            if (existingPanel) {
-                existingPanel.remove();
-                return;
-            }
-
-            const panelHTML = `
+        const panelHTML = `
                 <div class="subcategories-panel" id="sub-${categoryId}">
                     <div class="subcategories-title">
                         ${lang === 'fr' ? 'Précisez les sous-catégories pour ' : 'Specify subcategories for '} ${categoryId}:
@@ -2115,90 +2612,90 @@
                 </div>
             `;
 
-            container.insertAdjacentHTML('beforeend', panelHTML);
+        container.insertAdjacentHTML('beforeend', panelHTML);
+    }
+
+    // Hide subcategories
+    function hideSubcategories(categoryId) {
+        const panel = document.getElementById(`sub-${categoryId}`);
+        if (panel) {
+            panel.remove();
+        }
+        delete selectedSubcategories[categoryId];
+    }
+
+    // Toggle subcategory
+    function toggleSubcategory(element, categoryId, subcategory) {
+        element.classList.toggle('selected');
+
+        if (!selectedSubcategories[categoryId]) {
+            selectedSubcategories[categoryId] = [];
         }
 
-        // Hide subcategories
-        function hideSubcategories(categoryId) {
-            const panel = document.getElementById(`sub-${categoryId}`);
-            if (panel) {
-                panel.remove();
+        if (element.classList.contains('selected')) {
+            if (!selectedSubcategories[categoryId].includes(subcategory)) {
+                selectedSubcategories[categoryId].push(subcategory);
+                console.log("➕ Added:", subcategory, "to", categoryId);
             }
-            delete selectedSubcategories[categoryId];
+        } else {
+            selectedSubcategories[categoryId] = selectedSubcategories[categoryId].filter(s => s !== subcategory);
+
+            selectedSubcategories[categoryId] = selectedSubcategories[categoryId].filter(s => s !== subcategory);
+            console.log("➖ Removed:", subcategory, "from", categoryId);
+
+            if (selectedSubcategories[categoryId].length === 0) {
+                delete selectedSubcategories[categoryId];
+                console.log("🗑️ Removed empty category:", categoryId);
+            }
         }
 
-        // Toggle subcategory
-        function toggleSubcategory(element, categoryId, subcategory) {
-            element.classList.toggle('selected');
+        const hidden = document.getElementById("selectedSubcategories");
+        hidden.value = JSON.stringify(selectedSubcategories);
+        console.log("📥 Updated hidden input:", hidden.value);
+    }
 
-            if (!selectedSubcategories[categoryId]) {
-                selectedSubcategories[categoryId] = [];
-            }
-
-            if (element.classList.contains('selected')) {
-                if (!selectedSubcategories[categoryId].includes(subcategory)) {
-                    selectedSubcategories[categoryId].push(subcategory);
-                    console.log("➕ Added:", subcategory, "to", categoryId);
-                }
-            } else {
-                selectedSubcategories[categoryId] = selectedSubcategories[categoryId].filter(s => s !== subcategory);
-
-                selectedSubcategories[categoryId] = selectedSubcategories[categoryId].filter(s => s !== subcategory);
-                console.log("➖ Removed:", subcategory, "from", categoryId);
-
-                if (selectedSubcategories[categoryId].length === 0) {
-                    delete selectedSubcategories[categoryId];
-                    console.log("🗑️ Removed empty category:", categoryId);
-                }
-            }
-
-            const hidden = document.getElementById("selectedSubcategories");
-            hidden.value = JSON.stringify(selectedSubcategories);
-            console.log("📥 Updated hidden input:", hidden.value);
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('#dimensionsList .dimension-item')) {
+            buildPackagesJSON();
         }
+    });
 
-        document.addEventListener('input', function(e) {
-            if (e.target.closest('#dimensionsList .dimension-item')) {
-                buildPackagesJSON();
-            }
+    function buildPackagesJSON() {
+        const packages = [];
+        let totalWeight = 0;
+        let totalVolume = 0;
+        document.querySelectorAll('#dimensionsList .dimension-item').forEach(item => {
+            const length = item.querySelector('input[name="length"]').value;
+            const width  = item.querySelector('input[name="width"]').value;
+            const height = item.querySelector('input[name="height"]').value;
+            const weight = item.querySelector('input[name="weight"]').value;
+
+            totalWeight += parseFloat(weight);
+            totalVolume += parseFloat(length) * parseFloat(width) * parseFloat(height); // cm³
+
+            console.log(totalVolume);
+            console.log(totalWeight);
+
+            packages.push({
+                length: parseFloat(length) || 0,
+                width: parseFloat(width) || 0,
+                height: parseFloat(height) || 0,
+                weight: parseFloat(weight) || 0
+            });
         });
 
-        function buildPackagesJSON() {
-            const packages = [];
-            let totalWeight = 0;
-            let totalVolume = 0;
-            document.querySelectorAll('#dimensionsList .dimension-item').forEach(item => {
-                const length = item.querySelector('input[name="length"]').value;
-                const width  = item.querySelector('input[name="width"]').value;
-                const height = item.querySelector('input[name="height"]').value;
-                const weight = item.querySelector('input[name="weight"]').value;
+        document.getElementById('packages_json').value = JSON.stringify(packages);
+        document.getElementById('simWeight').value = totalWeight;
+        document.getElementById('simVolume').value = totalVolume;
+    }
 
-                totalWeight += parseFloat(weight);
-                totalVolume += parseFloat(length) * parseFloat(width) * parseFloat(height); // cm³
+    // Add package dimension
+    function addPackageDimension() {
+        packageCount++;
+        const dimensionsList = document.getElementById('dimensionsList');
+        const lang = localStorage.getItem('preferredLanguage') || 'fr';
 
-                console.log(totalVolume);
-                console.log(totalWeight);
-
-                packages.push({
-                    length: parseFloat(length) || 0,
-                    width: parseFloat(width) || 0,
-                    height: parseFloat(height) || 0,
-                    weight: parseFloat(weight) || 0
-                });
-            });
-
-            document.getElementById('packages_json').value = JSON.stringify(packages);
-            document.getElementById('simWeight').value = totalWeight;
-            document.getElementById('simVolume').value = totalVolume;
-        }
-
-        // Add package dimension
-        function addPackageDimension() {
-            packageCount++;
-            const dimensionsList = document.getElementById('dimensionsList');
-            const lang = localStorage.getItem('preferredLanguage') || 'fr';
-
-            const newDimension = `
+        const newDimension = `
                 <div class="dimension-item">
                     <label class="form-label">
                         <span class="lang-content ${lang} active">Colis ${packageCount}</span>
@@ -2214,366 +2711,369 @@
                 </div>
             `;
 
-            dimensionsList.insertAdjacentHTML('beforeend', newDimension);
+        dimensionsList.insertAdjacentHTML('beforeend', newDimension);
+    }
+
+    // Calculate shipping price
+    function calculateShippingPrice() {
+        const distance = parseFloat(document.getElementById('simDistance')?.value) || 100;
+        const weight = parseFloat(document.getElementById('simWeight')?.value) || 20;
+        const volume = parseFloat(document.getElementById('simVolume')?.value) || 0.5;
+        const transportType = document.getElementById('transportType')?.value || 'cotransport';
+        const urgency = document.getElementById('urgency')?.value || 'flexible';
+
+        // Base price calculation
+        let basePrice = 30;
+
+        // Transport type multipliers
+        const transportMultipliers = {
+            'cotransport': 1,
+            'dedicated': 2.5,
+            'groupage': 1.3
+        };
+
+        // Distance cost
+        let distanceCost = distance * 0.2;
+
+        // Weight/Volume cost (use the higher)
+        let weightCost = weight * 0.8;
+        let volumeCost = volume * 40;
+        let weightVolumeCost = Math.max(weightCost, volumeCost);
+
+        // Urgency multipliers
+        const urgencyMultipliers = {
+            'flexible': 1,
+            'normal': 1.2,
+            'express': 1.5,
+            'urgent': 2
+        };
+
+        // Additional services
+        let additionalServices = 0;
+        if (document.getElementById('homePickup')?.checked) additionalServices += 10;
+        if (document.getElementById('homeDelivery')?.checked) additionalServices += 10;
+        if (document.getElementById('needHelp')?.checked) additionalServices += 15;
+
+        // Calculate subtotal
+        let subtotal = (basePrice + distanceCost + weightVolumeCost) * transportMultipliers[transportType] * urgencyMultipliers[urgency];
+        subtotal += additionalServices;
+
+        // Commission
+        const commissionRate = subtotal > 100 ? 0.20 : 0.15;
+        const commission = subtotal * commissionRate;
+
+        // Transaction fees (average 1.5% if no method selected)
+        const transactionFeeRate = selectedPaymentMethod ? getTransactionFeeRate(selectedPaymentMethod) : 0.015;
+        const transactionFees = subtotal * transactionFeeRate;
+
+        suggestedBudget = Math.round(subtotal + commission + transactionFees);
+
+        // Update displays
+        document.getElementById('suggestedBudget').textContent = suggestedBudget + '€';
+        document.getElementById('suggestedBudgetOption').textContent = suggestedBudget + '€';
+
+        // Update price range
+        const minPrice = Math.round(suggestedBudget * 0.8);
+        const maxPrice = Math.round(suggestedBudget * 1.2);
+        const lang = localStorage.getItem('preferredLanguage') || 'fr';
+        document.getElementById('priceRange').innerHTML = lang === 'fr' ?
+            `Fourchette: ${minPrice}€ - ${maxPrice}€` :
+            `Range: €${minPrice} - €${maxPrice}`;
+
+        // Update breakdown
+        document.getElementById('baseTransport').textContent = Math.round(basePrice * transportMultipliers[transportType]) + '€';
+        document.getElementById('distanceCost').textContent = '+' + Math.round(distanceCost) + '€';
+        document.getElementById('weightVolumeCost').textContent = '+' + Math.round(weightVolumeCost) + '€';
+        document.getElementById('urgencyCost').textContent = urgencyMultipliers[urgency] > 1 ?
+            '+' + Math.round(subtotal * (urgencyMultipliers[urgency] - 1)) + '€' :
+            '+0€';
+        document.getElementById('additionalServices').textContent = '+' + additionalServices + '€';
+        document.getElementById('platformCommission').textContent = (commissionRate * 100) + '%';
+
+        // Add transaction fees to breakdown
+        const simTransactionFeesElement = document.getElementById('simTransactionFees');
+        if (simTransactionFeesElement) {
+            simTransactionFeesElement.textContent = Math.round(transactionFees * 10) / 10 + '€';
         }
 
-        // Calculate shipping price
-        function calculateShippingPrice() {
-            const distance = parseFloat(document.getElementById('simDistance')?.value) || 100;
-            const weight = parseFloat(document.getElementById('simWeight')?.value) || 20;
-            const volume = parseFloat(document.getElementById('simVolume')?.value) || 0.5;
-            const transportType = document.getElementById('transportType')?.value || 'cotransport';
-            const urgency = document.getElementById('urgency')?.value || 'flexible';
+        document.getElementById('totalCost').textContent = suggestedBudget + '€';
+        document.getElementById('jeconfiePrice').textContent = suggestedBudget + '€';
+        document.getElementById("suggested_fare").value = suggestedBudget;
+    }
 
-            // Base price calculation
-            let basePrice = 30;
+    // Select budget option
+    function selectBudgetOption(element, option) {
+        document.querySelectorAll('.price-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedBudgetOption = option;
 
-            // Transport type multipliers
-            const transportMultipliers = {
-                'cotransport': 1,
-                'dedicated': 2.5,
-                'groupage': 1.3
-            };
+        document.getElementById('budget_option').value = option;
 
-            // Distance cost
-            let distanceCost = distance * 0.2;
-
-            // Weight/Volume cost (use the higher)
-            let weightCost = weight * 0.8;
-            let volumeCost = volume * 40;
-            let weightVolumeCost = Math.max(weightCost, volumeCost);
-
-            // Urgency multipliers
-            const urgencyMultipliers = {
-                'flexible': 1,
-                'normal': 1.2,
-                'express': 1.5,
-                'urgent': 2
-            };
-
-            // Additional services
-            let additionalServices = 0;
-            if (document.getElementById('homePickup')?.checked) additionalServices += 10;
-            if (document.getElementById('homeDelivery')?.checked) additionalServices += 10;
-            if (document.getElementById('needHelp')?.checked) additionalServices += 15;
-
-            // Calculate subtotal
-            let subtotal = (basePrice + distanceCost + weightVolumeCost) * transportMultipliers[transportType] * urgencyMultipliers[urgency];
-            subtotal += additionalServices;
-
-            // Commission
-            const commissionRate = subtotal > 100 ? 0.20 : 0.15;
-            const commission = subtotal * commissionRate;
-
-            // Transaction fees (average 1.5% if no method selected)
-            const transactionFeeRate = selectedPaymentMethod ? getTransactionFeeRate(selectedPaymentMethod) : 0.015;
-            const transactionFees = subtotal * transactionFeeRate;
-
-            suggestedBudget = Math.round(subtotal + commission + transactionFees);
-
-            // Update displays
-            document.getElementById('suggestedBudget').textContent = suggestedBudget + '€';
-            document.getElementById('suggestedBudgetOption').textContent = suggestedBudget + '€';
-
-            // Update price range
-            const minPrice = Math.round(suggestedBudget * 0.8);
-            const maxPrice = Math.round(suggestedBudget * 1.2);
-            const lang = localStorage.getItem('preferredLanguage') || 'fr';
-            document.getElementById('priceRange').innerHTML = lang === 'fr' ?
-                `Fourchette: ${minPrice}€ - ${maxPrice}€` :
-                `Range: €${minPrice} - €${maxPrice}`;
-
-            // Update breakdown
-            document.getElementById('baseTransport').textContent = Math.round(basePrice * transportMultipliers[transportType]) + '€';
-            document.getElementById('distanceCost').textContent = '+' + Math.round(distanceCost) + '€';
-            document.getElementById('weightVolumeCost').textContent = '+' + Math.round(weightVolumeCost) + '€';
-            document.getElementById('urgencyCost').textContent = urgencyMultipliers[urgency] > 1 ?
-                '+' + Math.round(subtotal * (urgencyMultipliers[urgency] - 1)) + '€' :
-                '+0€';
-            document.getElementById('additionalServices').textContent = '+' + additionalServices + '€';
-            document.getElementById('platformCommission').textContent = (commissionRate * 100) + '%';
-
-            // Add transaction fees to breakdown
-            const simTransactionFeesElement = document.getElementById('simTransactionFees');
-            if (simTransactionFeesElement) {
-                simTransactionFeesElement.textContent = Math.round(transactionFees * 10) / 10 + '€';
-            }
-
-            document.getElementById('totalCost').textContent = suggestedBudget + '€';
-            document.getElementById('jeconfiePrice').textContent = suggestedBudget + '€';
-            document.getElementById("suggested_fare").value = suggestedBudget;
+        const customInput = document.getElementById('customBudgetInput');
+        if (option === 'custom') {
+            customInput.classList.add('active');
+        } else {
+            customInput.classList.remove('active');
         }
+    }
 
-        // Select budget option
-        function selectBudgetOption(element, option) {
-            document.querySelectorAll('.price-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            selectedBudgetOption = option;
+    // Select vehicle
+    function selectVehicle(element, type) {
+        document.querySelectorAll('.vehicle-type').forEach(v => {
+            v.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedVehicle = type;
 
-            document.getElementById('budget_option').value = option;
+        document.getElementById('vehicle_type_needed').value = type;
+    }
 
-            const customInput = document.getElementById('customBudgetInput');
-            if (option === 'custom') {
-                customInput.classList.add('active');
-            } else {
-                customInput.classList.remove('active');
-            }
-        }
+    // Select payment method
+    function selectPaymentMethod(element, method) {
+        // Remove selection from all methods
+        document.querySelectorAll('[onclick^="selectPaymentMethod"]').forEach(el => {
+            el.style.borderColor = 'var(--border)';
+            el.style.background = 'white';
+        });
 
-        // Select vehicle
-        function selectVehicle(element, type) {
-            document.querySelectorAll('.vehicle-type').forEach(v => {
-                v.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            selectedVehicle = type;
+        // Select current method
+        element.style.borderColor = 'var(--secondary)';
+        element.style.background = 'linear-gradient(135deg, #f0f9ff, #e0f2fe)';
+        selectedPaymentMethod = method;
 
-            document.getElementById('vehicle_type_needed').value = type;
-        }
+        // Show payment form
+        document.getElementById('paymentForm').style.display = 'block';
+        document.getElementById('payment_method').value = method;
 
-        // Select payment method
-        function selectPaymentMethod(element, method) {
-            // Remove selection from all methods
-            document.querySelectorAll('[onclick^="selectPaymentMethod"]').forEach(el => {
-                el.style.borderColor = 'var(--border)';
-                el.style.background = 'white';
-            });
+        // Update transaction fees
+        updateTransactionFees(method);
+    }
 
-            // Select current method
-            element.style.borderColor = 'var(--secondary)';
-            element.style.background = 'linear-gradient(135deg, #f0f9ff, #e0f2fe)';
-            selectedPaymentMethod = method;
+    // Update transaction fees based on payment method
+    function updateTransactionFees(method) {
+        const fees = {
+            'visa': 0.014,
+            'mastercard': 0.014,
+            'cb': 0.012,
+            'amex': 0.025,
+            'applepay': 0.015,
+            'googlepay': 0.015,
+            'paypal': 0.029,
+            'bank': 0
+        };
 
-            // Show payment form
-            document.getElementById('paymentForm').style.display = 'block';
-            document.getElementById('payment_method').value = method;
+        const budget = parseFloat(document.getElementById('finalBudget')?.textContent) || suggestedBudget;
+        const transactionFee = budget * (fees[method] || 0.015);
 
-            // Update transaction fees
-            updateTransactionFees(method);
-        }
+        document.getElementById('transactionFees').textContent = Math.round(transactionFee * 10) / 10 + '€';
 
-        // Update transaction fees based on payment method
-        function updateTransactionFees(method) {
-            const fees = {
-                'visa': 0.014,
-                'mastercard': 0.014,
-                'cb': 0.012,
-                'amex': 0.025,
-                'applepay': 0.015,
-                'googlepay': 0.015,
-                'paypal': 0.029,
-                'bank': 0
-            };
+        // Update total
+        const insurance = document.getElementById('insurance')?.value || 'standard';
+        let insuranceCost = insurance === 'standard' ? 10 : insurance === 'premium' ? 25 : 0;
+        const total = budget + insuranceCost + transactionFee;
 
-            const budget = parseFloat(document.getElementById('finalBudget')?.textContent) || suggestedBudget;
-            const transactionFee = budget * (fees[method] || 0.015);
+        document.getElementById('totalMaximum').textContent = Math.round(total * 10) / 10 + '€';
+    }
 
-            document.getElementById('transactionFees').textContent = Math.round(transactionFee * 10) / 10 + '€';
-
-            // Update total
-            const insurance = document.getElementById('insurance')?.value || 'standard';
-            let insuranceCost = insurance === 'standard' ? 10 : insurance === 'premium' ? 25 : 0;
-            const total = budget + insuranceCost + transactionFee;
-
-            document.getElementById('totalMaximum').textContent = Math.round(total * 10) / 10 + '€';
-        }
-
-        // Navigation
-        function nextStep() {
-            const eventObj = window.event;
-            if (eventObj) eventObj.preventDefault();
-            if (validateStep(currentStep)) {
-                if (currentStep < totalSteps) {
-                    document.getElementById(`step${currentStep}`).classList.remove('active');
-                    currentStep++;
-                    document.getElementById(`step${currentStep}`).classList.add('active');
-                    updateProgress();
-
-                    if (currentStep === 4) {
-                        calculateShippingPrice();
-                    } else if (currentStep === 6) {
-                        generateSummary();
-                    }
-                }
-                else {
-                    // Validate and submit
-                    if (validateFinalStep()) {
-                        submitRequest();
-                    }
-                }
-            }
-        }
-
-        function previousStep() {
-            const eventObj = window.event;
-            if (eventObj) eventObj.preventDefault();
-            if (currentStep > 1) {
+    // Navigation
+    function nextStep() {
+        const eventObj = window.event;
+        if (eventObj) eventObj.preventDefault();
+        if (validateStep(currentStep)) {
+            if (currentStep < totalSteps) {
                 document.getElementById(`step${currentStep}`).classList.remove('active');
-                currentStep--;
+                currentStep++;
                 document.getElementById(`step${currentStep}`).classList.add('active');
                 updateProgress();
-            }
-        }
 
-        function updateProgress() {
-            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
-            document.getElementById('progressLine').style.width = `${progress}%`;
-
-            // Update step indicators
-            document.querySelectorAll('.step').forEach((step, index) => {
-                if (index < currentStep - 1) {
-                    step.classList.add('completed');
-                    step.classList.remove('active');
-                } else if (index === currentStep - 1) {
-                    step.classList.add('active');
-                    step.classList.remove('completed');
-                } else {
-                    step.classList.remove('active', 'completed');
+                if (currentStep === 4) {
+                    calculateShippingPrice();
+                } else if (currentStep === 6) {
+                    generateSummary();
                 }
-            });
+            }
+            else {
+                // Validate and submit
+                if (validateFinalStep()) {
+                    submitRequest();
+                }
+            }
+        }
+    }
 
-            // Update button text
-            const btn = document.getElementById('nextBtn');
-            if (currentStep === totalSteps) {
-                btn.innerHTML = '✅ Publier la demande';
-                btn.classList.add('btn-success');
+    function previousStep() {
+        const eventObj = window.event;
+        if (eventObj) eventObj.preventDefault();
+        if (currentStep > 1) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            updateProgress();
+        }
+    }
+
+    function updateProgress() {
+        const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        document.getElementById('progressLine').style.width = `${progress}%`;
+
+        // Update step indicators
+        document.querySelectorAll('.step').forEach((step, index) => {
+            if (index < currentStep - 1) {
+                step.classList.add('completed');
+                step.classList.remove('active');
+            } else if (index === currentStep - 1) {
+                step.classList.add('active');
+                step.classList.remove('completed');
             } else {
-                const lang = localStorage.getItem('preferredLanguage') || 'fr';
-                btn.innerHTML = lang === 'fr' ? 'Continuer →' : 'Continue →';
-                btn.classList.remove('btn-success');
+                step.classList.remove('active', 'completed');
             }
-        }
+        });
 
-        function validateStep(step) {
+        // Update button text
+        const btn = document.getElementById('nextBtn');
+        if (currentStep === totalSteps) {
+            btn.innerHTML = '✅ Publier la demande';
+            btn.classList.add('btn-success');
+        } else {
             const lang = localStorage.getItem('preferredLanguage') || 'fr';
+            btn.innerHTML = lang === 'fr' ? 'Continuer →' : 'Continue →';
+            btn.classList.remove('btn-success');
+        }
+    }
 
-            switch(step) {
-                case 1: // Package validation
-                    if (selectedCategories.length === 0) {
-                        showError(lang === 'fr' ? 'Veuillez sélectionner au moins un type de colis' : 'Please select at least one package type');
-                        return false;
-                    }
-                    const description = document.getElementById('packageDescription')?.value;
-                    if (!description || description.length < 10) {
-                        showError(lang === 'fr' ? 'Veuillez décrire votre envoi (min. 10 caractères)' : 'Please describe your shipment (min. 10 characters)');
-                        return false;
-                    }
-                    const packageValue = document.getElementById('packageValue')?.value;
-                    if (!packageValue || packageValue < 1) {
-                        showError(lang === 'fr' ? 'Veuillez indiquer la valeur de votre envoi' : 'Please indicate the value of your shipment');
-                        return false;
-                    }
-                    // Check dimensions
-                    const dimensions = document.querySelectorAll('#dimensionsList input[required]');
-                    for (let input of dimensions) {
-                        if (!input.value) {
-                            showError(lang === 'fr' ? 'Veuillez remplir toutes les dimensions des colis' : 'Please fill in all package dimensions');
-                            return false;
-                        }
-                    }
-                    break;
+    function validateStep(step) {
+        const lang = localStorage.getItem('preferredLanguage') || 'fr';
 
-                case 2: // Route validation
-                    const pickupCity = document.getElementById('pickupCity')?.value;
-                    const deliveryCity = document.getElementById('deliveryCity')?.value;
-                    const pickupDate = document.getElementById('pickupDate')?.value;
-                    const deliveryDate = document.getElementById('deliveryDate')?.value;
+        switch(step) {
+            case 1: // Package validation
+                if (selectedCategories.length === 0) {
+                    showError(lang === 'fr' ? 'Veuillez sélectionner au moins un type de colis' : 'Please select at least one package type');
+                    return false;
+                }
+                const description = document.getElementById('packageDescription')?.value;
+                if (!description || description.length < 10) {
+                    showError(lang === 'fr' ? 'Veuillez décrire votre envoi (min. 10 caractères)' : 'Please describe your shipment (min. 10 characters)');
+                    return false;
+                }
+                const packageValue = document.getElementById('packageValue')?.value;
+                if (!packageValue || packageValue < 1) {
+                    showError(lang === 'fr' ? 'Veuillez indiquer la valeur de votre envoi' : 'Please indicate the value of your shipment');
+                    return false;
+                }
+                // Check dimensions
+                const dimensions = document.querySelectorAll('#dimensionsList input[required]');
+                for (let input of dimensions) {
+                    if (!input.value) {
+                        showError(lang === 'fr' ? 'Veuillez remplir toutes les dimensions des colis' : 'Please fill in all package dimensions');
+                        return false;
+                    }
+                }
+                break;
 
-                    if (!pickupCity || !deliveryCity) {
-                        showError(lang === 'fr' ? 'Veuillez remplir les villes de départ et d\'arrivée' : 'Please fill in pickup and delivery cities');
-                        return false;
-                    }
-                    if (!pickupDate || !deliveryDate) {
-                        showError(lang === 'fr' ? 'Veuillez remplir les dates souhaitées' : 'Please fill in desired dates');
-                        return false;
-                    }
-                    // Check if dates are in the future
-                    if (new Date(pickupDate) <= new Date()) {
-                        showError(lang === 'fr' ? 'La date de prise en charge doit être dans le futur' : 'Pickup date must be in the future');
-                        return false;
-                    }
-                    break;
+            case 2: // Route validation
+                const pickupCity = document.getElementById('pickupCity')?.value;
+                const deliveryCity = document.getElementById('deliveryCity')?.value;
+                const pickupDate = document.getElementById('pickupDate')?.value;
+                const deliveryDate = document.getElementById('deliveryDate')?.value;
 
-                case 3: // Recipient validation
-                    const recipientName = document.getElementById('recipientName')?.value;
-                    const recipientPhone = document.getElementById('recipientPhone')?.value;
+                if (!pickupCity || !deliveryCity) {
+                    showError(lang === 'fr' ? 'Veuillez remplir les villes de départ et d\'arrivée' : 'Please fill in pickup and delivery cities');
+                    return false;
+                }
+                if (!pickupDate || !deliveryDate) {
+                    showError(lang === 'fr' ? 'Veuillez remplir les dates souhaitées' : 'Please fill in desired dates');
+                    return false;
+                }
+                // Check if dates are in the future
+                if (new Date(pickupDate) <= new Date()) {
+                    showError(lang === 'fr' ? 'La date de prise en charge doit être dans le futur' : 'Pickup date must be in the future');
+                    return false;
+                }
+                break;
 
-                    if (!recipientName) {
-                        showError(lang === 'fr' ? 'Veuillez indiquer le nom du destinataire' : 'Please provide recipient name');
+            case 3: // Recipient validation
+                const recipientName = document.getElementById('recipientName')?.value;
+                const recipientPhone = document.getElementById('recipientPhone')?.value;
+
+                if (!recipientName) {
+                    showError(lang === 'fr' ? 'Veuillez indiquer le nom du destinataire' : 'Please provide recipient name');
+                    return false;
+                }
+                if (!recipientPhone) {
+                    showError(lang === 'fr' ? 'Veuillez indiquer le téléphone du destinataire' : 'Please provide recipient phone');
+                    return false;
+                }
+                break;
+
+            case 4: // Requirements - optional, no validation needed
+                break;
+
+            case 6: // Budget validation
+                if (!selectedBudgetOption) {
+                    showError(lang === 'fr' ? 'Veuillez choisir une option de budget' : 'Please choose a budget option');
+                    return false;
+                }
+                if (selectedBudgetOption === 'custom') {
+                    const customBudget = document.getElementById('customBudget')?.value;
+                    if (!customBudget || customBudget < 1) {
+                        showError(lang === 'fr' ? 'Veuillez entrer un budget valide' : 'Please enter a valid budget');
                         return false;
                     }
-                    if (!recipientPhone) {
-                        showError(lang === 'fr' ? 'Veuillez indiquer le téléphone du destinataire' : 'Please provide recipient phone');
-                        return false;
-                    }
-                    break;
-
-                case 5: // Budget validation
-                    if (!selectedBudgetOption) {
-                        showError(lang === 'fr' ? 'Veuillez choisir une option de budget' : 'Please choose a budget option');
-                        return false;
-                    }
-                    if (selectedBudgetOption === 'custom') {
-                        const customBudget = document.getElementById('customBudget')?.value;
-                        if (!customBudget || customBudget < 1) {
-                            showError(lang === 'fr' ? 'Veuillez entrer un budget valide' : 'Please enter a valid budget');
-                            return false;
-                        }
-                    }
-                    break;
-            }
-
-            return true;
+                }
+                break;
         }
 
-        function validateFinalStep() {
-            const lang = localStorage.getItem('preferredLanguage') || 'fr';
+        return true;
+    }
 
-            // Check expiration date
-            const expiration = document.getElementById('requestExpiration')?.value;
-            if (!expiration) {
-                showError(lang === 'fr' ? 'Veuillez définir une date d\'expiration pour la demande' : 'Please set an expiration date for the request');
-                return false;
-            }
+    function validateFinalStep() {
+        const lang = localStorage.getItem('preferredLanguage') || 'fr';
 
-            // Check if expiration is in the future
-            if (new Date(expiration) <= new Date()) {
-                showError(lang === 'fr' ? 'La date d\'expiration doit être dans le futur' : 'Expiration date must be in the future');
-                return false;
-            }
-
-            // Check payment method
-            if (!selectedPaymentMethod) {
-                showError(lang === 'fr' ? 'Veuillez choisir un mode de paiement' : 'Please choose a payment method');
-                return false;
-            }
-
-            // Check cardholder info
-            const cardholderName = document.getElementById('cardholderName')?.value;
-            const billingEmail = document.getElementById('billingEmail')?.value;
-            if (!cardholderName || !billingEmail) {
-                showError(lang === 'fr' ? 'Veuillez remplir les informations de paiement' : 'Please fill in payment information');
-                return false;
-            }
-
-            // Check terms acceptance
-            if (!document.getElementById('acceptTerms')?.checked) {
-                showError(lang === 'fr' ? 'Veuillez accepter les conditions générales' : 'Please accept the terms and conditions');
-                return false;
-            }
-
-            return true;
+        // Check expiration date
+        const expiration = document.getElementById('requestExpiration')?.value;
+        if (!expiration) {
+            showError(lang === 'fr' ? 'Veuillez définir une date d\'expiration pour la demande' : 'Please set an expiration date for the request');
+            return false;
         }
 
-        function showError(message) {
-            // Create or update error message
-            let errorDiv = document.getElementById('validationError');
-            if (!errorDiv) {
-                errorDiv = document.createElement('div');
-                errorDiv.id = 'validationError';
-                errorDiv.style.cssText = `
+        // Check if expiration is in the future
+        if (new Date(expiration) <= new Date()) {
+            showError(lang === 'fr' ? 'La date d\'expiration doit être dans le futur' : 'Expiration date must be in the future');
+            return false;
+        }
+
+        // Check payment method
+        if (!selectedPaymentMethod) {
+            showError(lang === 'fr' ? 'Veuillez choisir un mode de paiement' : 'Please choose a payment method');
+            return false;
+        }
+
+        // Check cardholder info
+        const cardholderName = document.getElementById('cardholderName')?.value;
+        const billingEmail = document.getElementById('billingEmail')?.value;
+        if (!cardholderName || !billingEmail) {
+            showError(lang === 'fr' ? 'Veuillez remplir les informations de paiement' : 'Please fill in payment information');
+            return false;
+        }
+
+        // Check terms acceptance
+        if (!document.getElementById('acceptTerms')?.checked) {
+            showError(lang === 'fr' ? 'Veuillez accepter les conditions générales' : 'Please accept the terms and conditions');
+            return false;
+        }
+
+        return true;
+    }
+
+    function showError(message) {
+        // Create or update error message
+        let errorDiv = document.getElementById('validationError');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.id = 'validationError';
+            errorDiv.style.cssText = `
                     position: fixed;
                     top: 100px;
                     right: 20px;
@@ -2586,44 +3086,44 @@
                     animation: slideIn 0.3s ease;
                     max-width: 400px;
                 `;
-                document.body.appendChild(errorDiv);
-            }
-
-            errorDiv.textContent = '⚠️ ' + message;
-
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                if (errorDiv) {
-                    errorDiv.remove();
-                }
-            }, 5000);
+            document.body.appendChild(errorDiv);
         }
 
-        async function submitRequest() {
-            const eventObj = window.event;
-            if (eventObj) eventObj.preventDefault();
+        errorDiv.textContent = '⚠️ ' + message;
 
-            const lang = localStorage.getItem('preferredLanguage') || 'fr';
-            const form = document.getElementById('create_offer_form');
-            const formData = new FormData(form);
-            const url = form.action;
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }, 5000);
+    }
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                    },
-                    body: formData
-                });
+    async function submitRequest() {
+        const eventObj = window.event;
+        if (eventObj) eventObj.preventDefault();
 
-                const data = await response.json();
+        const lang = localStorage.getItem('preferredLanguage') || 'fr';
+        const form = document.getElementById('create_offer_form');
+        const formData = new FormData(form);
+        const url = form.action;
 
-                if (!response.ok || data.status === 'error') {
-                    console.warn("❌ Validation errors:", data.errors);
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            });
 
-                    const errorDiv = document.createElement('div');
-                    errorDiv.style.cssText = `
+            const data = await response.json();
+
+            if (!response.ok || data.status === 'error') {
+                console.warn("❌ Validation errors:", data.errors);
+
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
                         position: fixed;
                         top: 100px;
                         right: 20px;
@@ -2637,26 +3137,26 @@
                         max-width: 400px;
                     `;
 
-                    // Convert Laravel error bag to readable HTML list
-                    const errorMessages = Object.values(data.errors || {})
-                        .flat()
-                        .map(msg => `<li>${msg}</li>`)
-                        .join('');
+                // Convert Laravel error bag to readable HTML list
+                const errorMessages = Object.values(data.errors || {})
+                    .flat()
+                    .map(msg => `<li>${msg}</li>`)
+                    .join('');
 
-                    errorDiv.innerHTML = `
+                errorDiv.innerHTML = `
                 <strong>${lang === 'fr' ? '❌ Erreurs de validation :' : '❌ Validation errors:'}</strong>
                 <ul>${errorMessages}</ul>
             `;
-                    document.body.appendChild(errorDiv);
-                    setTimeout(() => errorDiv.remove(), 6000);
-                    return;
-                }
+                document.body.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 6000);
+                return;
+            }
 
-                console.log("✅ Success:", data);
+            console.log("✅ Success:", data);
 
-                // ✅ Success Toast
-                const successDiv = document.createElement('div');
-                successDiv.style.cssText = `
+            // ✅ Success Toast
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
                     position: fixed;
                     top: 100px;
                     right: 20px;
@@ -2669,20 +3169,20 @@
                     animation: slideIn 0.3s ease;
                     max-width: 400px;
                 `;
-                successDiv.innerHTML = lang === 'fr'
-                    ? '✅ Demande publiée avec succès !<br>📧 Une facture a été envoyée à votre email.<br>⏰ Les transporteurs vont vous contacter sous 24h.'
-                    : '✅ Request published successfully!<br>📧 An invoice has been sent to your email.<br>⏰ Carriers will contact you within 24h.';
-                document.body.appendChild(successDiv);
+            successDiv.innerHTML = lang === 'fr'
+                ? '✅ Demande publiée avec succès !<br>📧 Une facture a été envoyée à votre email.<br>⏰ Les transporteurs vont vous contacter sous 24h.'
+                : '✅ Request published successfully!<br>📧 An invoice has been sent to your email.<br>⏰ Carriers will contact you within 24h.';
+            document.body.appendChild(successDiv);
 
-                // Redirect after 4s
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 4000);
+            // Redirect after 4s
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 4000);
 
-            } catch (error) {
-                console.error("❌ Error:", error);
-                const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = `
+        } catch (error) {
+            console.error("❌ Error:", error);
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
                     position: fixed;
                     top: 100px;
                     right: 20px;
@@ -2695,17 +3195,17 @@
                     animation: slideIn 0.3s ease;
                     max-width: 400px;
                 `;
-                errorDiv.innerHTML = lang === 'fr'
-                    ? '❌ Une erreur est survenue. Veuillez réessayer.'
-                    : '❌ An error occurred. Please try again.';
-                document.body.appendChild(errorDiv);
-                setTimeout(() => errorDiv.remove(), 4000);
-            }
+            errorDiv.innerHTML = lang === 'fr'
+                ? '❌ Une erreur est survenue. Veuillez réessayer.'
+                : '❌ An error occurred. Please try again.';
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 4000);
         }
+    }
 
-        function showErrorToast(lang) {
-            const errorDiv = document.createElement('div');
-            errorDiv.style.cssText = `
+    function showErrorToast(lang) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
                 position: fixed;
                 top: 100px;
                 right: 20px;
@@ -2718,66 +3218,66 @@
                 animation: slideIn 0.3s ease;
                 max-width: 400px;
             `;
-            errorDiv.innerHTML = lang === 'fr'
-                ? '❌ Une erreur est survenue. Veuillez réessayer.'
-                : '❌ An error occurred. Please try again.';
-            document.body.appendChild(errorDiv);
+        errorDiv.innerHTML = lang === 'fr'
+            ? '❌ Une erreur est survenue. Veuillez réessayer.'
+            : '❌ An error occurred. Please try again.';
+        document.body.appendChild(errorDiv);
 
-            setTimeout(() => errorDiv.remove(), 4000);
+        setTimeout(() => errorDiv.remove(), 4000);
+    }
+
+    function generateSummary() {
+        const finalBudget = selectedBudgetOption === 'custom' ?
+            document.getElementById('customBudget')?.value || suggestedBudget :
+            suggestedBudget;
+        const commissionRate = finalBudget > 100 ? 0.20 : 0.15;
+        const commission = Math.round(finalBudget * commissionRate);
+        const insurance = document.getElementById('insurance')?.value || 'standard';
+        let insuranceCost = 0;
+        let insuranceText = '';
+
+        switch(insurance) {
+            case 'basic':
+                insuranceText = 'Basique (250€) - Inclus';
+                break;
+            case 'standard':
+                insuranceText = 'Standard (1000€) +10€';
+                insuranceCost = 10;
+                break;
+            case 'premium':
+                insuranceText = 'Premium (5000€) +25€';
+                insuranceCost = 25;
+                break;
         }
 
-        function generateSummary() {
-            const finalBudget = selectedBudgetOption === 'custom' ?
-                document.getElementById('customBudget')?.value || suggestedBudget :
-                suggestedBudget;
-            const commissionRate = finalBudget > 100 ? 0.20 : 0.15;
-            const commission = Math.round(finalBudget * commissionRate);
-            const insurance = document.getElementById('insurance')?.value || 'standard';
-            let insuranceCost = 0;
-            let insuranceText = '';
+        // Calculate transaction fees (average 1.5% if no method selected yet)
+        const transactionFeeRate = selectedPaymentMethod ? getTransactionFeeRate(selectedPaymentMethod) : 0.015;
+        const transactionFees = finalBudget * transactionFeeRate;
+        const total = parseFloat(finalBudget) + insuranceCost + transactionFees;
 
-            switch(insurance) {
-                case 'basic':
-                    insuranceText = 'Basique (250€) - Inclus';
-                    break;
-                case 'standard':
-                    insuranceText = 'Standard (1000€) +10€';
-                    insuranceCost = 10;
-                    break;
-                case 'premium':
-                    insuranceText = 'Premium (5000€) +25€';
-                    insuranceCost = 25;
-                    break;
-            }
+        // Update financial display
+        document.getElementById('finalBudget').textContent = finalBudget + '€';
+        document.getElementById('finalCommissionRate').textContent = (commissionRate * 100) + '%';
+        document.getElementById('commissionAmount').textContent = commission + '€';
+        document.getElementById('finalInsurance').textContent = insuranceText;
+        document.getElementById('transactionFees').textContent = Math.round(transactionFees * 10) / 10 + '€';
+        document.getElementById('totalMaximum').textContent = Math.round(total * 10) / 10 + '€';
 
-            // Calculate transaction fees (average 1.5% if no method selected yet)
-            const transactionFeeRate = selectedPaymentMethod ? getTransactionFeeRate(selectedPaymentMethod) : 0.015;
-            const transactionFees = finalBudget * transactionFeeRate;
-            const total = parseFloat(finalBudget) + insuranceCost + transactionFees;
+        // Generate summary content
+        const summary = document.getElementById('requestSummary');
+        if (summary) {
+            const badges = selectedBadges.map(b => {
+                switch(b) {
+                    case 'urgent': return '🚨 URGENT';
+                    case 'professional': return '💼 Professionnel';
+                    case 'personal': return '👤 Particulier';
+                    default: return b;
+                }
+            }).join(', ');
 
-            // Update financial display
-            document.getElementById('finalBudget').textContent = finalBudget + '€';
-            document.getElementById('finalCommissionRate').textContent = (commissionRate * 100) + '%';
-            document.getElementById('commissionAmount').textContent = commission + '€';
-            document.getElementById('finalInsurance').textContent = insuranceText;
-            document.getElementById('transactionFees').textContent = Math.round(transactionFees * 10) / 10 + '€';
-            document.getElementById('totalMaximum').textContent = Math.round(total * 10) / 10 + '€';
+            const expiration = document.getElementById('pickupDate')?.value || 'À définir';
 
-            // Generate summary content
-            const summary = document.getElementById('requestSummary');
-            if (summary) {
-                const badges = selectedBadges.map(b => {
-                    switch(b) {
-                        case 'urgent': return '🚨 URGENT';
-                        case 'professional': return '💼 Professionnel';
-                        case 'personal': return '👤 Particulier';
-                        default: return b;
-                    }
-                }).join(', ');
-
-                const expiration = document.getElementById('pickupDate')?.value || 'À définir';
-
-                summary.innerHTML = `
+            summary.innerHTML = `
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div>
                             ${badges ? `<p><strong>Type:</strong> ${badges}</p>` : ''}
@@ -2803,309 +3303,420 @@
                         </div>
                     </div>
                 `;
+        }
+    }
+
+    // Get transaction fee rate based on payment method
+    function getTransactionFeeRate(method) {
+        const fees = {
+            'visa': 0.014,
+            'mastercard': 0.014,
+            'cb': 0.012,
+            'amex': 0.025,
+            'applepay': 0.015,
+            'googlepay': 0.015,
+            'paypal': 0.029,
+            'bank': 0
+        };
+        return fees[method] || 0.015;
+    }
+</script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const pickup_date = document.getElementById("pickupDate");
+        const delivery_date = document.getElementById("deliveryDate");
+        const today = flatpickr.formatDate(new Date(), "Y-m-d");
+
+        let pendingDate = today;
+        let confirmedDate = today;
+        pickup_date.value = today;
+        delivery_date.value = today;
+
+        flatpickr("#pickupDate", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            clickOpens: true,
+            closeOnSelect: false,
+            static: true,
+            defaultDate: today, // ✅ also sets flatpickr default
+            onChange: function (selectedDates, dateStr, instance) {
+                // Store temporary date, don't commit
+                pendingDate = dateStr;
+            },
+            onClose: function (selectedDates, dateStr, fp) {
+                // Always restore confirmed date if not explicitly saved
+                fp.setDate(confirmedDate, true);
+                pendingDate = confirmedDate;
+            },
+            onReady: function (_, __, fp) {
+                // Add footer buttons
+                const footer = document.createElement("div");
+                footer.className = "flatpickr-footer";
+                footer.innerHTML = `
+            <button type="button" class="fp-btn cancel">Cancel</button>
+            <button type="button" class="fp-btn select">Select</button>
+        `;
+                fp.calendarContainer.appendChild(footer);
+
+                // Cancel → restore confirmed
+                footer.querySelector(".cancel").addEventListener("click", () => {
+                    fp.setDate(confirmedDate, true);
+                    pendingDate = confirmedDate;
+                    fp.close();
+                });
+
+                // Select → confirm pending date
+                footer.querySelector(".select").addEventListener("click", () => {
+                    if (pendingDate) {
+                        confirmedDate = pendingDate;
+                        fp.setDate(confirmedDate, true);
+                    }
+                    fp.close();
+                });
             }
-        }
-
-        // Get transaction fee rate based on payment method
-        function getTransactionFeeRate(method) {
-            const fees = {
-                'visa': 0.014,
-                'mastercard': 0.014,
-                'cb': 0.012,
-                'amex': 0.025,
-                'applepay': 0.015,
-                'googlepay': 0.015,
-                'paypal': 0.029,
-                'bank': 0
-            };
-            return fees[method] || 0.015;
-        }
-    </script>
-
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const pickup_date = document.getElementById("pickupDate");
-            const delivery_date = document.getElementById("deliveryDate");
-            const today = flatpickr.formatDate(new Date(), "Y-m-d");
-
-            let pendingDate = today;
-            let confirmedDate = today;
-            pickup_date.value = today;
-            delivery_date.value = today;
-
-            flatpickr("#pickupDate", {
-                enableTime: false,
-                dateFormat: "Y-m-d",
-                minDate: "today",
-                clickOpens: true,
-                closeOnSelect: false,
-                static: true,
-                defaultDate: today, // ✅ also sets flatpickr default
-                onChange: function (selectedDates, dateStr, instance) {
-                    // Store temporary date, don't commit
-                    pendingDate = dateStr;
-                },
-                onClose: function (selectedDates, dateStr, fp) {
-                    // Always restore confirmed date if not explicitly saved
-                    fp.setDate(confirmedDate, true);
-                    pendingDate = confirmedDate;
-                },
-                onReady: function (_, __, fp) {
-                    // Add footer buttons
-                    const footer = document.createElement("div");
-                    footer.className = "flatpickr-footer";
-                    footer.innerHTML = `
+        });
+        flatpickr("#deliveryDate", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            clickOpens: true,
+            closeOnSelect: false,
+            static: true,
+            defaultDate: today, // ✅ also sets flatpickr default
+            onChange: function (selectedDates, dateStr, instance) {
+                // Store temporary date, don't commit
+                pendingDate = dateStr;
+            },
+            onClose: function (selectedDates, dateStr, fp) {
+                // Always restore confirmed date if not explicitly saved
+                fp.setDate(confirmedDate, true);
+                pendingDate = confirmedDate;
+            },
+            onReady: function (_, __, fp) {
+                // Add footer buttons
+                const footer = document.createElement("div");
+                footer.className = "flatpickr-footer";
+                footer.innerHTML = `
             <button type="button" class="fp-btn cancel">Cancel</button>
             <button type="button" class="fp-btn select">Select</button>
         `;
-                    fp.calendarContainer.appendChild(footer);
+                fp.calendarContainer.appendChild(footer);
 
-                    // Cancel → restore confirmed
-                    footer.querySelector(".cancel").addEventListener("click", () => {
-                        fp.setDate(confirmedDate, true);
-                        pendingDate = confirmedDate;
-                        fp.close();
-                    });
-
-                    // Select → confirm pending date
-                    footer.querySelector(".select").addEventListener("click", () => {
-                        if (pendingDate) {
-                            confirmedDate = pendingDate;
-                            fp.setDate(confirmedDate, true);
-                        }
-                        fp.close();
-                    });
-                }
-            });
-            flatpickr("#deliveryDate", {
-                enableTime: false,
-                dateFormat: "Y-m-d",
-                minDate: "today",
-                clickOpens: true,
-                closeOnSelect: false,
-                static: true,
-                defaultDate: today, // ✅ also sets flatpickr default
-                onChange: function (selectedDates, dateStr, instance) {
-                    // Store temporary date, don't commit
-                    pendingDate = dateStr;
-                },
-                onClose: function (selectedDates, dateStr, fp) {
-                    // Always restore confirmed date if not explicitly saved
+                // Cancel → restore confirmed
+                footer.querySelector(".cancel").addEventListener("click", () => {
                     fp.setDate(confirmedDate, true);
                     pendingDate = confirmedDate;
-                },
-                onReady: function (_, __, fp) {
-                    // Add footer buttons
-                    const footer = document.createElement("div");
-                    footer.className = "flatpickr-footer";
-                    footer.innerHTML = `
+                    fp.close();
+                });
+
+                // Select → confirm pending date
+                footer.querySelector(".select").addEventListener("click", () => {
+                    if (pendingDate) {
+                        confirmedDate = pendingDate;
+                        fp.setDate(confirmedDate, true);
+                    }
+                    fp.close();
+                });
+            }
+        });
+        flatpickr("#requestExpiration", {
+            enableTime: true,
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            clickOpens: true,
+            closeOnSelect: false,
+            static: true,
+            defaultDate: today, // ✅ also sets flatpickr default
+            onChange: function (selectedDates, dateStr, instance) {
+                // Store temporary date, don't commit
+                pendingDate = dateStr;
+            },
+            onClose: function (selectedDates, dateStr, fp) {
+                // Always restore confirmed date if not explicitly saved
+                fp.setDate(confirmedDate, true);
+                pendingDate = confirmedDate;
+            },
+            onReady: function (_, __, fp) {
+                // Add footer buttons
+                const footer = document.createElement("div");
+                footer.className = "flatpickr-footer";
+                footer.innerHTML = `
             <button type="button" class="fp-btn cancel">Cancel</button>
             <button type="button" class="fp-btn select">Select</button>
         `;
-                    fp.calendarContainer.appendChild(footer);
+                fp.calendarContainer.appendChild(footer);
 
-                    // Cancel → restore confirmed
-                    footer.querySelector(".cancel").addEventListener("click", () => {
-                        fp.setDate(confirmedDate, true);
-                        pendingDate = confirmedDate;
-                        fp.close();
-                    });
-
-                    // Select → confirm pending date
-                    footer.querySelector(".select").addEventListener("click", () => {
-                        if (pendingDate) {
-                            confirmedDate = pendingDate;
-                            fp.setDate(confirmedDate, true);
-                        }
-                        fp.close();
-                    });
-                }
-            });
-            flatpickr("#requestExpiration", {
-                enableTime: true,
-                dateFormat: "Y-m-d",
-                minDate: "today",
-                clickOpens: true,
-                closeOnSelect: false,
-                static: true,
-                defaultDate: today, // ✅ also sets flatpickr default
-                onChange: function (selectedDates, dateStr, instance) {
-                    // Store temporary date, don't commit
-                    pendingDate = dateStr;
-                },
-                onClose: function (selectedDates, dateStr, fp) {
-                    // Always restore confirmed date if not explicitly saved
+                // Cancel → restore confirmed
+                footer.querySelector(".cancel").addEventListener("click", () => {
                     fp.setDate(confirmedDate, true);
                     pendingDate = confirmedDate;
-                },
-                onReady: function (_, __, fp) {
-                    // Add footer buttons
-                    const footer = document.createElement("div");
-                    footer.className = "flatpickr-footer";
-                    footer.innerHTML = `
-            <button type="button" class="fp-btn cancel">Cancel</button>
-            <button type="button" class="fp-btn select">Select</button>
-        `;
-                    fp.calendarContainer.appendChild(footer);
+                    fp.close();
+                });
 
-                    // Cancel → restore confirmed
-                    footer.querySelector(".cancel").addEventListener("click", () => {
+                // Select → confirm pending date
+                footer.querySelector(".select").addEventListener("click", () => {
+                    if (pendingDate) {
+                        confirmedDate = pendingDate;
                         fp.setDate(confirmedDate, true);
-                        pendingDate = confirmedDate;
-                        fp.close();
-                    });
-
-                    // Select → confirm pending date
-                    footer.querySelector(".select").addEventListener("click", () => {
-                        if (pendingDate) {
-                            confirmedDate = pendingDate;
-                            fp.setDate(confirmedDate, true);
-                        }
-                        fp.close();
-                    });
-                }
-            });
-
-            $('#timeSlot').select2({
-                width: '100%'
-            });
-            $('#urgency').select2({
-                width: '100%'
-            });
-            $('#insurance').select2({
-                width: '100%'
-            });
-
+                    }
+                    fp.close();
+                });
+            }
         });
 
-    </script>
+        $('#timeSlot').select2({
+            width: '100%'
+        });
+        $('#urgency').select2({
+            width: '100%'
+        });
+        $('#insurance').select2({
+            width: '100%'
+        });
 
-    <script>
-        let pickupLocation = null;
-        let destinationLocation = null;
+    });
 
-        navigator.geolocation.watchPosition(position => {
+</script>
 
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
+<script>
+    let pickupLocation = null;
+    let destinationLocation = null;
 
-                $('#pickup_location_latitude').val(lat);
-                $('#pickup_location_longitude').val(lng);
+    navigator.geolocation.watchPosition(position => {
 
-            },
-            error => {
-                console.error("Geolocation error:", error);
-            },
-            {
-                enableHighAccuracy: true,
-                maximumAge: 5000,
-                timeout: 10000
-            });
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
 
-        function preventFormSubmitOnEnter(inputElement) {
-            inputElement.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") e.preventDefault();
-            });
+            $('#pickup_location_latitude').val(lat);
+            $('#pickup_location_longitude').val(lng);
+
+        },
+        error => {
+            console.error("Geolocation error:", error);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 5000,
+            timeout: 10000
+        });
+
+    function preventFormSubmitOnEnter(inputElement) {
+        inputElement.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") e.preventDefault();
+        });
+    }
+
+    function initMap() {
+        // Pickup Location
+        const input1 = document.getElementById("pac-input");
+        preventFormSubmitOnEnter(input1);
+        const autocomplete1 = new google.maps.places.Autocomplete(input1, {
+            fields: ["geometry", "address_components", "formatted_address"],
+        });
+        autocomplete1.addListener("place_changed", () => {
+            const place = autocomplete1.getPlace();
+            if (!place.geometry) return;
+            pickupLocation = place;
+            let zip = "";
+
+            console.log(place.address_components);
+
+            if (place.address_components) {
+                place.address_components.forEach(component => {
+                    const types = component.types;
+                    if (types.includes("postal_code")) {
+                        zip = component.long_name;
+                        document.getElementById("pickup_zip_code").value = zip;
+                    }
+
+                    if (types.includes("locality")) {
+                        city = component.long_name;
+                        document.getElementById("pickupCity").value = city;
+                    }
+                });
+            }
+
+            calculateRouteDistance();
+        });
+
+        // Final Destination
+        const input2 = document.getElementById("pac-input2");
+        preventFormSubmitOnEnter(input2);
+        const autocomplete2 = new google.maps.places.Autocomplete(input2, {
+            fields: ["geometry", "address_components", "formatted_address"],
+        });
+        autocomplete2.addListener("place_changed", () => {
+            const place = autocomplete2.getPlace();
+            if (!place.geometry) return;
+            destinationLocation = place;
+
+            let zip = "";
+
+            if (place.address_components) {
+                place.address_components.forEach(component => {
+                    const types = component.types;
+                    if (types.includes("postal_code")) {
+                        zip = component.long_name;
+                        document.getElementById("destination_zip_code").value = zip;
+                    }
+
+                    if (types.includes("locality")) {
+                        city = component.long_name;
+                        document.getElementById("deliveryCity").value = city;
+                    }
+                });
+            }
+
+            calculateRouteDistance();
+        });
+    }
+
+    function calculateRouteDistance() {
+        if (!pickupLocation || !destinationLocation) return;
+
+        const directionsService = new google.maps.DirectionsService();
+
+        const request = {
+            origin: pickupLocation.formatted_address,
+            destination: destinationLocation.formatted_address,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+
+        directionsService.route(request, function (result, status) {
+            if (status === 'OK') {
+                let totalDistance = 0;
+
+                result.routes[0].legs.forEach((leg, index) => {
+                    console.log(`Segment ${index + 1}: ${leg.start_address} → ${leg.end_address} = ${leg.distance.text}`);
+                    totalDistance += leg.distance.value; // meters
+                });
+
+                const distanceInKm = (totalDistance / 1000).toFixed(2);
+                const fare = distanceInKm * 2;
+                console.log(`Total Driving Distance: ${distanceInKm} km`);
+                document.getElementById("distance").value = `${distanceInKm}`;
+                document.getElementById("simDistance").value = `${distanceInKm}`;
+            } else {
+                console.error('Directions request failed due to ', status);
+            }
+        });
+    }
+
+    // Requirement Toggle Function
+    function toggleRequirement(element, event) {
+        // Prevent the click from bubbling to child elements
+        if (event && event.target.classList.contains('level-select')) {
+            return;
         }
 
-        function initMap() {
-            // Pickup Location
-            const input1 = document.getElementById("pac-input");
-            preventFormSubmitOnEnter(input1);
-            const autocomplete1 = new google.maps.places.Autocomplete(input1, {
-                fields: ["geometry", "address_components", "formatted_address"],
-            });
-            autocomplete1.addListener("place_changed", () => {
-                const place = autocomplete1.getPlace();
-                if (!place.geometry) return;
-                pickupLocation = place;
-                let zip = "";
+        element.classList.toggle('selected');
+        const requirementLevel = element.querySelector('.requirement-level');
+        const hiddenInput = element.querySelector('input[type="hidden"]');
 
-                console.log(place.address_components);
-
-                if (place.address_components) {
-                    place.address_components.forEach(component => {
-                        const types = component.types;
-                        if (types.includes("postal_code")) {
-                            zip = component.long_name;
-                            document.getElementById("pickup_zip_code").value = zip;
-                        }
-
-                        if (types.includes("locality")) {
-                            city = component.long_name;
-                            document.getElementById("pickupCity").value = city;
-                        }
-                    });
-                }
-
-                calculateRouteDistance();
-            });
-
-            // Final Destination
-            const input2 = document.getElementById("pac-input2");
-            preventFormSubmitOnEnter(input2);
-            const autocomplete2 = new google.maps.places.Autocomplete(input2, {
-                fields: ["geometry", "address_components", "formatted_address"],
-            });
-            autocomplete2.addListener("place_changed", () => {
-                const place = autocomplete2.getPlace();
-                if (!place.geometry) return;
-                destinationLocation = place;
-
-                let zip = "";
-
-                if (place.address_components) {
-                    place.address_components.forEach(component => {
-                        const types = component.types;
-                        if (types.includes("postal_code")) {
-                            zip = component.long_name;
-                            document.getElementById("destination_zip_code").value = zip;
-                        }
-
-                        if (types.includes("locality")) {
-                            city = component.long_name;
-                            document.getElementById("deliveryCity").value = city;
-                        }
-                    });
-                }
-
-                calculateRouteDistance();
-            });
+        if (element.classList.contains('selected')) {
+            requirementLevel.style.display = 'block';
+            hiddenInput.value = '1';
+        } else {
+            requirementLevel.style.display = 'none';
+            hiddenInput.value = '0';
         }
+    }
 
-        function calculateRouteDistance() {
-            if (!pickupLocation || !destinationLocation) return;
+    // Image Upload Functionality
+    const uploadArea = document.getElementById('uploadArea');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreviews = document.getElementById('imagePreviews');
+    let selectedFiles = [];
 
-            const directionsService = new google.maps.DirectionsService();
+    if (uploadArea && imageInput) {
+        uploadArea.addEventListener('click', () => {
+            imageInput.click();
+        });
 
-            const request = {
-                origin: pickupLocation.formatted_address,
-                destination: destinationLocation.formatted_address,
-                travelMode: google.maps.TravelMode.DRIVING
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        });
+    }
+
+    function handleFiles(files) {
+        files.forEach(file => {
+            if (file.type.startsWith('image/') && file.size <= 10 * 1024 * 1024) { // 10MB limit
+                selectedFiles.push(file);
+                displayImagePreview(file);
+            } else if (file.size > 10 * 1024 * 1024) {
+                const lang = localStorage.getItem('preferredLanguage') || 'fr';
+                showError(lang === 'fr' ?
+                    `Le fichier ${file.name} est trop volumineux (max 10MB)` :
+                    `File ${file.name} is too large (max 10MB)`
+                );
+            }
+        });
+        updateFileInput();
+    }
+
+    function displayImagePreview(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'image-preview';
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '×';
+            removeBtn.type = 'button';
+            removeBtn.onclick = (event) => {
+                event.preventDefault();
+                const index = selectedFiles.indexOf(file);
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
+                }
+                previewDiv.remove();
+                updateFileInput();
             };
 
-            directionsService.route(request, function (result, status) {
-                if (status === 'OK') {
-                    let totalDistance = 0;
+            previewDiv.appendChild(img);
+            previewDiv.appendChild(removeBtn);
+            if (imagePreviews) {
+                imagePreviews.appendChild(previewDiv);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
 
-                    result.routes[0].legs.forEach((leg, index) => {
-                        console.log(`Segment ${index + 1}: ${leg.start_address} → ${leg.end_address} = ${leg.distance.text}`);
-                        totalDistance += leg.distance.value; // meters
-                    });
-
-                    const distanceInKm = (totalDistance / 1000).toFixed(2);
-                    const fare = distanceInKm * 2;
-                    console.log(`Total Driving Distance: ${distanceInKm} km`);
-                    document.getElementById("distance").value = `${distanceInKm}`;
-                    document.getElementById("simDistance").value = `${distanceInKm}`;
-                } else {
-                    console.error('Directions request failed due to ', status);
-                }
-            });
+    function updateFileInput() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+        if (imageInput) {
+            imageInput.files = dataTransfer.files;
         }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=places,geometry&callback=initMap" async defer></script>
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=places,geometry&callback=initMap" async defer></script>
 </body>
 </html>

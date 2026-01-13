@@ -74,6 +74,41 @@
             color: var(--primary);
         }
 
+        /* ==================== DROPDOWN ==================== */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 110%;
+            left: 1px;
+            right: 0;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            min-width: 200px;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dropdown.active .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-menu a, .dropdown button {
+            padding: 0.75rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background: var(--light);
+        }
+
         /* Navigation */
         .navbar {
             position: fixed;
@@ -1344,14 +1379,33 @@
                         </div>
 
                         <div class="offer-actions">
-                            <a href="{{ url('driver/accept-ride/'.$offer->id) }}" class="btn btn-primary" style="background: var(--warning);">
-                                <span data-lang="fr" class="active">Négocier</span>
-                                <span data-lang="en">Negotiate</span>
-                            </a>
-                            <button class="btn btn-outline">
+                            <div class="dropdown">
+
+                                <button class="btn btn-primary btn-sm"
+                                        onclick="toggleDropdown('offerDropdown{{ $offer->id }}')">
+                                    🙋 Propose Me
+                                </button>
+
+                                <div class="dropdown-menu" id="offerDropdown{{ $offer->id }}">
+
+                                    <form action="{{ url('driver/ride-verification/' . $offer->id) }}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="fare" value="{{ $offer->fare }}">
+                                        <input type="hidden" name="driver_location_latitude" class="driver_location_latitude" id="driver_location_latitude">
+                                        <input type="hidden" name="driver_location_longitude" class="driver_location_longitude" id="driver_location_longitude">
+                                        <button type="submit" class="btn btn-success dropdown-item" style="background: none;">
+                                            ✅ Accept Offer ({{ $offer->fare }}€)
+                                        </button>
+                                    </form>
+                                    <a href="{{ url('driver/accept-ride/' . $offer->id) }}" class="dropdown-item">
+                                        🤝 Negotiate
+                                    </a>
+                                </div>
+                            </div>
+                            <a href="{{ url('offer-details/' . $offer->id) }}" class="btn btn-outline">
                                 <span data-lang="fr" class="active">Détails</span>
                                 <span data-lang="en">Details</span>
-                            </button>
+                            </a>
                             <button class="btn btn-outline">💬</button>
                         </div>
                     </div>
@@ -1371,11 +1425,31 @@
             </div>
         </div>
     </div>
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKqq-XxVccy3MdBiolKZOJ601LNqvFPaE&libraries=geometry" async defer></script>
     <!-- Scripts -->
     <script>
         // Language system
         let currentLang = localStorage.getItem('preferredLanguage') || 'fr';
+
+        function toggleDropdown(id) {
+            document.querySelectorAll('.dropdown').forEach(d => {
+                if (d.querySelector('.dropdown-menu').id !== id) {
+                    d.classList.remove('active');
+                }
+            });
+
+            const dropdown = document.querySelector(`#${id}`).parentElement;
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
 
         function switchLanguage(lang) {
             currentLang = lang;
@@ -1470,6 +1544,43 @@
         document.addEventListener('DOMContentLoaded', function() {
             switchLanguage(currentLang);
         });
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    console.log(`Location updated: ${lat}, ${lng}`);
+
+                    $('.driver_location_latitude').val(lat);
+                    $('.driver_location_longitude').val(lng);
+                },
+                (error) => {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            console.error("User denied the request for Geolocation.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            console.error("Location information is unavailable.");
+                            break;
+                        case error.TIMEOUT:
+                            console.error("The request to get user location timed out.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            console.error("An unknown error occurred.");
+                            break;
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 5000,
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
     </script>
 </body>
 </html>

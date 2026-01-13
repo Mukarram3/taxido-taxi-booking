@@ -1328,16 +1328,19 @@
                 <div class="package-details">
                     <div class="detail-item">
                         <div class="detail-value">{{ $totalLength }}cm</div>
+                        <div class="detail-label">Length</div>
                         <div class="detail-label" data-lang="fr" class="active">Longueur</div>
                         <div class="detail-label" data-lang="en">Length</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-value">{{ $totalWidth }}cm</div>
+                        <div class="detail-label">Width</div>
                         <div class="detail-label" data-lang="fr" class="active">Largeur</div>
                         <div class="detail-label" data-lang="en">Width</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-value">{{ $totalWeight }}kg</div>
+                        <div class="detail-label">Weight</div>
                         <div class="detail-label" data-lang="fr" class="active">Poids</div>
                         <div class="detail-label" data-lang="en">Weight</div>
                     </div>

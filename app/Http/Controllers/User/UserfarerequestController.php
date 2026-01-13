@@ -55,15 +55,15 @@ class UserfarerequestController extends Controller
         $driver = Driver::find($request->driver_id);
         $message = \Illuminate\Support\Carbon::now() . ' Carrier '.$driver->name. ' send a Price negotiation for the offer from '. $userriderequest->pickup_location .' to '. $userriderequest->destination_location;
 
-//        try {
-//            Notification::send($user, new RideBooked($message));
-//            Notification::send($driver, new RideBooked($message));
-//            Mail::to($user->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
-//            Mail::to($driver->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
-//        }
-//        catch (\Exception $e) {
-//            Log::info($e->getMessage());
-//        }
+        try {
+            Notification::send($user, new RideBooked($message));
+            Notification::send($driver, new RideBooked($message));
+            Mail::to($user->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
+            Mail::to($driver->email)->send(new \App\Mail\PriceNegotiationSend($Farerequest));
+        }
+        catch (\Exception $e) {
+            Log::info($e->getMessage());
+        }
 
         return redirect()->back()->with(['success' => 'Requested the Fare Successfully']);
     }

@@ -10,6 +10,7 @@ require __DIR__ . '/user.php';
 
 Route::get('/',[\App\Http\Controllers\HomeController::class,'index'])->name('home');
 Route::get('/search-listing',[\App\Http\Controllers\HomeController::class,'search_listing'])->name('search_listing');
+Route::get('/offer-details/{id}',[\App\Http\Controllers\HomeController::class,'offer_details'])->name('offer_details');
 Route::get('/about-jeconfie', function (){
     return view('legal.about-jeconfie');
 });
