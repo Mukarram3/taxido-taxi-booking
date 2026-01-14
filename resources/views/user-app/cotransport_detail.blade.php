@@ -954,19 +954,16 @@
                         <span class="lang-content en">Package photos</span>
                     </h2>
 
+                    @php
+                    $pictures = json_decode($user_ride_request->parcel_pictures);
+                    @endphp
+
                     <div class="photo-gallery">
+                        @foreach($pictures as $picture)
                         <div class="photo-item">
-                            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400" alt="Canapé">
+                            <img src="{{ asset('storage/'. $picture) }}?w=400" alt="Canapé">
                         </div>
-                        <div class="photo-item">
-                            <img src="https://images.unsplash.com/photo-1594620302200-9a762244a156?w=400" alt="Bibliothèque">
-                        </div>
-                        <div class="photo-item">
-                            <img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?w=400" alt="Table">
-                        </div>
-                        <div class="photo-item">
-                            <img src="https://images.unsplash.com/photo-1503602642458-232111445657?w=400" alt="Vue ensemble">
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
