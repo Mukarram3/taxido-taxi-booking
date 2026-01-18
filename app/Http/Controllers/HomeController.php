@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ridesbooked;
 use App\Models\Userriderequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -79,5 +80,12 @@ class HomeController extends Controller
         $user_ride_request->pickup_city = $this->getCityFromAddress($user_ride_request->pickup_location);
         $user_ride_request->destination_city = $this->getCityFromAddress($user_ride_request->destination_location);
         return view('user-app.cotransport_detail', compact('user_ride_request'));
+    }
+
+    public function ride_details($id){
+        $ride_booked = Ridesbooked::with('user','userriderequest')->find($id);
+        $ride_booked->pickup_city = $this->getCityFromAddress($ride_booked->pickup_location);
+        $ride_booked->destination_city = $this->getCityFromAddress($ride_booked->destination_location);
+        return view('user-app.cotransport_ride_detail', compact('ride_booked'));
     }
 }
