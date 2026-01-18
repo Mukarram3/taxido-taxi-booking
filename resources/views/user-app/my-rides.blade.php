@@ -716,7 +716,7 @@
                     <input type="hidden" name="id" class="offer_id" value="{{ $ride->id }}">
                     <input type="hidden" name="is_user_cancelled" value="true">
                     <div class="shipment-actions">
-                        <a href="{{url('user/ride-details?ride_id='.$ride->id)}}" class="action-btn">
+                        <a href="{{ url('ride-details/' . $ride->id) }}" class="action-btn">
                             <span class="lang-content fr active">Details</span>
                             <span class="lang-content en">Details</span>
                         </a>
