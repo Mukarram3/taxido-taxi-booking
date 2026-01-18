@@ -975,7 +975,8 @@
                     </h2>
 
                     <div class="requirements-list">
-                        <div class="requirement-item required">
+                        @if($user_ride_request->requirement_transport_license)
+                        <div class="requirement-item @if($user_ride_request->requirement_transport_license_level == 'mandatory') required @endif">
                             <div class="requirement-icon">🪪</div>
                             <div class="requirement-info">
                                 <div class="requirement-title">
@@ -987,13 +988,16 @@
                                     <span class="lang-content en">Copy of valid license</span>
                                 </div>
                             </div>
+                            @if($user_ride_request->requirement_transport_license_level == 'mandatory')
                             <div class="requirement-badge">
                                 <span class="lang-content fr active">Requis</span>
                                 <span class="lang-content en">Required</span>
                             </div>
+                            @endif
                         </div>
-
-                        <div class="requirement-item required">
+                        @endif
+                            @if($user_ride_request->requirement_insurance)
+                        <div class="requirement-item @if($user_ride_request->requirement_insurance_level) required @endif">
                             <div class="requirement-icon">🛡️</div>
                             <div class="requirement-info">
                                 <div class="requirement-title">
@@ -1005,13 +1009,16 @@
                                     <span class="lang-content en">Certificate min. €5000</span>
                                 </div>
                             </div>
+                            @if($user_ride_request->requirement_insurance_level)
                             <div class="requirement-badge">
                                 <span class="lang-content fr active">Requis</span>
                                 <span class="lang-content en">Required</span>
                             </div>
+                            @endif
                         </div>
-
-                        <div class="requirement-item">
+                            @endif
+                            @if($user_ride_request->requirement_vehicle)
+                        <div class="requirement-item @if($user_ride_request->requirement_vehicle_level == 'mandatory') required @endif">
                             <div class="requirement-icon">🚛</div>
                             <div class="requirement-info">
                                 <div class="requirement-title">
@@ -1023,9 +1030,16 @@
                                     <span class="lang-content en">Minimum 12m³</span>
                                 </div>
                             </div>
+                            @if($user_ride_request->requirement_vehicle_level)
+                                <div class="requirement-badge">
+                                    <span class="lang-content fr active">Requis</span>
+                                    <span class="lang-content en">Required</span>
+                                </div>
+                            @endif
                         </div>
-
-                        <div class="requirement-item">
+                            @endif
+                            @if($user_ride_request->requirement_loading_help)
+                        <div class="requirement-item @if($user_ride_request->requirement_loading_help_level) required @endif">
                             <div class="requirement-icon">💪</div>
                             <div class="requirement-info">
                                 <div class="requirement-title">
@@ -1037,7 +1051,14 @@
                                     <span class="lang-content en">Active participation required</span>
                                 </div>
                             </div>
+                            @if($user_ride_request->requirement_loading_help_level)
+                                <div class="requirement-badge">
+                                    <span class="lang-content fr active">Requis</span>
+                                    <span class="lang-content en">Required</span>
+                                </div>
+                            @endif
                         </div>
+                            @endif
                     </div>
                 </div>
 
@@ -1179,6 +1200,7 @@
                     </a>
                 </div>
 
+                @if($user_ride_request->requirement_transport_license && $user_ride_request->requirement_transport_license_level == 'mandatory' && $user_ride_request->requirement_insurance && $user_ride_request->requirement_insurance_level == 'mandatory' )
                 <!-- Alert -->
                 <div class="alert-box">
                     <div class="alert-icon">⚠️</div>
@@ -1193,6 +1215,8 @@
                         </div>
                     </div>
                 </div>
+
+                @endif
 
                 <!-- Addresses -->
                 <div class="destination-card">

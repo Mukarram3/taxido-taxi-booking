@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Driver;
 use App\Models\Farerequest;
 use App\Models\Driverriderequest;
 use App\Models\Ridesbooked;
+use App\Models\User;
 use App\Models\Userriderequest;
+use App\Notifications\RideBooked;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class UserriderequestController extends Controller
@@ -280,8 +285,23 @@ class UserriderequestController extends Controller
                 }
                 $userriderequest->parcel_pictures = json_encode($imagePaths);
             }
-
             $userriderequest->save();
+
+            $user = User::find($userriderequest->user_id);
+            $drivers = Driver::all();
+            $message = \Illuminate\Support\Carbon::now() . ' Sender '.$user->name. ' has Just Created a Ride.';
+
+            if ($user && $user->email) {
+                try {
+                    Notification::send($drivers, new RideBooked($message));
+                    Mail::to($user->email)->send(new \App\Mail\RideCreated($userriderequest));
+                    Mail::to($userriderequest->receiver_email)->send(new \App\Mail\RideCreated($userriderequest));
+                }
+                catch (\Exception $e) {
+                    Log::info($e->getMessage());
+                }
+            }
+
             return response()->json([
                 'status'  => true,
                 'message' => 'success',
@@ -457,7 +477,9 @@ class UserriderequestController extends Controller
             ->where('expiry', '>', Carbon::now())
             ->where('status','!=','rejected')
             ->where('status','!=','accepted')
+            ->whereNotNull('driver_id')
             ->orderBy('id', 'desc')
+            ->limit(1)
             ->get();
 
         $acceptedFarerequests = Farerequest::with('driver', 'userriderequest') // if you have these relationships
